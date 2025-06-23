@@ -1,7 +1,7 @@
 package models;
 
 import jakarta.persistence.*;
-import org.example.constants.PaymentStatus;
+import constants.PaymentStatus;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

@@ -1,7 +1,7 @@
 package models;
 
 import jakarta.persistence.*;
-import org.example.constants.UserRole;
+import constants.UserRole;
 
 import java.util.ArrayList;
 import java.util.List;

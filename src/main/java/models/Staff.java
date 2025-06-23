@@ -1,11 +1,12 @@
 package models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import constants.HospitalDepartment;
 import constants.UserRole;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Staff {
@@ -21,8 +22,21 @@ public class Staff {
     private String phone;
     private String dob;
     private String gender;
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(
+            name = "doctor_available_slots", // More descriptive table name
+            joinColumns = @JoinColumn(name = "doctor_id") // FK in 'doctor_available_slots' referencing Doctor's PK
+    )
+    @Column(name = "available_date_time") // Name for the column storing the LocalDateTime itself
+    private List<LocalDateTime> availableSlots = new ArrayList<>();
 
+    public List<LocalDateTime> getAvailableSlots() {
+        return availableSlots;
+    }
 
+    public void setAvailableSlots(List<LocalDateTime> availableSlots) {
+        this.availableSlots = availableSlots;
+    }
 
     public Staff(String name, UserRole role, HospitalDepartment department, String address, String email, String phone, String dob, String gender) {
         this.name = name;
@@ -104,6 +118,8 @@ public class Staff {
     public Long getStaffId() { return staffId; }
     public HospitalDepartment getDepartment() { return department; }
     public void setDepartment(HospitalDepartment department) { this.department = department; }
+    public void addAvailability(LocalDateTime slot) { if (!availableSlots.contains(slot)) availableSlots.add(slot); }
+    public boolean removeAvailability(LocalDateTime slot) { return availableSlots.remove(slot); }
 
     @Override
     public String toString() {

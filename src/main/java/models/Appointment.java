@@ -1,7 +1,7 @@
 package models;
 
 import jakarta.persistence.*;
-import org.example.constants.AppointmentStatus;
+import constants.AppointmentStatus;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

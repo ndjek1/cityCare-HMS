@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="connection.url">jdbc:mysql://localhost:3306/hibernate_demo</property>
+        <property name="connection.username">ndjek</property>
+        <property name="connection.password">Chloe2000Zoe</property>
+        <!-- We use dialect to provide information about which
+           database we are using, we are using mysql -->
+        <property name="dialect">org.hibernate.dialect.MySQLDialect</property>
+        <!-- This property enables us to update the
+              table everytime the program runs-->
+        <property name="hbm2ddl.auto">update</property>
+        <property name="show_sql">false</property>
+
+    </session-factory>
+</hibernate-configuration>

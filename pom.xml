@@ -1,54 +1,62 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.citycare</groupId>
   <artifactId>city_care_hms</artifactId>
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
   <name>city_care_hms Maven Webapp</name>
-  <url>http://maven.apache.org</url>
+  <url>http://maven.apache.org</url> <!-- Consider changing -->
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
+    <jsf.version>4.0.1</jsf.version>
+    <weld.version>5.1.0.Final</weld.version>
+    <primefaces.version>15.0.0</primefaces.version>
+    <hibernate.version>6.5.2.Final</hibernate.version> <!-- Or latest stable Hibernate 6 -->
+    <mysql.connector.version>8.3.0</mysql.connector.version>
+    <slf4j.version>2.0.12</slf4j.version>
+    <logback.version>1.4.14</logback.version>
+    <junit.jupiter.version>5.10.2</junit.jupiter.version>
+  </properties>
+
   <dependencies>
+    <!-- Hibernate ORM -->
     <dependency>
       <groupId>org.hibernate.orm</groupId>
       <artifactId>hibernate-core</artifactId>
-      <version>7.0.0.Alpha2</version>
+      <version>${hibernate.version}</version>
     </dependency>
+
+    <!-- MySQL Connector -->
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
+      <groupId>com.mysql</groupId>
+      <artifactId>mysql-connector-j</artifactId>
+      <version>${mysql.connector.version}</version>
     </dependency>
 
-
-
-
-
-    <dependency>
-      <groupId>mysql</groupId>
-      <artifactId>mysql-connector-java</artifactId>
-      <version>5.1.6</version>
-    </dependency>
-
+    <!-- SLF4J API -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>1.6.1</version>
+      <version>${slf4j.version}</version>
     </dependency>
-
+    <!-- Logback for SLF4J binding -->
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-      <version>1.6.1</version>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>${logback.version}</version>
     </dependency>
-
+    <!-- To bridge other logging frameworks (optional, add as needed) -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>jcl-over-slf4j</artifactId>
-      <version>1.6.1</version>
+      <version>${slf4j.version}</version>
     </dependency>
 
-    <!-- Jakarta EE Web APIs - Provided by Tomcat (Servlet, JSP, EL, etc.) -->
+    <!-- Jakarta EE Web APIs - Provided by Tomcat -->
     <dependency>
       <groupId>jakarta.platform</groupId>
       <artifactId>jakarta.jakartaee-web-api</artifactId>
@@ -56,24 +64,28 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- JSF Implementation (Mojarra) - Includes JSF API -->
-    <!-- Scope defaults to 'compile', which is what we want for bundling -->
-
+    <!-- JSF Implementation (Mojarra) - Essential for JSF/PrimeFaces -->
+    <dependency>
+      <groupId>org.glassfish</groupId>
+      <artifactId>jakarta.faces</artifactId>
+      <version>${jsf.version}</version>
+    </dependency>
 
     <!-- CDI API - Must be bundled for Tomcat -->
     <dependency>
       <groupId>jakarta.enterprise</groupId>
       <artifactId>jakarta.enterprise.cdi-api</artifactId>
-      <version>4.0.1</version>
+      <version>4.0.1</version> <!-- Weld 5.1.0.Final is CDI 4.0 -->
     </dependency>
 
-    <!-- Weld (CDI Reference Implementation) - Must be bundled for Tomcat -->
-    <!-- This will pull in weld-api and weld-spi transitively with matching versions -->
+    <!-- Weld (CDI Implementation) -->
     <dependency>
       <groupId>org.jboss.weld.servlet</groupId>
       <artifactId>weld-servlet-core</artifactId>
       <version>${weld.version}</version>
     </dependency>
+
+    <!-- PrimeFaces -->
     <dependency>
       <groupId>org.primefaces</groupId>
       <artifactId>primefaces</artifactId>
@@ -82,29 +94,37 @@
     </dependency>
 
 
+    <!-- JUnit 5 for testing -->
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>${junit.jupiter.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <version>${junit.jupiter.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
+
   <build>
     <finalName>city_care_hms</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.13.0</version>
         <configuration>
-          <source>21</source>
-          <target>21</target>
+          <source>${maven.compiler.source}</source>
+          <target>${maven.compiler.target}</target>
         </configuration>
       </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
-        <version>3.3.2</version> <!-- This version is okay, latest is 3.4.0 -->
+        <version>3.4.0</version> <!-- Updated to latest -->
         <configuration>
           <failOnMissingWebXml>false</failOnMissingWebXml>
         </configuration>
@@ -121,7 +141,7 @@
             </goals>
 
             <configuration>
-              <outputDirectory>${basedir}/target/first_app/resources
+              <outputDirectory>${basedir}/target/city_care_hms/resources
               </outputDirectory>
               <resources>
                 <resource>

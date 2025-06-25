@@ -3,6 +3,9 @@ package services;
 
 
 import constants.*;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Named;
 import models.*;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
@@ -16,7 +19,8 @@ import java.util.stream.Collectors;
 import static constants.UserRole.DOCTOR;
 import static constants.UserRole.PATIENT;
 
-
+@Named
+@ApplicationScoped
 public class HospitalService {
 
     private final  SessionFactory factory ;
@@ -35,14 +39,13 @@ public class HospitalService {
 
     public HospitalService() {
         this.factory = HibernateUtil.getSessionFactory();
+        System.out.println("HospitalService CDI bean CREATED.");
         this.userAccountsByUsername = new HashMap<>();
         this.patientsById = new HashMap<>();
-
 
         this.appointments = new ArrayList<>();
         this.bills = new ArrayList<>();
         this.payments = new ArrayList<>();
-//        initializeDefaultAdmin();
     }
 
 
@@ -532,29 +535,6 @@ public class HospitalService {
         return null;
     }
 
-    public void deleteDoctor(Long doctorId) {
-        Session session = null;
-        Transaction tx = null;
-        try {
-            session = factory.openSession();
-            tx = session.beginTransaction();
-            Staff doctor = session.get(Staff.class, doctorId);
-            if (doctor != null) {
-                session.remove(doctor);
-                System.out.println("Deleted " + doctor.getName());
-            }
-
-        }catch (Exception e) {
-            if (tx != null && tx.isActive()) {
-                tx.rollback();
-            }
-            e.printStackTrace();
-        }finally {
-            if (session != null && session.isOpen()) {
-                session.close();
-            }
-        }
-    }
 
     public void deleteStaff(Long staffId) {
         Session session = null;
@@ -1046,61 +1026,51 @@ public class HospitalService {
                 .collect(Collectors.toList());
     }
 
-    private void initializeDefaultAdmin() {
-        Staff admin = new Staff( "Default Admin", UserRole.ADMINISTRATOR,HospitalDepartment.ADMINISTRATION,"Kikoni","admin@citycaire.com","0706080193","04-07-2025","Male");
-        // 1. Check username uniqueness (ideally query the UserAccount table from DB)
-        if (isUsernameTaken("admin")) {
-            System.out.println("Error: Username '" + "admin" + "' already taken.");
-        }
-
-
-        UserAccount account = null; // Initialize account
-
+    // Make your data seeding method public
+    public boolean seedInitialData() {
+        System.out.println("HospitalService: seedInitialData() called.");
+        // Implement your logic to check if admin exists and create if not,
+        // using proper Hibernate session and transaction management.
+        // Example structure:
         Session session = null;
         Transaction tx = null;
-
         try {
-            session = factory.openSession();
+            session = this.factory.openSession();
             tx = session.beginTransaction();
 
-            // 2. Persist the Staff entity first
-            session.persist(admin);
-            // After persist (and typically after flush/commit for IDENTITY strategy),
-            // staff.getStaffId() will be populated by Hibernate if it's DB-generated.
-            String encryptedPassword = encryptCaesar("admin123",32);
-            // 3. NOW create the UserAccount with the generated Staff ID
-            // Ensure staff.getStaffId() returns the correct type for UserAccount.entityId (e.g., Long, String)
-            account = new UserAccount("admin", encryptedPassword, admin.getRole(), admin.getStaffId());
-            // Your debug line was for Doctor ID, let's make it generic or specific to Staff
-            System.out.println("Staff ID passed to UserAccount: " + admin.getStaffId()); // Debug
+            // Check if admin user "admin" already exists
+            Query<Long> query = session.createQuery("SELECT count(u) FROM UserAccount u WHERE u.username = :username", Long.class);
+            query.setParameter("username", "doc.who");
+            Long count = query.uniqueResult();
 
-            session.persist(account);
+            if (count == 0) {
+                // Create Staff for Admin
+                Staff adminStaff = new Staff("Strange ", DOCTOR, HospitalDepartment.NEUROLOGY, "Kikoni", "time@citycaire.com", "0706080193", "04-07-2025", "Male");
+                session.persist(adminStaff); // Persist staff first to get ID
+
+                // Create UserAccount for Admin
+                String encryptedPassword = encryptCaesar("time", 32); // Remember to use strong hashing
+                UserAccount adminUserAccount = new UserAccount("doc.who", encryptedPassword, UserRole.ADMINISTRATOR, adminStaff.getStaffId());
+                session.persist(adminUserAccount);
+                System.out.println("Default admin user created.");
+            } else {
+                System.out.println("Default admin user already exists.");
+            }
 
             tx.commit();
-
-            // Optional: Update in-memory maps if you are still using them for some transitional phase
-            // staffById_memory.put(staff.getStaffId(), staff); // Assuming you have a map for staff
-            // userAccountsByUsername_memory.put(username, account);
-
-            System.out.println(admin.getName() + " (" + admin.getRole() + ") registered successfully. Staff ID: " + admin.getStaffId() +
-                    ", Account's linked Entity ID: " + (account != null ? account.getEntityId() : "N/A"));
-
-
+            return true;
         } catch (Exception e) {
             if (tx != null && tx.isActive()) {
-                try {
-                    tx.rollback();
-                } catch (Exception rbEx) {
-                    System.err.println("Rollback failed for staff registration: " + rbEx.getMessage());
-                }
+                tx.rollback();
             }
-            e.printStackTrace(); // Log or handle more gracefully
-
+            System.err.println("Error during seedInitialData: " + e.getMessage());
+            e.printStackTrace();
         } finally {
             if (session != null && session.isOpen()) {
                 session.close();
             }
         }
+        return false;
     }
 
     private  boolean isUsernameTaken(String username) {

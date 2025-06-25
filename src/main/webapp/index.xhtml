@@ -1,0 +1,35 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/template.xhtml">
+
+    <ui:define name="title">
+        Main Dashboard
+    </ui:define>
+
+    <ui:define name="content">
+        <!--
+            This content area will be very simple for now.
+            The main goal is to see the template's header, sidebar menu, and footer.
+        -->
+        <p:panel header="System Main Page">
+
+            <h:panelGroup layout="block" style="padding: 20px;">
+                <h1>Welcome to CityCare HMS!</h1>
+                <p>
+                    Please use the menu on the left to navigate the system.
+                </p>
+                <p>
+                    The content for each selected menu item will appear here.
+                </p>
+                <!--
+                    You can add a static image or some other simple, non-bean-dependent
+                    content here if you want something more than just text.
+                -->
+                <!-- Example: <h:graphicImage library="images" name="hospital_logo.png" /> -->
+            </h:panelGroup>
+        </p:panel>
+    </ui:define>
+
+</ui:composition>

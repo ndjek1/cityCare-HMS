@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>CityCare HMS - <ui:insert name="title">Page</ui:insert></title>
+    <link rel="stylesheet" href="https://unpkg.com/primeflex@latest/primeflex.css"></link>
+    <h:outputStylesheet library="css" name="style.css"/>
+    <f:event type="preRenderView" listener="#{navigationBean.checkLogin}"/>
+</h:head>
+
+<h:body style="display: flex; flex-direction: column; min-height: 100vh; margin: 0; font-family: sans-serif;">
+
+    <!-- Header Section -->
+    <header style="background-color: #007bff; color: white; padding: 10px 20px; flex-shrink: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h:form style="display: flex; justify-content: space-between; align-items: center;">
+            <h:outputText value="CityCare Hospital Management System" style="font-size: 1.5em; font-weight: bold;"/>
+            <div style="display: flex; align-items: center;">
+                <h:outputText value="Welcome, #{userAccountBean.currentUserName} (#{userAccountBean.currentUserRole})"
+                              rendered="#{userAccountBean.loggedIn}"
+                              style="margin-right: 15px;"/>
+                <p:commandButton value="Logout" action="#{userAccountBean.logout}" icon="pi pi-sign-out"
+                                 rendered="#{userAccountBean.loggedIn}"
+                                 styleClass="ui-button-danger ui-button-outlined" update="@form :pageContentForm"/>
+            </div>
+        </h:form>
+    </header>
+
+    <!-- Main Content Area (Sidebar + Page Content) -->
+    <div style="display: flex; flex-grow: 1;">
+
+        <!-- Sidebar / Navigation Menu -->
+        <nav style="width: 250px; background-color: #f8f9fa; padding: 15px; border-right: 1px solid #dee2e6; flex-shrink: 0;">
+            <h:form id="menuForm">
+                <p:panelMenu style="width:100%;">
+                    <p:submenu label="General" style="font-weight:bold;">
+                        <p:menuitem value="Dashboard" outcome="/index.xhtml" icon="pi pi-home"
+                                    styleClass="#{view.viewId eq '/index.xhtml' ? 'ui-state-active' : ''}"/>
+
+                    </p:submenu>
+                    <p:submenu label="Add new staff" rendered="#{userAccountBean.isAdministrator()}" style="font-weight:bold;">
+                        <p:menuitem value="Add staff"  icon="pi pi-user"
+                                    action="#{pageNavigationBean.navigateAddNewStaff()}"
+                                    update=":pageContentForm:mainContentPanel"
+                        />
+                        <p:menuitem value="Manage Staff"
+                                    action="#{pageNavigationBean.navigateToViewStaff}"
+                                    icon="pi pi-users"
+                                    update=":pageContentForm:mainContentPanel" />
+                        <!-- Add more menu items similarly -->
+                    </p:submenu>
+
+
+                </p:panelMenu>
+            </h:form>
+        </nav>
+
+        <!-- Page Specific Content -->
+        <main style="flex-grow: 1; padding: 20px; background-color: #ffffff; overflow-y: auto;">
+            <h:form id="pageContentForm">
+                <p:growl id="messages" showDetail="true" skipDetailIfEqualsSummary="true" globalOnly="true"/>
+                <!-- Inside the <main> section of template.xhtml, within pageContentForm -->
+                <p:outputPanel id="mainContentPanel">
+                    <!-- OLD way with ui:insert (remove or comment out)
+                    <ui:insert name="content">
+                        <p:panel header="Welcome">
+                            <h:outputText value="Please select an option from the menu to get started."/>
+                        </p:panel>
+                    </ui:insert>
+                    -->
+
+                    <!-- NEW way with dynamic ui:include -->
+                    <ui:include src="#{pageNavigationBean.currentPage}" />
+                </p:outputPanel>
+            </h:form>
+        </main>
+    </div>
+
+    <!-- Footer Section -->
+    <footer style="background-color: #343a40; color: white; text-align: center; padding: 10px; flex-shrink: 0; border-top: 1px solid #495057;">
+        <h:outputText value="© 2025 CityCare Hospital Management System. All rights reserved."/>
+    </footer>
+</h:body>
+</html>

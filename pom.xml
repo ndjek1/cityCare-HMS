@@ -101,6 +101,42 @@
       <version>${junit.jupiter.version}</version>
       <scope>test</scope>
     </dependency>
+
+    <!-- Jakarta EE Web APIs - Provided by Tomcat (Servlet, JSP, EL, etc.) -->
+    <dependency>
+      <groupId>jakarta.platform</groupId>
+      <artifactId>jakarta.jakartaee-web-api</artifactId>
+      <version>10.0.0</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- JSF Implementation (Mojarra) - Includes JSF API -->
+    <!-- Scope defaults to 'compile', which is what we want for bundling -->
+
+
+    <!-- CDI API - Must be bundled for Tomcat -->
+    <dependency>
+      <groupId>jakarta.enterprise</groupId>
+      <artifactId>jakarta.enterprise.cdi-api</artifactId>
+      <version>4.0.1</version>
+    </dependency>
+
+    <!-- Weld (CDI Reference Implementation) - Must be bundled for Tomcat -->
+    <!-- This will pull in weld-api and weld-spi transitively with matching versions -->
+    <dependency>
+      <groupId>org.jboss.weld.servlet</groupId>
+      <artifactId>weld-servlet-core</artifactId>
+      <version>${weld.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.primefaces</groupId>
+      <artifactId>primefaces</artifactId>
+      <version>15.0.0</version>
+      <classifier>jakarta</classifier>
+    </dependency>
+
+
+
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
@@ -121,10 +157,19 @@
           <target>${maven.compiler.target}</target>
         </configuration>
       </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
         <version>3.4.0</version> <!-- Updated to latest -->
+
+
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>3.3.2</version> <!-- This version is okay, latest is 3.4.0 -->
+
         <configuration>
           <failOnMissingWebXml>false</failOnMissingWebXml>
         </configuration>
@@ -141,7 +186,11 @@
             </goals>
 
             <configuration>
+
               <outputDirectory>${basedir}/target/city_care_hms/resources
+
+              <outputDirectory>${basedir}/target/first_app/resources
+
               </outputDirectory>
               <resources>
                 <resource>
@@ -153,6 +202,8 @@
           </execution>
         </executions>
       </plugin>
+
+
     </plugins>
   </build>
 </project>

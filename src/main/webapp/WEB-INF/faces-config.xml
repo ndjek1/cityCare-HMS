@@ -5,5 +5,9 @@
               version="4.0">
 
     <!-- Configuration will go here later if needed -->
+    <converter>
+        <converter-for-class>java.time.LocalTime</converter-for-class>
+        <converter-class>backingbeans.LocalTimeConverter</converter-class>
+    </converter>
 
 </faces-config>

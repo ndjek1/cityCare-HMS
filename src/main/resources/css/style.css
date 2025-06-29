@@ -1,0 +1,321 @@
+/* ==================
+   Base & Layout
+   ================== */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--surface-ground); /* Use theme variable for background */
+    color: var(--text-color);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.layout-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.layout-main-container {
+    display: flex;
+    flex: 1 1 auto;
+    overflow: hidden;
+}
+
+.layout-main {
+    flex: 1 1 auto;
+    padding: 2rem;
+    overflow-y: auto;
+}
+
+/* ==================
+   Header
+   ================== */
+.layout-topbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: var(--surface-card);
+    color: var(--text-color);
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--surface-border);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    z-index: 1000;
+    height: 70px; /* Fixed height */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.layout-topbar .logo {
+    display: flex;
+    align-items: center;
+    color: var(--primary-color);
+    font-size: 1.75rem;
+    font-weight: 700;
+    text-decoration: none;
+}
+.layout-topbar .logo i {
+    font-size: 2rem;
+    margin-right: 0.75rem;
+}
+
+
+/* ==================
+   Sidebar / Menu
+   ================== */
+.layout-sidebar {
+    width: 280px;
+    background-color: var(--surface-card);
+    border-right: 1px solid var(--surface-border);
+    padding: 1rem;
+    overflow-y: auto;
+    flex-shrink: 0;
+    margin-top: 70px; /* Offset for fixed header */
+}
+
+/* Style the PanelMenu for a cleaner look */
+.layout-sidebar .ui-panelmenu {
+    border: none;
+}
+
+.layout-sidebar .ui-panelmenu .ui-panelmenu-header > a {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text-color-secondary);
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.layout-sidebar .ui-panelmenu .ui-panelmenu-header > a:hover {
+    background-color: var(--surface-hover);
+}
+
+.layout-sidebar .ui-panelmenu .ui-panelmenu-content {
+    border: none;
+    padding-left: 1.5rem; /* Indent sub-items */
+}
+
+.layout-sidebar .ui-panelmenu .ui-menuitem-link {
+    font-size: 0.95rem;
+    border-radius: 6px;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.layout-sidebar .ui-panelmenu .ui-menuitem-link:hover {
+    background-color: var(--surface-hover);
+}
+
+/* Highlight the active menu item */
+.layout-sidebar .ui-panelmenu .ui-menuitem.ui-menuitem-active > .ui-menuitem-link {
+    font-weight: 600;
+    background-color: var(--primary-color-lightest, rgba(79, 70, 229, 0.1)); /* Fallback color */
+    color: var(--primary-color);
+}
+
+/* ==================
+   Footer
+   ================== */
+.layout-footer {
+    background-color: var(--surface-section);
+    color: var(--text-color-secondary);
+    text-align: center;
+    padding: 1.5rem;
+    border-top: 1px solid var(--surface-border);
+    font-size: 0.9rem;
+}
+
+/* ==================
+   AJAX Status (Loading Spinner)
+   ================== */
+.ajax-status {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 9999;
+}
+
+/* ==================
+   Content Card
+   ================== */
+.content-card {
+    padding: 2rem;
+}
+
+
+.reg-card .field > label {
+    font-weight: 600;
+    color: var(--text-color-secondary);
+}
+.reg-card .button-bar .ui-button {
+    margin: 0 .5rem;
+}
+
+/*Profile*/
+
+.profile-card .pf-label {
+    font-weight: 600;
+    color: var(--text-color-secondary);
+}
+.profile-card .pf-field {
+    white-space: pre-wrap;
+}
+.profile-card .button-bar .ui-button {
+    margin-left: .5rem;
+}
+
+/*Unpaid bills*/
+.unpaid-bills-card .toolbar-btn {
+    margin-right: .5rem;
+}
+.unpaid-bills-card .payment-status {
+    font-weight: 700;
+}
+.unpaid-bills-card .payment-status.UNPAID {
+    color: #e24c4c;        /* red */
+}
+.unpaid-bills-card .payment-status.PARTIALLY_PAID {
+    color: #e6a23c;        /* orange */
+}
+
+/* =========================================
+   V2 - Rich List View for Staff Management
+   ========================================= */
+
+/* Use the list layout of DataView */
+.staff-list-dataview .p-dataview-content {
+    padding: 0; /* Remove padding to make the list seamless */
+}
+
+.staff-list-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--surface-border);
+    transition: background-color 0.2s;
+    gap: 1.5rem; /* Space between avatar, details, and actions */
+}
+
+/* Hover effect for the entire row */
+.staff-list-item:hover {
+    background-color: var(--surface-hover);
+}
+
+.staff-list-item .staff-details {
+    flex-grow: 1; /* This makes the details section fill the available space */
+}
+
+.staff-list-item .staff-primary-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.staff-list-item .staff-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.staff-list-item .staff-contact-info {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem; /* More space between email and phone */
+    font-size: 0.9rem;
+    color: var(--text-color-secondary);
+}
+
+.staff-list-item .staff-contact-info .pi {
+    margin-right: 0.5rem;
+}
+
+.staff-list-item .staff-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Make action buttons less intrusive */
+.staff-list-item .staff-actions .p-button {
+    /* Use text-based flat buttons for a cleaner look */
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* --- Refined Role Tags for the List --- */
+.ui-tag.role-Administrator { background-color: #EF4444; color: #ffffff; }
+.ui-tag.role-Doctor        { background-color: #3B82F6; color: #ffffff; }
+.ui-tag.role-Receptionist  { background-color: #22C55E; color: #ffffff; }
+/* Add more role colors as needed */
+
+/* ===================================
+   Modern & Rich DataTable Style
+   =================================== */
+
+/* Main table container */
+.ui-datatable-modern {
+    border: 1px solid var(--surface-border);
+    border-radius: 8px;
+    overflow: hidden; /* Important for keeping rounded corners */
+}
+
+/* Table Header */
+.ui-datatable-modern .ui-datatable-thead > tr > th {
+    background-color: var(--surface-100); /* Slightly off-white header */
+    color: var(--text-color-secondary);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    padding: 1rem 1.25rem;
+    border: none;
+    border-bottom: 1px solid var(--surface-border);
+}
+
+/* Table Rows & Cells */
+.ui-datatable-modern .ui-datatable-tbody > tr > td {
+    padding: 1rem 1.25rem;
+    border: none;
+    border-bottom: 1px solid var(--surface-border);
+    vertical-align: middle; /* Key for aligning content nicely */
+}
+
+/* Remove bottom border from the very last row */
+.ui-datatable-modern .ui-datatable-tbody > tr:last-child > td {
+    border-bottom: none;
+}
+
+/* Row hover effect */
+.ui-datatable-modern .ui-datatable-tbody > tr:hover {
+    background-color: var(--surface-hover);
+}
+
+/* --- Special Cell for Patient Info --- */
+.patient-info-cell {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.patient-info-cell .patient-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.patient-info-cell .patient-name {
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.patient-info-cell .patient-email {
+    font-size: 0.9rem;
+    color: var(--text-color-secondary);
+}
+
+/* Style for the actions split button to be compact */
+.actions-column .ui-splitbutton {
+    box-shadow: none;
+}

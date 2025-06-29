@@ -28,6 +28,21 @@ public class Appointment {
     private LocalDateTime dateTime;
     private String reason;
     private AppointmentStatus status;
+    @OneToOne(mappedBy = "appointment", cascade = CascadeType.ALL)
+    private Bill bill; // Assuming a Bill has a OneToOne back to Appointment or AppointmentId
+
+    public void setDoctor(Staff doctor) {
+        this.doctor = doctor;
+    }
+
+    public void setPatient(Patient patient) {
+        this.patient = patient;
+    }
+
+    public void setAppointmentId(Long appointmentId) {
+        this.appointmentId = appointmentId;
+    }
+
     private String diagnosisNotes;
 
     public Appointment(Patient patientId, Staff doctorId, LocalDateTime dateTime, String reason) {
@@ -43,6 +58,15 @@ public class Appointment {
     }
 
     // Getters and setters... (same as before)
+
+    public Bill getBill() {
+        return bill;
+    }
+
+    public void setBill(Bill bill) {
+        this.bill = bill;
+    }
+
     public Long getAppointmentId() { return appointmentId; }
     public Patient getPatient() { return patient; }
     public Staff getDoctor() { return doctor; }
@@ -133,6 +157,14 @@ public class Appointment {
             wrapped.append(currentLine.toString().trim());
         }
         return wrapped.toString();
+    }
+
+    // Helper method for the rendered condition
+    public boolean isBillFullyPaid() {
+        return this.bill != null && this.bill.getPaymentStatus() == constants.PaymentStatus.PAID;
+    }
+    public boolean hasBill() {
+        return this.bill != null;
     }
 
 }

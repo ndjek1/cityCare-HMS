@@ -1,0 +1,98 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="jakarta.faces.facelets">
+
+   <style type="text/css">
+      .responsive-label {
+         font-weight: bold;
+      }
+      .full-width-input {
+         width: 100%;
+      }
+      .form-section {
+         margin-bottom: 20px;
+      }
+      .button-bar {
+         margin-top: 20px;
+         text-align: center;
+      }
+      .button-bar .ui-button {
+         margin: 0 5px;
+      }
+   </style>
+
+   <p:panel header="Register Patient" styleClass="form-section">
+      <p:growl id="message" showDetail="true"/>
+      <h:form id="staffRegForm">
+         <p:messages id="regMessages" showDetail="true" closable="true" style="margin-bottom:15px;" />
+
+         <p:fieldset legend="Account Credentials" toggleable="true" styleClass="form-section">
+            <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+                         columnClasses="ui-g-12 ui-md-3 ui-lg-3 responsive-label, ui-g-12 ui-md-9 ui-lg-9">
+
+               <p:outputLabel for="username" value="Username:" />
+               <p:inputText id="username" value="#{patientBean.username}" required="true"
+                            requiredMessage="Username is required." styleClass="full-width-input"/>
+
+               <p:outputLabel for="password" value="Password:" />
+               <p:password id="password" value="#{patientBean.password}" required="true"
+                           requiredMessage="Password is required." feedback="true" weakLabel="Weak" goodLabel="Good" strongLabel="Strong" styleClass="full-width-input"/>
+            </p:panelGrid>
+         </p:fieldset>
+
+         <p:fieldset legend="Personal Information" toggleable="true" styleClass="form-section">
+            <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+                         columnClasses="ui-g-12 ui-md-3 ui-lg-3 responsive-label, ui-g-12 ui-md-9 ui-lg-9">
+
+               <p:outputLabel for="fullName" value="Full Name:" />
+               <p:inputText id="fullName" value="#{patientBean.fullName}" required="true"
+                            requiredMessage="Full name is required." styleClass="full-width-input"/>
+
+               <p:outputLabel for="email" value="Email:" />
+               <p:inputText id="email" value="#{patientBean.email}" required="true" type="email"
+                            requiredMessage="Email is required." styleClass="full-width-input">
+                  <f:validateBean />
+               </p:inputText>
+
+               <p:outputLabel for="phone" value="Phone:" />
+               <p:inputMask id="phone" value="#{staffBean.phone}" mask="999 999 9999" >
+                  <f:validator validatorId="custom.ugandanPhoneValidator" />
+               </p:inputMask>
+
+               <p:outputLabel for="address" value="Address:" />
+               <p:inputTextarea id="address" value="#{patientBean.address}" rows="3" autoResize="false" styleClass="full-width-input"/>
+
+               <p:outputLabel for="dob" value="Date of Birth:" />
+               <p:datePicker id="dob" value="#{patientBean.birthday}" showIcon="true" yearRange="c-100:c" pattern="MM/dd/yyyy" styleClass="full-width-input"/>
+
+               <p:outputLabel for="gender" value="Gender:" />
+               <p:selectOneRadio id="gender" value="#{patientBean.gender}" layout="responsive" columns="3">
+                  <!-- layout="responsive" and columns="3" makes radio buttons flow nicely -->
+                  <f:selectItem itemLabel="Male" itemValue="Male"/>
+                  <f:selectItem itemLabel="Female" itemValue="Female"/>
+                  <f:selectItem itemLabel="Other" itemValue="Other"/>
+               </p:selectOneRadio>
+            </p:panelGrid>
+         </p:fieldset>
+
+         <p:fieldset legend="Professional Details" toggleable="true" styleClass="form-section">
+            <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+                         columnClasses="ui-g-12 ui-md-3 ui-lg-3 responsive-label, ui-g-12 ui-md-9 ui-lg-9">
+
+
+            </p:panelGrid>
+         </p:fieldset>
+
+         <div class="button-bar">
+            <p:commandButton value="Register Staff" action="#{patientBean.register}"
+                             update="staffRegForm message regMessages"
+                             process="@form" icon="pi pi-check" styleClass="form-button"/>
+            <p:commandButton value="Clear Form" type="button" onclick="PF('staffRegFormWidgetVar').reset(); return false;"
+                             icon="pi pi-refresh" styleClass="ui-button-secondary" process="@this"/>
+            <!-- Assign a widgetVar to the form for client-side reset, or call bean method -->
+         </div>
+      </h:form>
+   </p:panel>
+</ui:composition>

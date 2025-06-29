@@ -1,0 +1,113 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="jakarta.faces.facelets">
+
+    <style type="text/css"> /* Move to main CSS */
+    .admin-form .ui-panelgrid .ui-grid-responsive .ui-grid-col-3 {
+        font-weight: bold; padding: 0.5em;
+    }
+    .admin-form .ui-panelgrid .ui-grid-responsive .ui-grid-col-9 {
+        padding: 0.5em;
+    }
+    .admin-form .ui-inputtext,
+    .admin-form .ui-inputnumber,
+    .admin-form .ui-inputtextarea,
+    .admin-form .ui-selectonemenu {
+        width: 100% !important;
+    }
+    .button-bar { margin-top: 15px; }
+    </style>
+
+    <p:panel header="Manage Service Catalog" styleClass="admin-form">
+        <h:form id="serviceCatalogForm">
+            <p:messages id="catalogMessages" showDetail="true" closable="true" autoUpdate="true"/>
+
+            <p:fieldset legend="Add New Service Item" toggleable="true" collapsed="false">
+                <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+                             columnClasses="ui-g-12 ui-md-3, ui-g-12 ui-md-9">
+
+                    <p:outputLabel for="serviceCode" value="Service Code:"/>
+                    <p:inputText id="serviceCode" value="#{serviceCatalogAdminBean.newServiceCode}"
+                                required="true" requiredMessage="Service Code is required."
+                                 placeholder="e.g., CONSULT01, XRAY02"/>
+
+                    <p:outputLabel for="serviceName" value="Service Name:"/>
+                    <p:inputText id="serviceName" value="#{serviceCatalogAdminBean.newServiceName}"
+                                 required="true" requiredMessage="Service name is required."/>
+
+                    <p:outputLabel for="serviceCost" value="Default Cost (UGX):"/>
+                    <p:inputNumber id="serviceCost" value="#{serviceCatalogAdminBean.newServiceDefaultCost}"
+                                   required="true" requiredMessage="Default cost is required."
+                                   minValue="0.01" decimalPlaces="2" symbolPosition="p" symbol=" UGX"/>
+
+                    <p:outputLabel for="serviceCategory" value="Category:"/>
+                    <p:selectOneMenu id="serviceCategory" value="#{serviceCatalogAdminBean.newServiceCategory}"
+                                     required="true" requiredMessage="Category is required.">
+                        <f:selectItem itemLabel="--- Select Category ---" itemValue="#{null}" noSelectionOption="true"/>
+                        <f:selectItems value="#{serviceCatalogAdminBean.availableServiceCategories}" var="cat"
+                                       itemLabel="#{cat.displayName}" itemValue="#{cat}"/>
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="serviceDescription" value="Description (Optional):"/>
+                    <p:inputTextarea id="serviceDescription" value="#{serviceCatalogAdminBean.newServiceDescription}"
+                                     rows="3" autoResize="false"/>
+
+                    <!-- 'Active' status might be managed separately in an edit form, new ones usually active -->
+                    <!--
+                    <p:outputLabel for="serviceActive" value="Active:"/>
+                    <p:selectBooleanCheckbox id="serviceActive" value="#{serviceCatalogAdminBean.newServiceActive}"/>
+                    -->
+                </p:panelGrid>
+                <div class="button-bar">
+                    <p:commandButton value="Add Service" action="#{serviceCatalogAdminBean.addNewServiceCatalogItem}"
+                                     update="@form"
+                                     process="@form"
+                                     icon="pi pi-plus" styleClass="ui-button-success"/>
+                    <p:commandButton value="Clear Form" type="button" style="margin-left:10px;"
+                                     onclick="PF('serviceCatalogFormWidgetVar').reset(); return false;"
+                                     icon="pi pi-refresh" styleClass="ui-button-warning" process="@this"/>
+                    <!-- Add widgetVar="serviceCatalogFormWidgetVar" to the h:form -->
+                </div>
+            </p:fieldset>
+
+            <p:fieldset legend="Existing Service Items" toggleable="true" collapsed="true" style="margin-top:20px;">
+                <p:dataTable id="catalogTable" var="item" value="#{serviceCatalogAdminBean.catalogItems}"
+                             paginator="true" rows="10" emptyMessage="No services found in catalog." reflow="true">
+                    <p:column headerText="Code" sortBy="#{item.serviceCode}" filterBy="#{item.serviceCode}" filterMatchMode="contains">
+                        <h:outputText value="#{item.serviceCode}"/>
+                    </p:column>
+                    <p:column headerText="Name" sortBy="#{item.name}" filterBy="#{item.name}" filterMatchMode="contains">
+                        <h:outputText value="#{item.name}"/>
+                    </p:column>
+                    <p:column headerText="Category" sortBy="#{item.category}" filterBy="#{item.category}" filterMatchMode="exact">
+                        <f:facet name="filter">
+                            <p:selectOneMenu onchange="PF('catalogTableWidget').filter()" styleClass="custom-filter">
+                                <f:selectItem itemLabel="All" itemValue="#{null}" noSelectionOption="true" />
+                                <f:selectItems value="#{serviceCatalogAdminBean.availableServiceCategories}" var="catF" itemLabel="#{catF.displayName}" itemValue="#{catF}"/>
+                            </p:selectOneMenu>
+                        </f:facet>
+                        <h:outputText value="#{item.category.displayName}"/>
+                    </p:column>
+                    <p:column headerText="Default Cost" sortBy="#{item.defaultCost}" style="text-align:right;">
+                        <h:outputText value="#{item.defaultCost}">
+                            <f:convertNumber type="currency" currencySymbol="UGX "/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Active" sortBy="#{item.active}" style="text-align:center; width:80px;">
+                        <p:selectBooleanCheckbox value="#{item.active}" disabled="true"/> <!-- Display only -->
+                    </p:column>
+                    <p:column headerText="Actions" style="width:100px;text-align:center;">
+                        <p:commandButton icon="pi pi-pencil" title="Edit" styleClass="rounded-button ui-button-info"
+                                         disabled="true"/> <!-- Placeholder for edit functionality -->
+                        <p:commandButton icon="pi pi-power-off" title="#{item.active ? 'Deactivate' : 'Activate'}"
+                                         styleClass="rounded-button #{item.active ? 'ui-button-danger' : 'ui-button-success'}"
+                                         disabled="true" style="margin-left:5px;"/> <!-- Placeholder -->
+                    </p:column>
+                </p:dataTable>
+            </p:fieldset>
+
+        </h:form>
+    </p:panel>
+</ui:composition>

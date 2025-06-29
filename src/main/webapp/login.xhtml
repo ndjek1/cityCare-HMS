@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html">
+<h:head>
+    <title>Login Form</title>
+    <style>
+        .form-container {
+            width: 300px;
+            margin: 100px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        .form-button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .form-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</h:head>
+<h:body>
+    <div class="form-container">
+        <h:form>
+            <h2>Login</h2>
+            <h:outputLabel for="username" value="Username:" />
+            <h:inputText id="username" value="#{userAccountBean.username}" styleClass="form-input" />
+            <h:outputLabel for="password" value="Password:" />
+            <h:inputSecret id="password" value="#{userAccountBean.password}" styleClass="form-input" />
+
+            <h:commandButton value="Login" action="#{userAccountBean.login}" styleClass="form-button" />
+        </h:form>
+    </div>
+</h:body>
+</html>

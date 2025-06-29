@@ -1,0 +1,16 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="jakarta.faces.core"
+                xmlns:ui="jakarta.faces.facelets">
+
+   <p:panel header="System Dashboard (Content Fragment)">
+      <h:outputText value="This is the main dashboard content loaded dynamically!" />
+      <br/><br/>
+      <p:card>
+         <f:facet name="title">Simple Info</f:facet>
+         <h:outputText value="Number of active users: " />
+      </p:card>
+   </p:panel>
+
+</ui:composition>

@@ -26,7 +26,7 @@
 
   <!-- Welcome File -->
   <welcome-file-list>
-    <welcome-file>index.xhtml</welcome-file>
+    <welcome-file>login.xhtml</welcome-file>
   </welcome-file-list>
 
   <!-- Set Project Stage to Development for better error messages -->
@@ -39,6 +39,8 @@
   <listener>
     <listener-class>org.jboss.weld.environment.servlet.Listener</listener-class>
   </listener>
+
+
 
   <!-- BeanManager for CDI (Often needed by JSF or other frameworks to look up CDI beans) -->
   <resource-env-ref>

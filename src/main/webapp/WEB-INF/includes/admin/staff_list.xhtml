@@ -1,0 +1,85 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="jakarta.faces.facelets">
+
+    <h:form id="staffListForm">
+        <div class="card">
+            <!-- The toolbar is now outside the DataView, acting as a true header for the list -->
+            <p:toolbar style="margin-bottom: 1.5rem;">
+                <p:toolbarGroup>
+                    <p:commandButton value="Add New Staff" icon="pi pi-user-plus" styleClass="ui-button-success"
+                                     action="#{pageNavigationBean.navigateAddNewStaff}" />
+                </p:toolbarGroup>
+                <p:toolbarGroup align="right">
+                    <span class="p-input-icon-left">
+                        <i class="pi pi-search"></i>
+                        <p:inputText id="globalFilter" onkeyup="PF('staffDataViewWidget').filter()"
+                                     placeholder="Search Directory..." style="width: 300px;"/>
+                    </span>
+                </p:toolbarGroup>
+            </p:toolbar>
+
+            <!-- ==================== RICH LIST DATA VIEW ==================== -->
+            <p:dataView id="staffDataView" widgetVar="staffDataViewWidget"
+                        var="staff" value="#{staffListBean.staffList}"
+                        paginator="true" rows="8"
+                        layout="list"
+            paginatorPosition="bottom"
+            styleClass="staff-list-dataview"
+            emptyMessage="No staff members found."
+            paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+            rowsPerPageTemplate="8,16,24">
+
+            <p:dataViewListItem>
+                <div class="staff-list-item">
+
+                    <!-- 1. Avatar Section -->
+                    <p:avatar label="#{staffListBean.generateInitials(staff.name)}"
+                              shape="circle" size="xlarge"
+                              style="background-color: var(--primary-color); color: #ffffff; flex-shrink: 0;"/>
+
+                    <!-- 2. Main Details Section (fills available space) -->
+                    <div class="staff-details">
+                        <div class="staff-primary-info">
+                            <span class="staff-name">#{staff.name}</span>
+                            <p:tag value="#{staff.role}" styleClass="#{staffListBean.getRoleStyleClass(staff.role)}" />
+                        </div>
+                        <div class="staff-contact-info">
+                            <span><i class="pi pi-envelope"></i> #{staff.email}</span>
+                            <span><i class="pi pi-phone"></i> #{staff.phone}</span>
+                        </div>
+                    </div>
+
+                    <!-- 3. Actions Section -->
+                    <div class="staff-actions">
+                        <p:commandButton title="Edit" icon="pi pi-pencil"
+                                         styleClass="ui-button-text ui-button-secondary rounded-button"
+                                         action="#{pageNavigationBean.navigateToProfile()}"/>
+
+                        <p:commandButton title="Delete" icon="pi pi-trash"
+                                         styleClass="ui-button-text ui-button-danger rounded-button"
+                                         actionListener="#{staffListBean.deleteStaff(staff)}"
+                                         process="@this" update="@form:growl @form:staffDataView">
+                            <p:confirm header="Confirm Deletion"
+                                       message="Delete staff member #{staff.name}?"
+                                       icon="pi pi-exclamation-triangle" />
+                        </p:commandButton>
+                    </div>
+
+                </div>
+            </p:dataViewListItem>
+        </p:dataView>
+    </div>
+
+    <!-- Global Confirmation Dialog -->
+    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="400">
+        <p:commandButton value="Yes, Delete" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+        <p:commandButton value="Cancel" type="button" styleClass="ui-confirmdialog-no ui-button-secondary" icon="pi pi-times" />
+    </p:confirmDialog>
+
+    <!-- Global Growl for feedback messages -->
+    <p:growl id="growl" showDetail="true" life="4000"/>
+</h:form>
+        </ui:composition>

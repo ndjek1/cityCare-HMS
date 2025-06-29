@@ -2,11 +2,14 @@ package models;
 
 import jakarta.persistence.*;
 import constants.UserRole;
+import org.hibernate.annotations.Where;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
+@Where(clause = "is_deleted = false")
 public class Patient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,7 +17,7 @@ public class Patient {
     private String name;
     private final UserRole role = UserRole.PATIENT; // Fixed role
 
-    private String dateOfBirth;
+    private Date dateOfBirth;
     private String address;
     private String phoneNumber;
     private String email;
@@ -25,26 +28,38 @@ public class Patient {
     )
     @Column(name = "notes") // Name for the column storing the LocalDateTime itself
     private List<String> medicalHistory;
+    @Column(name = "is_deleted")
+    private boolean deleted =  false;
     private String insuranceDetails;
 
-    public Patient(String name, String dateOfBirth, String address, String phoneNumber, String email) {
+    public Patient(String name, Date dateOfBirth, String address, String phoneNumber, String email) {
         this.name = name;
         this.dateOfBirth = dateOfBirth;
         this.address = address;
         this.phoneNumber = phoneNumber;
         this.email = email;
         this.medicalHistory = new ArrayList<>();
+        this.deleted = false;
     }
 
     public Patient() {
 
     }
 
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
     // Getters
     public Long getPatientId() { return patientId; }
     public String getName() { return name; }
     public UserRole getRole() { return role; }
-    public String getDateOfBirth() { return dateOfBirth; }
+    public Date getDateOfBirth() { return dateOfBirth; }
     public String getAddress() { return address; }
     public String getPhoneNumber() { return phoneNumber; }
     public String getEmail() { return email; }
@@ -53,7 +68,7 @@ public class Patient {
 
     // Setters for mutable fields
     public void setName(String name) { this.name = name; }
-    public void setDateOfBirth(String dateOfBirth) { this.dateOfBirth = dateOfBirth; }
+    public void setDateOfBirth(Date dateOfBirth) { this.dateOfBirth = dateOfBirth; }
     public void setAddress(String address) { this.address = address; }
     public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
     public void setEmail(String email) { this.email = email; }

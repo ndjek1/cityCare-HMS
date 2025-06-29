@@ -1,0 +1,141 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="jakarta.faces.facelets">
+
+
+
+
+   <!-- ===== Display / Edit Wrapper ===== -->
+   <p:card styleClass="profile-card shadow-2" header="My Profile">
+      <h:form id="profileForm" styleClass="ui-fluid">
+
+         <!-- Global Messages -->
+         <p:messages id="profileMessages" showDetail="true" closable="true" autoUpdate="true"/>
+
+         <!-- IF NO STAFF LOGGED IN -->
+         <p:outputPanel rendered="#{staffProfileBean.currentStaff == null}">
+            <p:staticMessage severity="warn" summary="Profile Not Available"
+                             detail="Please log in as a Staff to view your profile."/>
+         </p:outputPanel>
+
+         <!-- ================= Display Mode ================= -->
+         <p:outputPanel id="profileDisplayPanel"
+                        rendered="#{staffProfileBean.currentStaff != null and !staffProfileBean.editMode}">
+
+            <div class="grid text-sm">
+               <div class="col-12 md:col-6 lg:col-4 pf-label">Full Name:</div>
+               <div class="col-12 md:col-6 lg:col-8 pf-field">#{staffProfileBean.currentStaff.name}</div>
+
+               <div class="col-12 md:col-6 lg:col-4 pf-label">Username:</div>
+               <div class="col-12 md:col-6 lg:col-8 pf-field">#{staffProfileBean.currentUsername}</div>
+
+               <div class="col-12 md:col-6 lg:col-4 pf-label">Email:</div>
+               <div class="col-12 md:col-6 lg:col-8 pf-field">#{staffProfileBean.currentStaff.email}</div>
+
+               <div class="col-12 md:col-6 lg:col-4 pf-label">Phone:</div>
+               <div class="col-12 md:col-6 lg:col-8 pf-field">#{staffProfileBean.currentStaff.phone}</div>
+
+               <div class="col-12 md:col-6 lg:col-4 pf-label">Address:</div>
+               <div class="col-12 md:col-6 lg:col-8 pf-field">#{staffProfileBean.currentStaff.address}</div>
+
+               <div class="col-12 md:col-6 lg:col-4 pf-label">Date of Birth:</div>
+               <div class="col-12 md:col-6 lg:col-8 pf-field">#{staffProfileBean.currentStaff.dateOfBirth}</div>
+            </div>
+
+            <div class="button-bar text-right mt-4">
+               <p:commandButton value="Edit Profile" icon="pi pi-pencil"
+                                action="#{staffProfileBean.toggleEditMode}"
+                                update="@form" process="@this" />
+            </div>
+         </p:outputPanel>
+
+         <!-- ================= Edit Mode ================= -->
+         <p:outputPanel id="profileEditPanel"
+                        rendered="#{staffProfileBean.currentStaff != null and staffProfileBean.editMode}">
+
+            <!-- Personal Information -->
+            <p:fieldset legend="Personal Information">
+               <div class="grid">
+                  <div class="col-12 md:col-4 pf-label">
+                     <p:outputLabel for="editName" value="Full Name:" />
+                  </div>
+                  <div class="col-12 md:col-8">
+                     <p:inputText id="editName" value="#{staffProfileBean.currentStaff.name}" required="true" />
+                  </div>
+
+                  <div class="col-12 md:col-4 pf-label">
+                     <p:outputLabel for="editEmail" value="Email:" />
+                  </div>
+                  <div class="col-12 md:col-8">
+                     <p:inputText id="editEmail" value="#{staffProfileBean.currentStaff.email}" required="true" type="email">
+                        <f:validateBean />
+                     </p:inputText>
+                  </div>
+
+                  <div class="col-12 md:col-4 pf-label">
+                     <p:outputLabel for="editPhone" value="Phone:" />
+                  </div>
+                  <div class="col-12 md:col-8">
+                     <p:inputMask id="editPhone" value="#{staffProfileBean.currentStaff.phone}" mask="999 999 9999" >
+                        <f:validator validatorId="custom.ugandanPhoneValidator" />
+                     </p:inputMask>
+                  </div>
+
+                  <div class="col-12 md:col-4 pf-label">
+                     <p:outputLabel for="editAddress" value="Address:" />
+                  </div>
+                  <div class="col-12 md:col-8">
+                     <p:inputText id="editAddress" value="#{staffProfileBean.currentStaff.address}" />
+                  </div>
+
+                  <div class="col-12 md:col-4 pf-label">
+                     <p:outputLabel for="editDob" value="Date of Birth:" />
+                  </div>
+                  <div class="col-12 md:col-8">
+                     <p:datePicker id="editDob" value="#{staffProfileBean.currentStaff.dateOfBirth}"
+                                   showIcon="true" pattern="MM/dd/yyyy" yearRange="c-100:c" />
+                  </div>
+               </div>
+            </p:fieldset>
+
+            <!-- Login Credentials -->
+            <p:fieldset legend="Login Credentials (Optional)" styleClass="mt-3">
+               <div class="grid">
+                  <div class="col-12 md:col-4 pf-label">
+                     <p:outputLabel for="newUsername" value="New Username:" />
+                  </div>
+                  <div class="col-12 md:col-8">
+                     <p:inputText id="newUsername" value="#{staffProfileBean.newUsername}" placeholder="Current: #{staffProfileBean.currentUsername}" />
+                  </div>
+
+                  <div class="col-12 md:col-4 pf-label">
+                     <p:outputLabel for="newPassword" value="New Password:" />
+                  </div>
+                  <div class="col-12 md:col-8">
+                     <p:password id="newPassword" value="#{staffProfileBean.newPassword}" feedback="true" weakLabel="Weak" goodLabel="Good" strongLabel="Strong" match="confirmNewPassword" />
+                  </div>
+
+                  <div class="col-12 md:col-4 pf-label">
+                     <p:outputLabel for="confirmNewPassword" value="Confirm New Password:" />
+                  </div>
+                  <div class="col-12 md:col-8">
+                     <p:password id="confirmNewPassword" value="#{staffProfileBean.confirmNewPassword}" feedback="false" />
+                  </div>
+               </div>
+            </p:fieldset>
+
+            <!-- Action Buttons -->
+            <div class="button-bar text-right mt-4">
+               <p:commandButton value="Save Changes" icon="pi pi-save" styleClass="ui-button-success"
+                                action="#{staffProfileBean.saveProfileChanges}" update="@form" process="@form" />
+
+               <p:commandButton value="Cancel" icon="pi pi-times" styleClass="ui-button-secondary"
+                                action="#{staffProfileBean.toggleEditMode}" update="@form"
+                                process="@this" immediate="true" />
+            </div>
+         </p:outputPanel>
+      </h:form>
+   </p:card>
+</ui:composition>

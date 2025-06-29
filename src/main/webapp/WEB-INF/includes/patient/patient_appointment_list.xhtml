@@ -1,0 +1,67 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="jakarta.faces.facelets">
+
+   <p:panel header="Appoinments">
+      <h:form id="appointmentListForm">
+         <p:messages id="appointmentMessages" globalOnly="false" showDetail="true" closable="true"/>
+
+         <p:toolbar>
+            <p:toolbarGroup>
+               <p:commandButton value="Add New Patient" icon="pi pi-user-plus"
+                                action="#{pageNavigationBean.navigateAddNewPatient}" />
+               <p:commandButton value="Refresh List" action="#{patientListBean.refreshList}"
+                                update="appointmentTable" icon="pi pi-refresh"/>
+            </p:toolbarGroup>
+         </p:toolbar>
+
+         <p:dataTable id="appointmentTable" var="aptmnt" value="#{appointmentListBean.appointmentsList}"
+                      emptyMessage="No staff members found."
+                      style="margin-top:10px;"
+                      reflow="true">
+            <!-- Added reflow="true" for better responsiveness -->
+
+            <p:column headerText="ID"  filterMatchMode="contains" style="width:5%;">
+               <h:outputText value="#{aptmnt.appointmentId}" />
+            </p:column>
+
+            <p:column headerText="Doctor Name"  filterMatchMode="contains">
+               <h:outputText value="#{aptmnt.doctor.name}" />
+            </p:column>
+
+            <p:column headerText="Date time" filterMatchMode="contains">
+               <h:outputText value="#{aptmnt.dateTime}" />
+            </p:column>
+            <p:column headerText="Status" filterMatchMode="contains">
+               <h:outputText value="#{aptmnt.status}" />
+            </p:column>
+            <p:column headerText="Actions" style="width:10%; text-align:center;">
+               <p:commandButton value="Reschedule" title="Reschedule Appointment"
+                                action="#{appointmentRescheduleBean.prepareReschedule(aptmnt.appointmentId)}"
+                                process="@this"
+                                update=":pageContentForm:mainContentPanel"
+               styleClass="ui-button-warning" style="margin-right: .5em;">
+                  <p:confirm header="Confirmation" message="Are you sure you want to Reschedule ?" icon="pi pi-exclamation-triangle"/>
+               <!-- This button will call prepareReschedule, then JSF will navigate (implicitly via pageNavigationBean if prepareReschedule sets it) -->
+              </p:commandButton>
+               <p:commandButton  value="Cancel" title="Cancel" process="@this" update="appointmentTable appointmentMessages"
+                                action="#{appointmentListBean.cancelAppointment(aptmnt)}" styleClass="ui-button-secondary"
+                                rendered="#{aptmnt.status.toString() != 'CANCELLED'  }"
+               >
+                  <p:confirm header="Confirmation" message="Are you sure you want to delete ?" icon="pi pi-exclamation-triangle"/>
+               </p:commandButton>
+            </p:column>
+
+         </p:dataTable>
+
+         <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+            <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check"/>
+            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-secondary" icon="pi pi-times"/>
+         </p:confirmDialog>
+
+      </h:form>
+   </p:panel>
+
+</ui:composition>

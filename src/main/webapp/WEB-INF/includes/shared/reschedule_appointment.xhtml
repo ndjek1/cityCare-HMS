@@ -1,0 +1,78 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="jakarta.faces.facelets">
+
+    <!-- Include similar styles as book_appointment_content.xhtml -->
+    <style type="text/css"> /* ... */ </style>
+
+    <p:panel header="Reschedule Appointment" styleClass="appointment-form">
+        <h:form id="rescheduleAppointmentForm">
+            <p:messages id="rescheduleMessages" showDetail="true" closable="true" autoUpdate="true"/>
+
+            <p:outputPanel rendered="#{appointmentRescheduleBean.appointmentToReschedule == null}">
+                <p:outputLabel value="No appointment selected or appointment not found." style="color:red; font-weight:bold;"/>
+            </p:outputPanel>
+
+            <p:outputPanel rendered="#{appointmentRescheduleBean.appointmentToReschedule != null}">
+                <p:fieldset legend="Current Appointment Details">
+                    <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank">
+                        <h:outputText value="Patient:" style="font-weight:bold;"/>
+                        <h:outputText value="#{appointmentRescheduleBean.appointmentToReschedule.patient.name}"/>
+
+                        <h:outputText value="Current Doctor:" style="font-weight:bold;"/>
+                        <h:outputText value="#{appointmentRescheduleBean.appointmentToReschedule.doctor.name}"/>
+
+                        <h:outputText value="Current Date  Time:" style="font-weight:bold;"/>
+                        <h:outputText value="#{appointmentRescheduleBean.formatLocalDateTime(appointmentRescheduleBean.appointmentToReschedule.dateTime)}"/>
+                    </p:panelGrid>
+                </p:fieldset>
+
+                <p:fieldset legend="Select New Schedule" style="margin-top:20px;">
+                    <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+
+                        <p:outputLabel for="newDoctorSelect" value="New Doctor (optional):"/>
+                        <p:selectOneMenu id="newDoctorSelect" value="#{appointmentRescheduleBean.newSelectedDoctorId}"
+                                         filter="true" filterMatchMode="contains">
+                            <f:selectItem itemLabel="--- Keep Current Doctor ---" itemValue="#{appointmentRescheduleBean.appointmentToReschedule.doctor.staffId}" noSelectionOption="false"/> <!-- Preselects current -->
+                            <f:selectItems value="#{appointmentRescheduleBean.availableDoctors}" var="doc"
+                                           itemLabel="#{doc.name} (#{doc.department})" itemValue="#{doc.staffId}"/>
+                            <p:ajax event="change" listener="#{appointmentRescheduleBean.onNewDoctorOrDateChange}" update="newTimeSlotSelect rescheduleMessages" />
+                        </p:selectOneMenu>
+
+                        <p:outputLabel for="newAppointmentDate" value="New Date:"/>
+                        <p:datePicker id="newAppointmentDate" value="#{appointmentRescheduleBean.newAppointmentDate}"
+                                      showIcon="true" required="true" requiredMessage="New date is required." mindate="#{cc.attrs.today}">
+                            <p:ajax event="dateSelect" listener="#{appointmentRescheduleBean.onNewDoctorOrDateChange}" update="newTimeSlotSelect rescheduleMessages" />
+                        </p:datePicker>
+
+                        <p:outputLabel for="newTimeSlotSelect" value="New Time Slot:" rendered="#{not empty appointmentRescheduleBean.newAvailableTimeSlots}"/>
+                        <p:selectOneMenu id="newTimeSlotSelect" value="#{appointmentRescheduleBean.newAppointmentTime}"
+                                         required="#{not empty appointmentRescheduleBean.newAvailableTimeSlots}"
+                                         requiredMessage="New time slot is required."
+                                         rendered="#{not empty appointmentRescheduleBean.newAvailableTimeSlots}">
+                            <f:selectItem itemLabel="--- Select New Time ---" itemValue="#{null}" noSelectionOption="true"/>
+                            <f:selectItems value="#{appointmentRescheduleBean.newAvailableTimeSlots}" var="slot"
+                                           itemLabel="#{appointmentRescheduleBean.formatLocalTime(slot)}" itemValue="#{slot}"/>
+                            <f:converter converterId="localTimeConverter"/> <!-- Ensure converter is available -->
+                        </p:selectOneMenu>
+                        <p:outputPanel rendered="#{empty appointmentRescheduleBean.newAvailableTimeSlots and appointmentRescheduleBean.newSelectedDoctorId != null and appointmentRescheduleBean.newAppointmentDate != null}">
+                            <h:outputText value="No available slots for the selected new doctor and date." style="color:orange;"/>
+                        </p:outputPanel>
+                    </p:panelGrid>
+                </p:fieldset>
+
+                <div style="margin-top: 20px; text-align: center;">
+                    <p:commandButton value="Confirm Reschedule" action="#{appointmentRescheduleBean.confirmReschedule}"
+                                     process="@form"
+                                     update="@form :pageContentForm:mainContentPanel" icon="pi pi-check" styleClass="ui-button-success"
+                                     disabled="#{appointmentRescheduleBean.appointmentToReschedule == null}"/>
+                    <p:commandButton value="Cancel" action="#{pageNavigationBean.navigateToPatientAppointments}"
+                    icon="pi pi-times" styleClass="ui-button-warning" process="@this" immediate="true"
+                    update=":pageContentForm:mainContentPanel" style="margin-left: .5em;"/>
+                </div>
+            </p:outputPanel> <!-- End conditional panel -->
+        </h:form>
+    </p:panel>
+</ui:composition>

@@ -1,0 +1,137 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:c="jakarta.tags.core">
+
+
+   <!-- Bill Generation Dialog -->
+   <p:dialog header="Generate Bill for Appointment"
+             widgetVar="billGenerationDialogWidget"
+             id="billGenerationDialog"
+             modal="true" closable="true" resizable="false"
+             width="800" showEffect="fade" hideEffect="fade" appendTo="@(body)">
+
+      <h:form id="billDialogForm">
+         <p:messages id="billDialogMessages" showDetail="true" closable="true" style="margin-bottom:10px;"/>
+
+         <p:outputPanel id="billDialogContentPanel">
+            <p:outputPanel rendered="#{billingBean.appointmentDetails == null}">
+               <p:staticMessage severity="warn" summary="No Appointment Loaded"
+                                detail="Please select an appointment from the list to generate a bill."/>
+            </p:outputPanel>
+
+            <p:outputPanel rendered="#{billingBean.appointmentDetails != null and billingBean.generatedBill == null}">
+               <!-- Display Appointment Info -->
+               <p:fieldset legend="Appointment Details (ID: #{billingBean.appointmentDetails.appointmentId})">
+                  <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank">
+                     <h:outputText value="Patient:" style="font-weight:bold;"/>
+                     <h:outputText value="#{billingBean.billToPatient.name}"/>
+
+                     <h:outputText value="Doctor:" style="font-weight:bold;"/>
+                     <h:outputText value="#{billingBean.appointmentDetails.doctor.name}"/>
+
+                     <h:outputText value="Date &amp; Time:" style="font-weight:bold;"/>
+                     <h:outputText value="#{billingBean.appointmentDetails.dateTime}">
+                        <f:convertDateTime pattern="MMM dd, yyyy hh:mm a" type="localDateTime"/>
+                     </h:outputText>
+                  </p:panelGrid>
+               </p:fieldset>
+
+               <!-- Add Service Items from Catalog -->
+               <p:fieldset legend="Add Services to Bill" style="margin-top:15px;">
+                  <p:panelGrid columns="3" styleClass="ui-noborder ui-fluid" cellpadding="5">
+                     <p:selectOneMenu id="catalogServiceSelect" value="#{billingBean.selectedCatalogServiceId}"
+                                      filter="true" filterMatchMode="contains" panelStyle="width:250px">
+                        <f:selectItem itemLabel="--- Select Service ---" itemValue="#{null}" noSelectionOption="true"/>
+                        <f:selectItems value="#{billingBean.availableCatalogServices}" var="svc"
+                                       itemLabel="#{svc.name} (UGX #{svc.defaultCost})" itemValue="#{svc.serviceId}"/>
+                     </p:selectOneMenu>
+
+                     <p:inputNumber id="serviceQuantity" value="#{billingBean.quantityForSelectedItem}"
+                                    minValue="1" decimalPlaces="0" style="width:80px;"/>
+
+                     <p:commandButton value="Add Item" icon="pi pi-plus"
+                                      actionListener="#{billingBean.addSelectedCatalogItemToBill}"
+                                      update="serviceItemsTable totalAmountPanel billDialogMessages"
+                                      process="@this catalogServiceSelect serviceQuantity"/>
+                  </p:panelGrid>
+               </p:fieldset>
+
+               <!-- Current Bill Items Table -->
+               <p:fieldset legend="Current Bill Items" style="margin-top:15px;">
+                  <p:dataTable id="serviceItemsTable" var="item" value="#{billingBean.currentBillItems}"
+                               emptyMessage="No bill items added yet.">
+                     <p:column headerText="Service Name">
+                        <h:outputText value="#{item.serviceName}"/>
+                     </p:column>
+                     <p:column headerText="Unit Cost" style="text-align:right;">
+                        <h:outputText value="#{item.costAtTimeOfBilling}">
+                           <f:convertNumber type="currency" currencySymbol="UGX "/>
+                        </h:outputText>
+                     </p:column>
+                     <p:column headerText="Qty" style="text-align:center; width: 60px;">
+                        <h:outputText value="#{item.quantity}"/>
+                     </p:column>
+                     <p:column headerText="Total" style="text-align:right;">
+                        <h:outputText value="#{item.totalCost}">
+                           <f:convertNumber type="currency" currencySymbol="UGX "/>
+                        </h:outputText>
+                     </p:column>
+                     <p:column style="width:40px;text-align:center">
+                        <p:commandButton icon="pi pi-times"
+                                         actionListener="#{billingBean.removeBillItem(item)}"
+                                         update="serviceItemsTable totalAmountPanel" process="@this"
+                                         title="Remove Item" styleClass="ui-button-danger rounded-button ui-button-icon-only"/>
+                     </p:column>
+                  </p:dataTable>
+               </p:fieldset>
+               <p:outputPanel id="totalAmountPanel" style="text-align:right; font-weight:bold; margin-top:10px; font-size:1.2em;">
+                  Total Bill Amount: <h:outputText value="#{billingBean.totalBillAmount}">
+                  <f:convertNumber type="currency" currencySymbol="UGX "/>
+               </h:outputText>
+               </p:outputPanel>
+            </p:outputPanel> <!-- End of section before bill is generated -->
+
+            <!-- Display Generated Bill Info -->
+            <p:outputPanel id="generatedBillDetailsPanel" rendered="#{billingBean.generatedBill != null}" style="margin-top:20px;">
+               <p:fieldset legend="Bill Generated Successfully (ID: #{billingBean.generatedBill.billId})">
+                  <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank">
+                     <h:outputText value="Patient:" style="font-weight:bold;"/>
+                     <h:outputText value="#{billingBean.generatedBill.patient.name}"/>
+                     <h:outputText value="Bill Date:" style="font-weight:bold;"/>
+                     <h:outputText value="#{billingBean.generatedBill.billDate}">
+                        <f:convertDateTime pattern="MMM dd, yyyy hh:mm a" type="localDateTime"/>
+                     </h:outputText>
+                     <h:outputText value="Total Amount:" style="font-weight:bold;"/>
+                     <h:outputText value="#{billingBean.generatedBill.totalAmount}">
+                        <f:convertNumber type="currency" currencySymbol="UGX "/>
+                     </h:outputText>
+                     <h:outputText value="Payment Status:" style="font-weight:bold;"/>
+                     <h:outputText value="#{billingBean.generatedBill.paymentStatus}" style="font-weight:bold; color: #{billingBean.generatedBill.paymentStatus == 'PAID' ? 'green' : 'orange'};"/>
+                  </p:panelGrid>
+
+               </p:fieldset>
+            </p:outputPanel>
+         </p:outputPanel> <!-- End billDialogContentPanel -->
+
+
+         <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix" style="padding-top:15px; margin-top:10px; border-top: 1px solid #ddd;">
+            <p:commandButton value="Generate Bill"
+                             action="#{billingBean.generateBillAction}"
+                             icon="pi pi-save"
+                             update="billDialogContentPanel billDialogMessages"
+                             rendered="#{billingBean.generatedBill == null and billingBean.appointmentDetails != null}"
+                             styleClass="ui-button-success"
+                             process="billDialogForm"
+                             onstart="console.log('Generate Bill AJAX started...');"
+                             onsuccess="console.log('Generate Bill AJAX success.');"
+                             onerror="console.log('Generate Bill AJAX error on client.');" />
+            <p:commandButton value="Close" type="button" onclick="PF('billGenerationDialogWidget').hide();"
+                             icon="pi pi-times" styleClass="ui-button-secondary"/>
+         </div>
+      </h:form>
+   </p:dialog>
+
+</ui:composition>

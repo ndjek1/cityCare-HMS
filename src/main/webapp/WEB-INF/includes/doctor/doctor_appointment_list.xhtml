@@ -1,0 +1,128 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:c="jakarta.tags.core"> <!-- For JSTL core tags like c:if, if needed for complex conditions beyond 'rendered' -->
+
+   <!-- You can keep your styles here or move to an external CSS -->
+   <style type="text/css">
+      .responsive-label { font-weight: bold; }
+      .full-width-input { width: 100%; }
+      .form-section { margin-bottom: 20px; }
+      .button-bar { margin-top: 20px; text-align: center; }
+      .button-bar .ui-button { margin: 0 5px; }
+      .appointment-table .ui-column-title { font-weight: bold; } /* Example */
+   </style>
+
+   <p:panel header="My Appointments - Dr. #{userAccountBean.currentUserName}">
+      <h:form id="doctorAppointmentsPageForm"> <!-- Main form for this view's content -->
+         <p:messages id="pageMessages" globalOnly="true" showDetail="true" closable="true" autoUpdate="true"/>
+
+         <p:toolbar style="margin-bottom:10px;">
+            <p:toolbarGroup>
+               <p:commandButton value="Refresh All Lists" action="#{doctorAppointmentsBean.refreshAppointments}"
+                                update="scheduledAppointmentsPanel completedAppointmentsPanel" icon="pi pi-refresh"/>
+            </p:toolbarGroup>
+         </p:toolbar>
+
+         <!-- Scheduled Appointments Section -->
+         <p:outputPanel id="scheduledAppointmentsPanel">
+            <p:fieldset legend="Scheduled / Upcoming Appointments (#{doctorAppointmentsBean.scheduledAppointments.size()})"
+                        toggleable="true" collapsed="false" styleClass="form-section">
+               <p:dataTable id="scheduledAppointmentsTable" var="apt" value="#{doctorAppointmentsBean.scheduledAppointments}"
+                            emptyMessage="No scheduled appointments found." rows="5" paginator="true"
+                            paginatorPosition="bottom" reflow="true" styleClass="appointment-table">
+
+                  <p:column headerText="Appt. ID"  style="width:7%;">
+                     <h:outputText value="#{apt.appointmentId}"/>
+                  </p:column>
+                  <p:column headerText="Patient" >
+                     <h:outputText value="#{apt.patient.name}"/>
+                  </p:column>
+                  <p:column headerText="Date &amp; Time"  style="width:20%;">
+                     <h:outputText value="#{apt.dateTime}">
+                        <f:convertDateTime pattern="MMM dd, yyyy hh:mm a" type="localDateTime"/>
+                     </h:outputText>
+                  </p:column>
+                  <p:column headerText="Reason" >
+                     <h:outputText value="#{apt.reason}" title="#{apt.reason}"/>
+                  </p:column>
+                  <p:column headerText="Status" sortBy="#{apt.status}" style="width:10%;">
+                     <h:outputText value="#{apt.status}"/>
+                  </p:column>
+                  <p:column headerText="Actions" style="width:200px; text-align:center;">
+                     <p:commandButton value="Record Diagnosis" icon="pi pi-file-edit"
+                                      actionListener="#{diagnosisEntryBean.prepareForDiagnosis(apt)}"
+                                      oncomplete="PF('diagnosisDialogWidget').show()"
+                                      process="@this"
+                                      update="@widgetVar(diagnosisDialogWidget)"
+                     rendered="#{apt.status == 'SCHEDULED'}"
+                     styleClass="ui-button-info" style="margin-right:5px;"/>
+                     <p:commandButton value="Cancel Appt" icon="pi pi-times-circle"
+                                      action="#{doctorAppointmentsBean.cancelAppointment(apt)}"
+                                      update="@(#scheduledAppointmentsPanel) @(#completedAppointmentsPanel) @(#pageMessages)"
+                                      process="@this"
+                                      rendered="#{apt.status == 'SCHEDULED'}"
+                                      styleClass="ui-button-danger">
+                        <p:confirm header="Confirmation" message="Cancel appointment for #{apt.patient.name} on #{apt.dateTime.toLocalDate()}?" icon="pi pi-exclamation-triangle"/>
+                     </p:commandButton>
+                  </p:column>
+               </p:dataTable>
+            </p:fieldset>
+         </p:outputPanel>
+
+         <!-- Completed Appointments Section -->
+         <p:outputPanel id="completedAppointmentsPanel" style="margin-top: 20px;">
+            <p:fieldset legend="Completed Appointments (#{doctorAppointmentsBean.completedAppointments.size()})"
+                        toggleable="true" collapsed="true" styleClass="form-section">
+               <p:dataTable id="completedAppointmentsTable" var="apt" value="#{doctorAppointmentsBean.completedAppointments}"
+                            emptyMessage="No completed appointments found." rows="5" paginator="true"
+                            paginatorPosition="bottom" reflow="true" styleClass="appointment-table">
+                  <p:column headerText="Appt. ID" sortBy="#{apt.appointmentId}" style="width:7%;">
+                     <h:outputText value="#{apt.appointmentId}"/>
+                  </p:column>
+                  <p:column headerText="Patient" >
+                     <h:outputText value="#{apt.patient.name}"/>
+                  </p:column>
+                  <p:column headerText="Date &amp; Time"  style="width:20%;">
+                     <h:outputText value="#{apt.dateTime}">
+                        <f:convertDateTime pattern="MMM dd, yyyy hh:mm a" type="localDateTime"/>
+                     </h:outputText>
+                  </p:column>
+                  <p:column headerText="Diagnosis Notes" >
+                     <h:outputText value="#{apt.diagnosisNotes}" title="#{apt.diagnosisNotes}"
+                                   style="white-space: pre-wrap; display: block; max-height: 60px; overflow-y: auto;"/>
+                  </p:column>
+                  <p:column headerText="Status" style="width:10%;">
+                     <h:outputText value="#{apt.status}"/>
+                  </p:column>
+                  <p:column headerText="Actions" style="width:120px; text-align:center;">
+                     <p:commandButton value="Generate Bill" icon="pi pi-file-excel"
+                                      actionListener="#{billingBean.prepareBillDialog(apt)}"
+                                      oncomplete="PF('billGenerationDialogWidget').show()"
+                                      process="@this"
+                                      update="@widgetVar(billGenerationDialogWidget)"
+                     styleClass="ui-button-success"
+                     >
+                     <!-- Show only if appointment is COMPLETED and bill is not yet fully paid -->
+                     <!-- You'll need an apt.isBillFullyPaid() method or similar logic -->
+                  </p:commandButton>
+                  </p:column>
+               </p:dataTable>
+            </p:fieldset>
+         </p:outputPanel>
+
+         <!-- Global Confirmation Dialog (can be reused) -->
+         <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+            <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check"/>
+            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-secondary" icon="pi pi-times"/>
+         </p:confirmDialog>
+
+      </h:form> <!-- End of doctorAppointmentsPageForm -->
+
+   </p:panel> <!-- End of main panel -->
+
+
+
+</ui:composition>

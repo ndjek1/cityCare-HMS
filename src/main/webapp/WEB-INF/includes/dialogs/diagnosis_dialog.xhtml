@@ -1,0 +1,58 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:c="jakarta.tags.core">
+   <p:dialog header="Record Diagnosis" widgetVar="diagnosisDialogWidget" id="diagnosisDialog"
+             modal="true" closable="true" resizable="false" width="600"
+             showEffect="fade" hideEffect="fade" appendTo="@(body)"
+             onShow="#{diagnosisEntryBean.dialogReady ? '' : 'PF(\'diagnosisDialogWidget\').hide(); alert(\'Dialog not ready. Please try again.\');'}">
+   <!-- Added onShow to prevent showing if not ready, though less likely now -->
+   <h:form id="diagnosisDialogForm">
+      <p:outputPanel id="diagnosisDialogContentPanel">
+         <p:messages id="diagMessages" showDetail="true" closable="true" />
+         Generated code
+         <p:outputPanel rendered="#{!diagnosisEntryBean.dialogReady}" style="padding:20px;">
+            <p:staticMessage severity="warn" summary="Error" detail="No appointment loaded for diagnosis. Please close and try again."/>
+         </p:outputPanel>
+
+         <p:outputPanel rendered="#{diagnosisEntryBean.dialogReady}">
+            <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank" style="margin-bottom:10px;">
+               <h:outputText value="Appointment ID:" style="font-weight:bold;"/>
+               <h:outputText value="#{diagnosisEntryBean.appointmentIdToDiagnose}"/>
+
+               <h:outputText value="Patient:" style="font-weight:bold;"/>
+               <h:outputText value="#{diagnosisEntryBean.patientNameForDisplay}"/>
+
+               <h:outputText value="Doctor:" style="font-weight:bold;"/>
+               <h:outputText value="#{diagnosisEntryBean.doctorNameForDisplay}"/>
+
+               <h:outputText value="Date &amp; Time:" style="font-weight:bold;"/>
+               <h:outputText value="#{diagnosisEntryBean.appointmentDateTimeForDisplay}">
+                  <f:convertDateTime pattern="MM/dd/yyyy hh:mm a" type="localDateTime"/>
+               </h:outputText>
+            </p:panelGrid>
+
+            <p:outputLabel for="diagNotesInput" value="Diagnosis Notes:" style="font-weight:bold;"/>
+            <p:inputTextarea id="diagNotesInput" value="#{diagnosisEntryBean.diagnosisNotes}" rows="6"
+                             required="true" requiredMessage="Diagnosis notes are required."
+                             style="width:100%; margin-top:5px; margin-bottom:10px;" autoResize="false"/>
+         </p:outputPanel>
+
+         <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix" style="padding-top:10px;">
+            <p:commandButton value="Save Diagnosis" action="#{diagnosisEntryBean.saveDiagnosis}"
+                             icon="pi pi-save" styleClass="ui-button-success"
+                             process="diagnosisDialogForm"
+                             update=":appointmentListForm:appointmentsTable :appointmentListForm:appointmentMessages diagMessages diagnosisDialogContentPanel"
+                             oncomplete="if (!args.validationFailed) { PF('diagnosisDialogWidget').hide(); }"
+                             disabled="#{!diagnosisEntryBean.dialogReady}"/>
+            <p:commandButton value="Cancel" type="button" onclick="PF('diagnosisDialogWidget').hide();"
+                             icon="pi pi-times" styleClass="ui-button-secondary">
+               <p:ajax event="click" listener="#{diagnosisEntryBean.resetDialog}" process="@this" /> <!-- Ensure resetDialog is called -->
+            </p:commandButton>
+         </div>
+      </p:outputPanel>
+   </h:form>
+   </p:dialog>
+</ui:composition>

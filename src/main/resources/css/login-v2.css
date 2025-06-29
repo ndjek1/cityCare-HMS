@@ -1,0 +1,114 @@
+/* login-v2.css - An enhanced, modern login page style */
+
+body.login-page-v2 {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    /* A subtle gradient background is more visually interesting than a flat color */
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.login-panel-v2 {
+    width: 850px;
+    max-width: 95vw;
+    background-color: #ffffff;
+    border-radius: 1rem; /* Slightly larger radius for a softer look */
+    /* A more subtle, layered shadow gives a sense of depth */
+    box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+/* On smaller screens, stack the columns */
+@media (max-width: 768px) {
+    .login-panel-v2 {
+        grid-template-columns: 1fr;
+        width: 100%;
+        max-width: 400px; /* Constrain width on mobile for better readability */
+        margin: 1rem;
+    }
+    .login-image-container {
+        display: none; /* Hide image on mobile to save space */
+    }
+}
+
+.login-image-container {
+    padding: 0;
+    overflow: hidden; /* Keep the zoom effect contained */
+}
+
+.login-image-bg {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    /* Add a subtle zoom on hover for a dynamic feel */
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.login-image-container:hover .login-image-bg {
+    transform: scale(1.05);
+}
+
+.login-form-container {
+    padding: 3rem 4rem; /* More generous padding */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.login-header-v2 {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.login-header-v2 .logo {
+    color: var(--primary-color, #ef4444); /* Use theme color, fallback to red */
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+.login-header-v2 .logo i {
+    font-size: 2rem;
+    margin-right: 0.5rem;
+    vertical-align: middle;
+}
+.login-header-v2 h2 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin: 0.75rem 0 0.25rem 0;
+    color: #111827;
+}
+.login-header-v2 p {
+    color: #6b7280;
+    margin: 0;
+}
+
+/* Floating Label Styling */
+.p-float-label {
+    margin-top: 1.75rem;
+}
+.p-float-label label {
+    color: #9ca3af;
+}
+
+.login-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    margin-top: 1rem;
+}
+
+.login-options a {
+    color: var(--primary-color, #4f46e5);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+.login-options a:hover {
+    color: var(--primary-color-darker, #4338ca);
+}

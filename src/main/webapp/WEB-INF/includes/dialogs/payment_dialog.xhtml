@@ -1,0 +1,79 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:c="jakarta.tags.core">
+   <!-- Payment Dialog -->
+   <p:dialog header="Process Payment" widgetVar="paymentDialogWidget" id="paymentDialog"
+             modal="true" closable="true" resizable="false" width="600"
+             showEffect="fade" hideEffect="fade" appendTo="@(body)">
+      <h:form id="paymentDialogForm">
+         <p:messages id="paymentDialogMessages" showDetail="true" closable="true" style="margin-bottom:10px;"/>
+
+         <p:outputPanel id="paymentDialogContentPanel">
+            <p:outputPanel rendered="#{!paymentBean.dialogReady or paymentBean.billDetails == null}">
+               <p:staticMessage severity="warn" summary="Information"
+                                detail="Bill details not loaded. Please select a bill to pay."/>
+            </p:outputPanel>
+
+            <p:outputPanel rendered="#{paymentBean.dialogReady and paymentBean.billDetails != null}">
+               <p:fieldset legend="Bill Details (ID: #{paymentBean.billDetails.billId})">
+                  <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank">
+                     <h:outputText value="Patient:" style="font-weight:bold;"/>
+                     <h:outputText value="#{paymentBean.patient.name}"/>
+
+                     <h:outputText value="Bill Date:" style="font-weight:bold;"/>
+                     <h:outputText value="#{paymentBean.billDetails.billDate}">
+                        <f:convertDateTime pattern="MMM dd, yyyy hh:mm a" type="localDateTime"/>
+                     </h:outputText>
+
+                     <h:outputText value="Total Amount:" style="font-weight:bold;"/>
+                     <h:outputText value="#{paymentBean.billDetails.totalAmount}">
+                        <f:convertNumber type="currency" currencySymbol="UGX "/>
+                     </h:outputText>
+                     <h:outputText value="Current Status:" style="font-weight:bold;"/>
+                     <h:outputText value="#{paymentBean.billDetails.paymentStatus}" style="font-weight:bold; color:#{paymentBean.billDetails.paymentStatus == 'PAID' ? 'green' : 'orange'};"/>
+                  </p:panelGrid>
+               </p:fieldset>
+
+               <p:fieldset legend="Payment Information" style="margin-top:15px;">
+                  <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+                               columnClasses="ui-g-12 ui-md-4, ui-g-12 ui-md-8">
+                     <p:outputLabel for="amountToPay" value="Amount to Pay (UGX):"/>
+                     <p:inputNumber id="amountToPay" value="#{paymentBean.amountToPay}"
+                                    required="true" requiredMessage="Payment amount is required."
+                                    minValue="0.01" decimalPlaces="2" symbol=" UGX" symbolPosition="s"/>
+
+                     <p:outputLabel for="paymentMethod" value="Payment Method:"/>
+                     <p:selectOneMenu id="paymentMethod" value="#{paymentBean.selectedPaymentMethod}"
+                                      required="true" requiredMessage="Payment method is required.">
+                        <f:selectItem itemLabel="--- Select Method ---" itemValue="#{null}" noSelectionOption="true"/>
+                        <f:selectItems value="#{paymentBean.availablePaymentMethods}" var="pm"
+                                       itemLabel="#{pm.toString()}" itemValue="#{pm}"/>
+                     </p:selectOneMenu>
+
+                     <p:outputLabel for="paymentRef" value="Transaction Ref (Optional):"/>
+                     <p:inputText id="paymentRef" value="#{paymentBean.paymentReference}"/>
+
+                     <p:outputLabel for="paymentNotes" value="Notes (Optional):"/>
+                     <p:inputTextarea id="paymentNotes" value="#{paymentBean.paymentNotes}" rows="3" autoResize="false"/>
+                  </p:panelGrid>
+               </p:fieldset>
+            </p:outputPanel> <!-- End of panel shown when dialog is ready -->
+         </p:outputPanel> <!-- End paymentDialogContentPanel -->
+
+         <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix" style="padding-top:15px; margin-top:10px; border-top: 1px solid #ddd;">
+            <p:commandButton value="Submit Payment" action="#{paymentBean.submitPayment}"
+                             icon="pi pi-check-circle" styleClass="ui-button-success"
+                             process="paymentDialogForm"
+                             update="paymentDialogContentPanel paymentDialogMessages @form :unpaidBillsForm:unpaidBillsTable :unpaidBillsForm:adminBillMessages"
+
+                             oncomplete="if (args &amp;&amp; !args.validationFailed &amp;&amp; (facesContext.messageList == null || facesContext.messageList.isEmpty())) { PF('paymentDialogWidget').hide(); }"
+                             disabled="#{!paymentBean.dialogReady or paymentBean.billDetails == null or paymentBean.billDetails.paymentStatus == 'PAID'}"/>
+            <p:commandButton value="Cancel" type="button" onclick="PF('paymentDialogWidget').hide();"
+                             icon="pi pi-times" styleClass="ui-button-secondary"/>
+         </div>
+      </h:form>
+   </p:dialog>
+</ui:composition>

@@ -1,0 +1,85 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="jakarta.faces.facelets">
+
+    <!--
+        =============================================
+        Unpaid / Partially Paid Bills List (Compact)
+        - PrimeFlex utilities for spacing & flex bar
+        - p:card instead of p:panel for modern look
+        - Minimal vertical space; built‑in table paginator
+        =============================================
+    -->
+
+
+    <p:card header="Unpaid / Partially Paid Bills" styleClass="unpaid-bills-card shadow-2">
+        <h:form id="unpaidBillsForm" styleClass="p-fluid">
+
+            <!-- Global Messages -->
+            <p:messages id="adminBillMessages" showDetail="true" closable="true" autoUpdate="true"/>
+
+            <!-- ======== Toolbar ======== -->
+            <div class="flex justify-content-end mb-3">
+                <p:commandButton value="Refresh" icon="pi pi-refresh" styleClass="toolbar-btn"
+                                 process="@this" update="unpaidBillsTable"
+                                 action="#{billBean.loadAllUnpaidBills}" />
+            </div>
+
+            <!-- ======== DataTable ======== -->
+            <p:dataTable id="unpaidBillsTable" widgetVar="unpaidBillsTableWidget"
+                         value="#{billBean.allUnpaidBills}" var="bill"
+                         paginator="true" rows="15" reflow="true"
+                         emptyMessage="No unpaid bills found." styleClass="text-sm">
+
+                <p:column headerText="Bill ID" style="width:8rem;">
+                    <h:outputText value="#{bill.billId}" />
+                </p:column>
+
+                <p:column headerText="Patient" sortBy="#{bill.patient.name}"
+                          filterBy="#{bill.patient.name}" filterMatchMode="contains">
+                    <h:outputText value="#{bill.patient.name}" />
+                </p:column>
+
+                <p:column headerText="Appointment ID" style="width:10rem;">
+                    <h:outputText value="#{bill.appointment.appointmentId}" />
+                </p:column>
+
+                <p:column headerText="Bill Date" style="width:12rem;">
+                    <h:outputText value="#{bill.billDate}">
+                        <f:convertDateTime type="localDateTime" pattern="MMM dd, yyyy hh:mm a" />
+                    </h:outputText>
+                </p:column>
+
+                <p:column headerText="Total Amount" style="width:10rem; text-align:right;">
+                    <h:outputText value="#{bill.totalAmount}">
+                        <f:convertNumber type="currency" currencySymbol="UGX " />
+                    </h:outputText>
+                </p:column>
+
+                <!-- Payment Status with custom filter -->
+                <p:column headerText="Status" style="width:10rem; text-align:center;">
+                    <f:facet name="filter">
+                        <p:selectOneMenu onchange="PF('unpaidBillsTableWidget').filter()" styleClass="w-full">
+                            <f:selectItem itemLabel="All" itemValue="#{null}" noSelectionOption="true" />
+                            <f:selectItem itemLabel="Unpaid" itemValue="UNPAID" />
+                            <f:selectItem itemLabel="Partially Paid" itemValue="PARTIALLY_PAID" />
+                        </p:selectOneMenu>
+                    </f:facet>
+
+                    <h:outputText value="#{bill.paymentStatus}" styleClass="payment-status #{bill.paymentStatus}" />
+                </p:column>
+
+                <!-- Actions -->
+                <p:column headerText="Actions" style="width:8rem; text-align:center;">
+                    <p:commandButton icon="pi pi-credit-card" tooltip="Process Payment"
+                                     process="@this" update="@widgetVar(paymentDialogWidget)"
+                                     action="#{paymentBean.preparePaymentForBill(bill.billId)}"
+                                     oncomplete="PF('paymentDialogWidget').show()"
+                                     styleClass="rounded-button ui-button-info" />
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </p:card>
+</ui:composition>

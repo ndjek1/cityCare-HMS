@@ -1,0 +1,81 @@
+/* Using theme variables for consistency */
+:root {
+    --primary-color: #da154c; /* Example: lara-light-indigo */
+    --primary-color-text: #ffffff;
+    --surface-ground: #f8f9fa;
+    --surface-card: #ffffff;
+    --surface-border: #dee2e6;
+    --text-color: #495057;
+    --text-color-secondary: #6c757d;
+    --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+body.login-page {
+    font-family: var(--font-family);
+    background-color: var(--surface-ground);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    color: var(--text-color);
+}
+
+.login-panel {
+    width: 800px;
+    max-width: 90vw;
+    background-color: var(--surface-card);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    overflow: hidden; /* Important for keeping image corners rounded */
+}
+
+.login-image-section {
+    padding: 0;
+    /*
+      Replace this URL with your local image.
+      e.g., background-image: url("#{resource['images/hospital-login-bg.jpg']}");
+      (This needs to be set inline in the XHTML to resolve the JSF resource path)
+    */
+    background-size: cover;
+    background-position: center;
+}
+
+.login-form-section {
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.login-header .logo {
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.login-header .logo i {
+    font-size: 1.75rem;
+    vertical-align: middle;
+    margin-right: 0.5rem;
+}
+
+.login-header h2 {
+    margin: 0.5rem 0 0.25rem 0;
+    font-weight: 600;
+}
+
+.login-header p {
+    margin: 0;
+    color: var(--text-color-secondary);
+}
+
+/* Ensure PrimeFaces messages look good */
+.ui-messages-error {
+    border-left-width: 4px;
+}

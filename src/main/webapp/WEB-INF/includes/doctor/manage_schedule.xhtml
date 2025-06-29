@@ -1,0 +1,62 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="jakarta.faces.facelets">
+
+   <p:panel header="Manage My Availability - Dr. #{doctorScheduleBean.currentDoctor.name}">
+      <h:form id="manageScheduleForm">
+         <p:messages id="scheduleMessages" showDetail="true" closable="true" autoUpdate="true"/>
+
+         <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+            <p:outputPanel id="dateSelectionPanel">
+               <p:outputLabel for="scheduleDate" value="Select Date to Manage:" style="font-weight:bold; margin-right:10px;"/>
+               <p:datePicker id="scheduleDate" value="#{doctorScheduleBean.selectedDateForView}" showIcon="true" mindate="#{cc.attrs.today}">
+                  <p:ajax event="dateSelect" listener="#{doctorScheduleBean.loadExistingSlotsForDate}" update="existingSlotsPanel newSlotsPanel scheduleMessages"/>
+                  <!-- <f:attribute name="today" value="#{someUtilBean.todayDate}" /> -->
+               </p:datePicker>
+               <p:commandButton value="View Date" action="#{doctorScheduleBean.loadExistingSlotsForDate}"
+                                update="existingSlotsPanel newSlotsPanel scheduleMessages" icon="pi pi-search" style="margin-left:10px;"/>
+            </p:outputPanel>
+
+            <p:outputPanel id="newSlotsPanel" style="margin-top:20px;">
+               <p:fieldset legend="Add New Available Time Slots for #{doctorScheduleBean.selectedDateForView}">
+                  <p:selectManyCheckbox id="timeSlots" value="#{doctorScheduleBean.timesToAdd}" layout="responsive" columns="4">
+                     <f:selectItems value="#{doctorScheduleBean.availableTimeOptions}" var="timeOpt"
+                                    itemLabel="#{doctorScheduleBean.formatLocalTime(timeOpt)}" itemValue="#{timeOpt}" />
+                  </p:selectManyCheckbox>
+                  <br/>
+                  <p:commandButton value="Add Selected Slots" action="#{doctorScheduleBean.addSelectedSlots()}"
+                                   update="@this"
+                                   process="@form"
+                                   icon="pi pi-plus"/>
+               </p:fieldset>
+            </p:outputPanel>
+
+            <p:outputPanel id="existingSlotsPanel" style="margin-top:20px;">
+               <p:fieldset legend="Currently Available Slots for #{doctorScheduleBean.selectedDateForView}">
+                  <p:dataTable id="existingSlotsTable" var="slot" value="#{doctorScheduleBean.existingSlotsForSelectedDate}"
+                               emptyMessage="No slots currently set for this date." rows="10" paginator="true">
+                     <p:column headerText="Time">
+                        <h:outputText value="#{doctorScheduleBean.formatLocalTime(slot.toLocalTime())}" />
+                     </p:column>
+                     <p:column headerText="Actions" style="width:100px;text-align:center;">
+                        <p:commandButton icon="pi pi-trash" title="Remove Slot"
+                                         action="#{doctorScheduleBean.removeSlot(slot)}"
+                                         update="existingSlotsPanel scheduleMessages" process="@this">
+                           <p:confirm header="Confirmation" message="Are you sure you want to remove this slot: #{doctorScheduleBean.formatLocalTime(slot.toLocalTime())}?" icon="pi pi-exclamation-triangle"/>
+                        </p:commandButton>
+                     </p:column>
+                  </p:dataTable>
+               </p:fieldset>
+            </p:outputPanel>
+         </p:panelGrid>
+
+         <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+            <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check"/>
+            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-secondary" icon="pi pi-times"/>
+         </p:confirmDialog>
+
+      </h:form>
+   </p:panel>
+</ui:composition>

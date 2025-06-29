@@ -22,7 +22,8 @@
 
     <p:panel header="Manage Service Catalog" styleClass="admin-form">
         <h:form id="serviceCatalogForm">
-            <p:messages id="catalogMessages" showDetail="true" closable="true" autoUpdate="true"/>
+            <p:messages id="catalogMessages" showDetail="true" closable="true" autoUpdate="true" />
+            <p:growl id="growl" showDetail="true" life="4000" />
 
             <p:fieldset legend="Add New Service Item" toggleable="true" collapsed="false">
                 <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
@@ -73,6 +74,7 @@
             </p:fieldset>
 
             <p:fieldset legend="Existing Service Items" toggleable="true" collapsed="true" style="margin-top:20px;">
+
                 <p:dataTable id="catalogTable" var="item" value="#{serviceCatalogAdminBean.catalogItems}"
                              paginator="true" rows="10" emptyMessage="No services found in catalog." reflow="true">
                     <p:column headerText="Code" sortBy="#{item.serviceCode}" filterBy="#{item.serviceCode}" filterMatchMode="contains">
@@ -95,15 +97,16 @@
                             <f:convertNumber type="currency" currencySymbol="UGX "/>
                         </h:outputText>
                     </p:column>
-                    <p:column headerText="Active" sortBy="#{item.active}" style="text-align:center; width:80px;">
-                        <p:selectBooleanCheckbox value="#{item.active}" disabled="true"/> <!-- Display only -->
-                    </p:column>
                     <p:column headerText="Actions" style="width:100px;text-align:center;">
                         <p:commandButton icon="pi pi-pencil" title="Edit" styleClass="rounded-button ui-button-info"
                                          disabled="true"/> <!-- Placeholder for edit functionality -->
-                        <p:commandButton icon="pi pi-power-off" title="#{item.active ? 'Deactivate' : 'Activate'}"
-                                         styleClass="rounded-button #{item.active ? 'ui-button-danger' : 'ui-button-success'}"
-                                         disabled="true" style="margin-left:5px;"/> <!-- Placeholder -->
+                        <p:commandButton value="#{item.active ? 'Deactivate' : 'Activate'}"
+                                         action="#{serviceCatalogAdminBean.toggleServiceStatus(item)}"
+                                         update="@form :growl"
+                                         process="@this"
+                                         icon="#{item.active ? 'pi pi-times' : 'pi pi-check'}"/>
+
+                        <!-- Placeholder -->
                     </p:column>
                 </p:dataTable>
             </p:fieldset>

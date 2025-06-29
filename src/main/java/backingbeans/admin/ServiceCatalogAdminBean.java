@@ -10,6 +10,7 @@ import jakarta.validation.constraints.Min;
 import models.ServiceCatalogItem;
 import constants.ServiceCategory; // Your enum
 
+import models.Staff;
 import services.impl.ServiceCatalogServiceImpl;
 
 import java.io.Serializable;
@@ -105,6 +106,51 @@ public class ServiceCatalogAdminBean implements Serializable {
                     "Could not add service to catalog. It might already exist or an error occurred."));
         }
     }
+    public void deactivateService(ServiceCatalogItem serviceToDeactivate) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        if (serviceToDeactivate != null) {
+            System.out.println("Attempting to delete staff: " + serviceToDeactivate.getName());
+            boolean success = serviceCatalogService.deactivateService(serviceToDeactivate); // Assuming deleteStaff takes ID or object
+            if (success) {
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Warning",
+                        "Service '" + serviceToDeactivate.getName() + "' has  been deactivated."));
+            }
+            loadCatalogItems(); // Refresh the list after deletion
+            // Add FacesMessage for success/failure
+        }
+    }
+
+    public void activateService(ServiceCatalogItem serviceToReactivate) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        if (serviceToReactivate != null) {
+            System.out.println("Attempting to delete staff: " + serviceToReactivate.getName());
+           boolean success =  serviceCatalogService.activateService(serviceToReactivate); // Assuming deleteStaff takes ID or object
+            if (success) {
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success",
+                        "Service '" + serviceToReactivate.getName() + "' has  been activated."));
+            }
+            loadCatalogItems(); // Refresh the list after deletion
+            // Add FacesMessage for success/failure
+        }
+    }
+
+    public void toggleServiceStatus(ServiceCatalogItem item) {
+        if (item == null) return;
+
+        if (item.isActive()) {
+            deactivateService(item);
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Service Deactivated",
+                            item.getName() + " has been deactivated."));
+        } else {
+            activateService(item);
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Service Activated",
+                            item.getName() + " has been activated."));
+        }
+    }
+
+
 
     // Getters and Setters
     public List<ServiceCatalogItem> getCatalogItems() { return catalogItems; }

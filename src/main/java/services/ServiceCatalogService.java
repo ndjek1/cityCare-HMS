@@ -13,4 +13,6 @@ public interface ServiceCatalogService {
     public boolean serviceNameExists(String serviceName);
     public List<ServiceCatalogItem> getActiveServiceCatalogItems();
     public Optional<ServiceCatalogItem> addServiceToCatalog(String serviceCode, String name, double cost, ServiceCategory category, String description);
+    public boolean deactivateService(ServiceCatalogItem serviceCatalogItem);
+    public boolean activateService(ServiceCatalogItem serviceCatalogItem);
 }

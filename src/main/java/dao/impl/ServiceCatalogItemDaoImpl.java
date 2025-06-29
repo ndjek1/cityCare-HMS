@@ -45,4 +45,23 @@ public class ServiceCatalogItemDaoImpl extends AbstractDao<ServiceCatalogItem, L
             return query.getResultList();
         });
     }
+
+    @Override
+    public boolean deactivateItem(ServiceCatalogItem item) {
+        execute(session -> {
+            item.setActive(false);
+            session.merge(item);
+            return true;
+        });
+        return false;
+    }
+    @Override
+    public boolean activateItem(ServiceCatalogItem item) {
+        execute(session -> {
+            item.setActive(true);
+            session.merge(item);
+            return true;
+        });
+        return false;
+    }
 }

@@ -1,114 +1,147 @@
-/* login-v2.css - An enhanced, modern login page style */
+/* login-v3.css - A fancier, more professional login page style */
 
-body.login-page-v2 {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    /* A subtle gradient background is more visually interesting than a flat color */
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+/* Set up CSS variables for theme colors */
+:root {
+    --primary-color: #6366F1; /* A nice indigo */
+    --primary-color-dark: #4F46E5;
+    --primary-color-light: #A5B4FC;
+    --text-color: #1F2937;
+    --text-color-secondary: #6B7280;
+    --surface-ground: #F9FAFB;
+    --surface-card: #FFFFFF;
+}
+
+body.login-page-v3 {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--surface-ground);
     display: flex;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
     margin: 0;
+    overflow: hidden; /* Hide scrollbars during animation */
 }
 
-.login-panel-v2 {
-    width: 850px;
+/* Keyframe animation for the panel entrance */
+@keyframes fadeInSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.login-panel-v3 {
+    width: 900px;
     max-width: 95vw;
-    background-color: #ffffff;
-    border-radius: 1rem; /* Slightly larger radius for a softer look */
-    /* A more subtle, layered shadow gives a sense of depth */
-    box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.2);
+    background-color: var(--surface-card);
+    border-radius: 1.5rem; /* Softer, larger radius */
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     overflow: hidden;
     display: grid;
     grid-template-columns: 1fr 1fr;
+    /* Apply the animation */
+    animation: fadeInSlideUp 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
-/* On smaller screens, stack the columns */
-@media (max-width: 768px) {
-    .login-panel-v2 {
+/* On mobile, stack the columns */
+@media (max-width: 800px) {
+    .login-panel-v3 {
         grid-template-columns: 1fr;
         width: 100%;
-        max-width: 400px; /* Constrain width on mobile for better readability */
+        max-width: 420px;
         margin: 1rem;
     }
-    .login-image-container {
-        display: none; /* Hide image on mobile to save space */
-    }
+    .login-image-section { display: none; }
 }
 
-.login-image-container {
-    padding: 0;
-    overflow: hidden; /* Keep the zoom effect contained */
-}
-
-.login-image-bg {
-    width: 100%;
-    height: 100%;
+/* --- The Image Section --- */
+.login-image-section {
+    position: relative; /* Needed for the overlay */
     background-size: cover;
     background-position: center;
-    /* Add a subtle zoom on hover for a dynamic feel */
-    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.login-image-container:hover .login-image-bg {
-    transform: scale(1.05);
+/* Add a branding overlay on the image */
+.login-image-section::before {
+    content: 'CityCare HMS | Secure Login';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1.5rem;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 500;
+    opacity: 0.8;
+    transition: opacity 0.3s;
 }
 
-.login-form-container {
-    padding: 3rem 4rem; /* More generous padding */
+.login-image-section:hover::before {
+    opacity: 1;
+}
+
+/* --- The Form Section --- */
+.login-form-section {
+    padding: 2.5rem 4rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
 
-.login-header-v2 {
+/* Animate the form elements with a slight delay */
+.login-form-section > * {
+    animation: fadeInSlideUp 0.8s 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    opacity: 0;
+}
+
+.login-header-v3 {
     text-align: center;
     margin-bottom: 2.5rem;
 }
 
-.login-header-v2 .logo {
-    color: var(--primary-color, #ef4444); /* Use theme color, fallback to red */
-    font-size: 1.8rem;
-    font-weight: 700;
-}
-.login-header-v2 .logo i {
+.login-header-v3 .logo {
+    color: var(--primary-color);
     font-size: 2rem;
-    margin-right: 0.5rem;
-    vertical-align: middle;
-}
-.login-header-v2 h2 {
-    font-size: 1.75rem;
-    font-weight: 600;
-    margin: 0.75rem 0 0.25rem 0;
-    color: #111827;
-}
-.login-header-v2 p {
-    color: #6b7280;
-    margin: 0;
+    display: inline-block;
+    padding: 0.75rem;
+    background: #EEF2FF; /* Light indigo background */
+    border-radius: 50%;
+    line-height: 1;
+    margin-bottom: 1rem;
 }
 
-/* Floating Label Styling */
+.login-header-v3 h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+    color: var(--text-color);
+}
+.login-header-v3 p {
+    color: var(--text-color-secondary);
+}
+
+/* --- Refined Form Inputs with Icons --- */
 .p-float-label {
-    margin-top: 1.75rem;
+    margin-top: 2rem;
 }
-.p-float-label label {
-    color: #9ca3af;
-}
-
-.login-options {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.9rem;
-    margin-top: 1rem;
+/* Use PrimeFlex p-input-icon-right for icons */
+.p-float-label .p-inputtext, .p-float-label .p-password {
+    padding-right: 2.5rem; /* Make space for the icon */
 }
 
-.login-options a {
-    color: var(--primary-color, #4f46e5);
-    text-decoration: none;
-    font-weight: 500;
-    transition: color 0.2s;
+/* The Sign In Button */
+.login-button.ui-button {
+    background: linear-gradient(45deg, var(--primary-color-light), var(--primary-color));
+    border: none;
+    font-weight: 600;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
-.login-options a:hover {
-    color: var(--primary-color-darker, #4338ca);
+.login-button.ui-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px -10px var(--primary-color);
 }

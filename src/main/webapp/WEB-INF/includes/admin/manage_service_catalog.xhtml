@@ -24,7 +24,43 @@
         <h:form id="serviceCatalogForm">
             <p:messages id="catalogMessages" showDetail="true" closable="true" autoUpdate="true" />
             <p:growl id="growl" showDetail="true" life="4000" />
+            <p:fieldset legend="Existing Service Items" toggleable="true" collapsed="true" style="margin-top:20px;">
 
+                <p:dataTable id="catalogTable" var="item" value="#{serviceCatalogAdminBean.catalogItems}"
+                             paginator="true" rows="10" emptyMessage="No services found in catalog." reflow="true">
+                    <p:column headerText="Code" sortBy="#{item.serviceCode}" filterBy="#{item.serviceCode}" filterMatchMode="contains">
+                        <h:outputText value="#{item.serviceCode}"/>
+                    </p:column>
+                    <p:column headerText="Name" sortBy="#{item.name}" filterBy="#{item.name}" filterMatchMode="contains">
+                        <h:outputText value="#{item.name}"/>
+                    </p:column>
+                    <p:column headerText="Category" sortBy="#{item.category}" filterBy="#{item.category}" filterMatchMode="exact">
+                        <f:facet name="filter">
+                            <p:selectOneMenu onchange="PF('catalogTableWidget').filter()" styleClass="custom-filter">
+                                <f:selectItem itemLabel="All" itemValue="#{null}" noSelectionOption="true" />
+                                <f:selectItems value="#{serviceCatalogAdminBean.availableServiceCategories}" var="catF" itemLabel="#{catF.displayName}" itemValue="#{catF}"/>
+                            </p:selectOneMenu>
+                        </f:facet>
+                        <h:outputText value="#{item.category.displayName}"/>
+                    </p:column>
+                    <p:column headerText="Default Cost" sortBy="#{item.defaultCost}" style="text-align:right;">
+                        <h:outputText value="#{item.defaultCost}">
+                            <f:convertNumber type="currency" currencySymbol="UGX "/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Actions" style="width:100px;text-align:center;">
+                        <p:commandButton icon="pi pi-pencil" title="Edit" styleClass="rounded-button ui-button-info"
+                                         disabled="true"/> <!-- Placeholder for edit functionality -->
+                        <p:commandButton value="#{item.active ? 'Deactivate' : 'Activate'}"
+                                         action="#{serviceCatalogAdminBean.toggleServiceStatus(item)}"
+                                         update="@form :growl"
+                                         process="@this"
+                                         icon="#{item.active ? 'pi pi-times' : 'pi pi-check'}"/>
+
+                        <!-- Placeholder -->
+                    </p:column>
+                </p:dataTable>
+            </p:fieldset>
             <p:fieldset legend="Add New Service Item" toggleable="true" collapsed="false">
                 <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
                              columnClasses="ui-g-12 ui-md-3, ui-g-12 ui-md-9">
@@ -73,43 +109,7 @@
                 </div>
             </p:fieldset>
 
-            <p:fieldset legend="Existing Service Items" toggleable="true" collapsed="true" style="margin-top:20px;">
 
-                <p:dataTable id="catalogTable" var="item" value="#{serviceCatalogAdminBean.catalogItems}"
-                             paginator="true" rows="10" emptyMessage="No services found in catalog." reflow="true">
-                    <p:column headerText="Code" sortBy="#{item.serviceCode}" filterBy="#{item.serviceCode}" filterMatchMode="contains">
-                        <h:outputText value="#{item.serviceCode}"/>
-                    </p:column>
-                    <p:column headerText="Name" sortBy="#{item.name}" filterBy="#{item.name}" filterMatchMode="contains">
-                        <h:outputText value="#{item.name}"/>
-                    </p:column>
-                    <p:column headerText="Category" sortBy="#{item.category}" filterBy="#{item.category}" filterMatchMode="exact">
-                        <f:facet name="filter">
-                            <p:selectOneMenu onchange="PF('catalogTableWidget').filter()" styleClass="custom-filter">
-                                <f:selectItem itemLabel="All" itemValue="#{null}" noSelectionOption="true" />
-                                <f:selectItems value="#{serviceCatalogAdminBean.availableServiceCategories}" var="catF" itemLabel="#{catF.displayName}" itemValue="#{catF}"/>
-                            </p:selectOneMenu>
-                        </f:facet>
-                        <h:outputText value="#{item.category.displayName}"/>
-                    </p:column>
-                    <p:column headerText="Default Cost" sortBy="#{item.defaultCost}" style="text-align:right;">
-                        <h:outputText value="#{item.defaultCost}">
-                            <f:convertNumber type="currency" currencySymbol="UGX "/>
-                        </h:outputText>
-                    </p:column>
-                    <p:column headerText="Actions" style="width:100px;text-align:center;">
-                        <p:commandButton icon="pi pi-pencil" title="Edit" styleClass="rounded-button ui-button-info"
-                                         disabled="true"/> <!-- Placeholder for edit functionality -->
-                        <p:commandButton value="#{item.active ? 'Deactivate' : 'Activate'}"
-                                         action="#{serviceCatalogAdminBean.toggleServiceStatus(item)}"
-                                         update="@form :growl"
-                                         process="@this"
-                                         icon="#{item.active ? 'pi pi-times' : 'pi pi-check'}"/>
-
-                        <!-- Placeholder -->
-                    </p:column>
-                </p:dataTable>
-            </p:fieldset>
 
         </h:form>
     </p:panel>

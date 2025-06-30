@@ -1,6 +1,6 @@
-package dao;
+package org.pahappa.systems.hms.dao;
 
-import models.UserAccount;
+import org.pahappa.systems.hms.models.UserAccount;
 
 import java.util.Optional;
 

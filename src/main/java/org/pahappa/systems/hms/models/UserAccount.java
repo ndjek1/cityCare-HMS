@@ -1,10 +1,10 @@
-package models;
+package org.pahappa.systems.hms.models;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import constants.UserRole;
+import org.pahappa.systems.hms.constants.UserRole;
 
 @Entity
 public class UserAccount {

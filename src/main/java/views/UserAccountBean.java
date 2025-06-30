@@ -1,18 +1,18 @@
-package backingbeans;
+package views;
 
-import constants.UserRole;
+import org.pahappa.systems.hms.constants.UserRole;
 
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 
 import jakarta.inject.Named;
-import models.Patient;
-import models.Staff;
-import models.UserAccount;
+import org.pahappa.systems.hms.models.Patient;
+import org.pahappa.systems.hms.models.Staff;
+import org.pahappa.systems.hms.models.UserAccount;
 
-import services.LoginResult;
-import services.impl.AuthServiceImpl;
+import org.pahappa.systems.hms.services.LoginResult;
+import org.pahappa.systems.hms.services.impl.AuthServiceImpl;
 
 import java.io.Serializable;
 import java.util.Optional;

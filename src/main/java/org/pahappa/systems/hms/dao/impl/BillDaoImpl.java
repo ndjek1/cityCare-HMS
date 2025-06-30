@@ -1,11 +1,9 @@
-package dao.impl;
+package org.pahappa.systems.hms.dao.impl;
 
 
-import constants.PaymentStatus;
-import dao.BillDao;
-import jakarta.enterprise.context.ApplicationScoped;
-import models.Bill;
-import models.Staff;
+import org.pahappa.systems.hms.constants.PaymentStatus;
+import org.pahappa.systems.hms.dao.BillDao;
+import org.pahappa.systems.hms.models.Bill;
 import org.hibernate.Hibernate;
 import org.hibernate.query.Query;
 

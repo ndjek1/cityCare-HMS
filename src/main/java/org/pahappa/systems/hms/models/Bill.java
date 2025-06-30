@@ -1,7 +1,7 @@
-package models;
+package org.pahappa.systems.hms.models;
 
 import jakarta.persistence.*;
-import constants.PaymentStatus; // Assuming you have this enum
+import org.pahappa.systems.hms.constants.PaymentStatus; // Assuming you have this enum
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +28,7 @@ public class Bill {
 
     @ElementCollection(fetch = FetchType.EAGER) // Eager fetch items with the bill
     @CollectionTable(name = "bill_items", joinColumns = @JoinColumn(name = "bill_id"))
-    private List<BillItem> items = new ArrayList<>(); // Renamed from 'services'
+    private List<BillItem> items = new ArrayList<>(); // Renamed from 'org.pahappa.systems.hms.navigation.services'
 
     private double totalAmount; // Denormalized for easy access, calculated on generation
 

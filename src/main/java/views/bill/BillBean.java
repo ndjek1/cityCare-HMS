@@ -1,12 +1,11 @@
-package backingbeans.bill;
+package views.bill;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
-import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import models.Bill;
+import org.pahappa.systems.hms.models.Bill;
 
-import services.impl.BillingServiceImpl;
+import org.pahappa.systems.hms.services.impl.BillingServiceImpl;
 
 import java.io.Serializable;
 import java.util.ArrayList;

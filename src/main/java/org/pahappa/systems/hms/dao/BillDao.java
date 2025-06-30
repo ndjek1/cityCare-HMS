@@ -1,7 +1,7 @@
-package dao;
+package org.pahappa.systems.hms.dao;
 
-import constants.PaymentStatus;
-import models.Bill;
+import org.pahappa.systems.hms.constants.PaymentStatus;
+import org.pahappa.systems.hms.models.Bill;
 
 import java.util.List;
 import java.util.Optional;

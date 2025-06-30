@@ -4,111 +4,106 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:ui="jakarta.faces.facelets">
 
-   <style type="text/css">
-      /* Basic styling for the form, move to your main CSS if preferred */
-      .appointment-form .ui-panelgrid .ui-grid-responsive .ui-grid-col-4,
-      .appointment-form .ui-panelgrid .ui-grid-responsive .ui-grid-col-8 {
-         padding: 0.5em;
-      }
-      .appointment-form .ui-outputlabel {
-         font-weight: bold;
-      }
-      .appointment-form .ui-selectonemenu,
-      .appointment-form .ui-calendar,
-      .appointment-form .ui-inputtextarea,
-      .appointment-form .ui-inputtext {
-         width: 100% !important; /* Ensure inputs take full width of their cell */
-      }
-   </style>
+   <p:card header="Book New Appointment" styleClass="shadow-2 p-3">
+      <h:form id="bookAppointmentForm" styleClass="p-fluid">
 
-   <p:panel header="Book New Appointment" styleClass="appointment-form">
-      <h:form id="bookAppointmentForm">
-         <p:messages id="appointmentMessages" showDetail="true" closable="true" autoUpdate="true"/>
+         <p:messages id="appointmentMessages" showDetail="true" closable="true" autoUpdate="true" />
 
-         <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+         <p:fieldset legend="Appointment Details">
 
-            <!-- Patient Selection (only if not a patient user, or if admin/receptionist) -->
-            <p:outputPanel rendered="#{!appointmentBookingBean.currentUserPatient and userAccountBean.loggedIn}">
-               <p:outputLabel for="patientSelect" value="Select Patient:"/>
-               <p:selectOneMenu id="patientSelect" value="#{appointmentBookingBean.selectedPatientId}"
-                                filter="true" filterMatchMode="contains" required="true" requiredMessage="Patient is required.">
-                  <f:selectItem itemLabel="--- Select Patient ---" itemValue="#{null}" noSelectionOption="true"/>
-                  <f:selectItems value="#{appointmentBookingBean.availablePatients}" var="pat"
-                                 itemLabel="#{pat.name} (ID: #{pat.patientId})" itemValue="#{pat.patientId}"/>
-               </p:selectOneMenu>
-            </p:outputPanel>
-            <p:outputPanel rendered="#{appointmentBookingBean.currentUserPatient and userAccountBean.loggedIn}">
-               <p:outputLabel value="Booking for: #{userAccountBean.currentUserName}" style="font-weight:bold;"/>
-               <!-- Patient ID is pre-filled in the bean -->
-            </p:outputPanel>
+            <div class="grid formgrid">
 
+               <!-- Patient Selection (for admin/receptionist) -->
+               <p:outputPanel rendered="#{!appointmentBookingBean.currentUserPatient and userAccountBean.loggedIn}" class="field col-12 md:col-6 lg:col-4">
+                  <p:outputLabel for="patientSelect" value="Select Patient:" />
+                  <p:selectOneMenu id="patientSelect" value="#{appointmentBookingBean.selectedPatientId}"
+                                   filter="true" filterMatchMode="contains" required="true"
+                                   requiredMessage="Patient is required.">
+                     <f:selectItem itemLabel="--- Select Patient ---" itemValue="#{null}" noSelectionOption="true" />
+                     <f:selectItems value="#{appointmentBookingBean.availablePatients}" var="pat"
+                                    itemLabel="#{pat.name} (ID: #{pat.patientId})"
+                                    itemValue="#{pat.patientId}" />
+                  </p:selectOneMenu>
+               </p:outputPanel>
 
-            <p:outputLabel for="doctorSelect" value="Select Doctor:"/>
-            <p:selectOneMenu id="doctorSelect" value="#{appointmentBookingBean.selectedDoctorId}"
-                             filter="true" filterMatchMode="contains" required="true" requiredMessage="Doctor is required.">
-               <f:selectItem itemLabel="--- Select Doctor ---" itemValue="#{null}" noSelectionOption="true"/>
-               <f:selectItems value="#{appointmentBookingBean.availableDoctors}" var="doc"
-                              itemLabel="#{doc.name} (#{doc.department})" itemValue="#{doc.staffId}"/>
-               <p:ajax event="change" listener="#{appointmentBookingBean.onDoctorOrDateChange}" update="timeSlotSelect appointmentMessages" />
-            </p:selectOneMenu>
+               <!-- Patient View -->
+               <p:outputPanel rendered="#{appointmentBookingBean.currentUserPatient and userAccountBean.loggedIn}" class="field col-12 md:col-6 lg:col-4">
+                  <p:outputLabel value="Booking for: #{userAccountBean.currentUserName}" />
+               </p:outputPanel>
 
-            <p:outputLabel for="appointmentDate" value="Select Date:"/>
-            <p:datePicker id="appointmentDate" value="#{appointmentBookingBean.appointmentDate}"
-                          showIcon="true" required="true" requiredMessage="Date is required." mindate="#{cc.attrs.today}">
-               <!-- Use f:attribute to pass today's date for mindate from a utility bean if needed -->
-               <!-- <f:attribute name="today" value="#{dateUtilBean.today}" /> -->
-               <p:ajax event="dateSelect" listener="#{appointmentBookingBean.onDoctorOrDateChange}" update="timeSlotSelect appointmentMessages" />
-            </p:datePicker>
+               <!-- Doctor -->
+               <div class="field col-12 md:col-6 lg:col-4">
+                  <p:outputLabel for="doctorSelect" value="Select Doctor:" />
+                  <p:selectOneMenu id="doctorSelect" value="#{appointmentBookingBean.selectedDoctorId}"
+                                   filter="true" filterMatchMode="contains" required="true"
+                                   requiredMessage="Doctor is required.">
+                     <f:selectItem itemLabel="--- Select Doctor ---" itemValue="#{null}" noSelectionOption="true" />
+                     <f:selectItems value="#{appointmentBookingBean.availableDoctors}" var="doc"
+                                    itemLabel="#{doc.name} (#{doc.department})"
+                                    itemValue="#{doc.staffId}" />
+                     <p:ajax event="change"
+                             listener="#{appointmentBookingBean.onDoctorOrDateChange}"
+                             update="timeSlotSelect appointmentMessages" />
+                  </p:selectOneMenu>
+               </div>
 
-            <p:outputLabel for="timeSlotSelect" value="Select Time Slot:"
-                           rendered="#{not empty appointmentBookingBean.availableTimeSlots}"/>
-            <p:selectOneMenu id="timeSlotSelect" value="#{appointmentBookingBean.appointmentTime}"
-                             required="#{not empty appointmentBookingBean.availableTimeSlots}"
-                             requiredMessage="Time slot is required."
-                             rendered="#{not empty appointmentBookingBean.availableTimeSlots}">
-               <!-- The converter for LocalTime will be picked up automatically if registered with forClass=LocalTime.class -->
-               <!-- Or you can explicitly add: <f:converter converterId="localTimeConverter" /> -->
+               <!-- Date -->
+               <div class="field col-12 md:col-6 lg:col-4">
+                  <p:outputLabel for="appointmentDate" value="Select Date:" />
+                  <p:datePicker id="appointmentDate" value="#{appointmentBookingBean.appointmentDate}"
+                                showIcon="true" required="true" requiredMessage="Date is required."
+                                mindate="#{cc.attrs.today}">
+                     <p:ajax event="dateSelect"
+                             listener="#{appointmentBookingBean.onDoctorOrDateChange}"
+                             update="timeSlotSelect appointmentMessages" />
+                  </p:datePicker>
+               </div>
 
-               <f:selectItem itemLabel="--- Select Time ---" itemValue="#{null}" noSelectionOption="true"/>
-               <f:selectItems value="#{appointmentBookingBean.availableTimeSlots}" var="slot"
-                              itemLabel="#{appointmentBookingBean.formatLocalTimeForDisplay(slot)}"
-               itemValue="#{slot}"/> <!-- The actual LocalTime object is the value -->
-               <!-- The LocalTimeConverter's getAsString will be used to create the HTML option's value attribute string -->
-            </p:selectOneMenu>
+               <!-- Time Slot -->
+               <p:outputPanel class="field col-12 md:col-6 lg:col-4"
+                              rendered="#{not empty appointmentBookingBean.availableTimeSlots}">
+                  <p:outputLabel for="timeSlotSelect" value="Select Time Slot:" />
+                  <p:selectOneMenu id="timeSlotSelect" value="#{appointmentBookingBean.appointmentTime}"
+                                   required="#{not empty appointmentBookingBean.availableTimeSlots}"
+                                   requiredMessage="Time slot is required.">
+                     <f:selectItem itemLabel="--- Select Time ---" itemValue="#{null}" noSelectionOption="true" />
+                     <f:selectItems value="#{appointmentBookingBean.availableTimeSlots}" var="slot"
+                                    itemLabel="#{appointmentBookingBean.formatLocalTimeForDisplay(slot)}"
+                                    itemValue="#{slot}" />
+                  </p:selectOneMenu>
+               </p:outputPanel>
 
-            <!-- REMOVE THE MISPLACED f:selectItems from here -->
-            <!--
-            <f:selectItems value="#{appointmentBookingBean.availableTimeSlots}" var="slot"
-                           itemLabel="#{appointmentBookingBean.formatLocalDateTimeForDisplay(slot)}"
-                           itemValue="#{appointmentBookingBean.formatLocalTimeForValue(slot)}"/>
-            -->
+               <!-- Slot Unavailable Message -->
+               <p:outputPanel class="field col-12"
+                              rendered="#{empty appointmentBookingBean.availableTimeSlots and
+                                                appointmentBookingBean.selectedDoctorId != null and
+                                                appointmentBookingBean.appointmentDate != null}">
+                  <h:outputText value="No available slots for the selected doctor and date." style="color:orange;" />
+               </p:outputPanel>
 
-            <p:outputPanel rendered="#{empty appointmentBookingBean.availableTimeSlots and appointmentBookingBean.selectedDoctorId != null and appointmentBookingBean.appointmentDate != null}">
-               <h:outputText value="No available slots for the selected doctor and date." style="color:orange;"/>
-            </p:outputPanel>
+               <!-- Reason -->
+               <div class="field col-12 md:col-8">
+                  <p:outputLabel for="reason" value="Reason for Appointment:" />
+                  <p:inputTextarea id="reason" value="#{appointmentBookingBean.reason}" rows="4"
+                                   autoResize="false" required="true" requiredMessage="Reason is required." />
+               </div>
 
+            </div>
+         </p:fieldset>
 
-            <p:outputLabel for="reason" value="Reason for Appointment:"/>
-            <p:inputTextarea id="reason" value="#{appointmentBookingBean.reason}" rows="4" autoResize="false"
-                             required="true" requiredMessage="Reason is required."/>
-
-         </p:panelGrid>
-
-         <div style="margin-top: 20px; text-align: center;">
+         <!-- Action Buttons -->
+         <div class="flex justify-content-center mt-3">
             <p:commandButton value="Book Appointment" action="#{appointmentBookingBean.bookAppointment}"
-                             update="@form"
-                             process="@form" icon="pi pi-calendar-plus" styleClass="ui-button-success"/>
-            <p:commandButton value="Clear" type="button" onclick="PF('bookAppointmentFormWidgetVar').reset(); return false;"
-                             icon="pi pi-refresh" styleClass="ui-button-secondary" style="margin-left: .5em;"
-                             rendered="false"/> <!-- Client-side reset might be tricky with AJAX-loaded fields, consider server-side init() call -->
+                             update="@form" process="@form"
+                             icon="pi pi-calendar-plus"
+                             styleClass="ui-button-success mx-2" />
+
             <p:commandButton value="Reset Form" action="#{appointmentBookingBean.init}" update="@form"
-                             icon="pi pi-refresh" styleClass="ui-button-warning" process="@this" style="margin-left: .5em;"/>
-
+                             icon="pi pi-refresh" process="@this"
+                             styleClass="ui-button-warning mx-2" />
          </div>
+
       </h:form>
-   </p:panel>
-
-
-
+   </p:card>
 
 </ui:composition>

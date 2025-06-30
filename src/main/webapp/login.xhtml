@@ -9,76 +9,75 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>CityCare HMS - Welcome</title>
 
-    <!-- Ensure your PrimeFaces theme is loaded (preferably from web.xml) -->
-    <!-- <h:outputStylesheet library="primefaces-lara-light-indigo" name="theme.css" /> -->
+    <!-- Google Fonts for a nicer typeface (optional but recommended) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
 
     <!-- PrimeFlex for layout -->
     <link rel="stylesheet" href="https://unpkg.com/primeflex@latest/primeflex.css"/>
 
-    <!-- Link to our new, improved CSS file -->
+    <!-- Link to our NEW, fancy CSS file -->
     <h:outputStylesheet library="css" name="login-v2.css"/>
 </h:head>
 
-<h:body styleClass="login-page-v2">
+<h:body styleClass="login-page-v3">
 
-    <div class="login-panel-v2">
+    <div class="login-panel-v3">
 
-        <!-- 1. The Dynamic Image Section -->
-        <div class="login-image-container">
-            <div class="login-image-bg"
-                 style="background-image: url('#{resource['images:hospital.jpeg']}')">
-                <!-- Make sure your image is at /resources/images/hospital-login-bg.jpg -->
-            </div>
+        <!-- 1. The Dynamic Image Section with Overlay -->
+        <div class="login-image-section"
+             style="background-image: url('#{resource['images:hospital.jpeg']}')">
         </div>
 
-        <!-- 2. The Modern Form Section -->
-        <div class="login-form-container">
+        <!-- 2. The Animated Form Section -->
+        <div class="login-form-section">
             <h:form id="loginForm">
-                <div class="login-header-v2">
+                <div class="login-header-v3">
                     <span class="logo">
                         <i class="pi pi-heart-fill"></i>
-                        CityCare HMS
                     </span>
-                    <h2>Welcome Back!</h2>
-                    <p>Please enter your details to sign in.</p>
+                    <h2>Welcome Back</h2>
+                    <p>Sign in to access your dashboard.</p>
                 </div>
 
-                <!-- A dedicated area for login error messages -->
                 <p:messages id="loginMessages" showDetail="true" closable="true">
                     <p:autoUpdate/>
                 </p:messages>
 
                 <div class="p-fluid">
-                    <!-- FLOATING LABEL for Username -->
-                    <span class="p-float-label">
-                        <p:inputText id="float-input"
-                                     value="#{userAccountBean.username}"
-                                     required="true"/>
-                        <p:outputLabel for="@previous" value="Username"/>
-                    </span>
+                    <!-- FLOATING LABEL + ICON for Username -->
+                    <span class="ui-float-label">
+        <p:inputText id="username"
+                     value="#{userAccountBean.username}"
+                     required="true"/>
+        <p:outputLabel for="@previous" value="Username"/>
+    </span>
+                    <p:message for="username"/> <!-- Add a message component for validation errors -->
 
-                    <!-- FLOATING LABEL for Password -->
-                    <span class="p-float-label">
-                         <p:password id="toggle"
-                                     value="#{userAccountBean.password}"
-                                     required="true"
-                                     toggleMask="true"
-                                     redisplay="true"/>
-                        <p:outputLabel for="@previous" value="Password"/>
-                    </span>
-                    <!-- Login Options: Remember me & Forgot Password -->
-                    <div class="login-options">
+                    <!-- 2. Password Field with Margin-Top -->
+                    <!-- The "mt-4" class adds a 1.5rem margin above this element, creating space -->
+                    <span class="ui-float-label mt-4">
+        <p:password id="password"
+                    value="#{userAccountBean.password}"
+                    required="true"
+                    toggleMask="true"
+                    redisplay="true"/>
+        <p:outputLabel for="@previous" value="Password"/>
+    </span>
+                    <p:message for="password"/>
+
+                    <div class="flex justify-content-between align-items-center mt-3">
                         <p:selectBooleanCheckbox id="rememberMe" itemLabel="Remember me"/>
                         <a href="#">Forgot password?</a>
                     </div>
 
-                    <!-- The main login button -->
-                    <p:commandButton value="Login"
+                    <!-- The FANCY main login button -->
+                    <p:commandButton value="Sign In"
                                      action="#{userAccountBean.login}"
-                                     process="@form"
-                                     update="@none"
-                    ajax="false"/>   <!-- important -->
-
+                                     icon="pi pi-sign-in"
+                                     styleClass="p-button-lg w-full mt-4 login-button"
+                                     ajax="false" />
                 </div>
             </h:form>
         </div>

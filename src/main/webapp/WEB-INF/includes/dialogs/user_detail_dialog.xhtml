@@ -1,0 +1,98 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+   <p:dialog header="User Details"
+             widgetVar="userDetailDialogWidget"
+             modal="true" resizable="false" closable="true"
+             styleClass="responsive-dialog"
+             width="500"
+             showEffect="fade" hideEffect="fade" appendTo="@(body)">
+
+      <h:form id="userDetailDialogForm">
+         <p:outputPanel id="userDetailContentPanel">
+            <p:messages id="userDetailMessages" showDetail="true" closable="true"/>
+
+            <p:outputPanel rendered="#{!userDetailBean.dialogReady}">
+               <p:staticMessage severity="warn" summary="No Data"
+                                detail="No user selected to view."/>
+            </p:outputPanel>
+
+            <!-- Patient Section -->
+            <p:outputPanel rendered="#{userDetailBean.selectedPatient != null}">
+               <p:fieldset legend="Patient Information">
+                  <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank"
+                               columnClasses="label,value">
+                     <h:outputText value="Name:"/>
+                     <h:outputText value="#{userDetailBean.selectedPatient.name}"/>
+
+                     <h:outputText value="Email:"/>
+                     <h:outputText value="#{userDetailBean.selectedPatient.email}"/>
+
+                     <h:outputText value="Phone:"/>
+                     <h:outputText value="#{userDetailBean.selectedPatient.phoneNumber}"/>
+
+                     <h:outputText value="DOB:"/>
+                     <h:outputText value="#{userDetailBean.selectedPatient.dateOfBirth}">
+                        <f:convertDateTime pattern="MMM dd, yyyy"/>
+                     </h:outputText>
+
+                     <h:outputText value="Address:"/>
+                     <h:outputText value="#{userDetailBean.selectedPatient.address}"/>
+
+                     <h:outputText value="Insurance:"/>
+                     <h:outputText value="#{userDetailBean.selectedPatient.insuranceDetails}"/>
+
+                     <h:outputText value="Medical History:" rendered="#{not empty userDetailBean.selectedPatient.medicalHistory}"/>
+                     <ui:repeat var="note" value="#{userDetailBean.selectedPatient.medicalHistory}">
+                        <p:tag value="#{note}" styleClass="mr-2"/>
+                     </ui:repeat>
+                  </p:panelGrid>
+               </p:fieldset>
+            </p:outputPanel>
+
+            <!-- Staff Section -->
+            <p:outputPanel rendered="#{userDetailBean.selectedStaff != null}">
+               <p:fieldset legend="Staff Information">
+                  <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank"
+                               columnClasses="label,value">
+                     <h:outputText value="Name:"/>
+                     <h:outputText value="#{userDetailBean.selectedStaff.name}"/>
+
+                     <h:outputText value="Email:"/>
+                     <h:outputText value="#{userDetailBean.selectedStaff.email}"/>
+
+                     <h:outputText value="Phone:"/>
+                     <h:outputText value="#{userDetailBean.selectedStaff.phone}"/>
+
+                     <h:outputText value="DOB:"/>
+                     <h:outputText value="#{userDetailBean.selectedStaff.dateOfBirth}">
+                        <f:convertDateTime pattern="MMM dd, yyyy"/>
+                     </h:outputText>
+
+                     <h:outputText value="Address:"/>
+                     <h:outputText value="#{userDetailBean.selectedStaff.address}"/>
+
+                     <h:outputText value="Department:"/>
+                     <h:outputText value="#{userDetailBean.selectedStaff.department}"/>
+
+                     <h:outputText value="Role:"/>
+                     <h:outputText value="#{userDetailBean.selectedStaff.role}"/>
+
+                     <h:outputText value="Gender:"/>
+                     <h:outputText value="#{userDetailBean.selectedStaff.gender}"/>
+                  </p:panelGrid>
+               </p:fieldset>
+            </p:outputPanel>
+
+            <div class="ui-dialog-buttonpane ui-helper-clearfix mt-3 text-right">
+               <p:commandButton value="Close" icon="pi pi-times"
+                                type="button" onclick="PF('userDetailDialogWidget').hide();"
+                                styleClass="ui-button-secondary"/>
+            </div>
+         </p:outputPanel>
+      </h:form>
+   </p:dialog>
+</ui:composition>

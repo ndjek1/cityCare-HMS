@@ -1,6 +1,6 @@
-package models;
+package org.pahappa.systems.hms.models;
 
-import constants.ServiceCategory;
+import org.pahappa.systems.hms.constants.ServiceCategory;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
@@ -25,9 +25,9 @@ public class ServiceCatalogItem implements Serializable {
     private String description; // Optional description
 
     @Enumerated(EnumType.STRING)
-    private ServiceCategory category; // Optional: To categorize services (e.g., Consultation, Lab Test, Pharmacy)
+    private ServiceCategory category; // Optional: To categorize org.pahappa.systems.hms.navigation.services (e.g., Consultation, Lab Test, Pharmacy)
 
-    private boolean active = true; // To enable/disable services from being selected
+    private boolean active = true; // To enable/disable org.pahappa.systems.hms.navigation.services from being selected
 
     // Constructors
     public ServiceCatalogItem() {

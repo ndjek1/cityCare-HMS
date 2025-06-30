@@ -1,17 +1,15 @@
-package backingbeans.admin; // Suggested package
+package views.admin; // Suggested package
 
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
-import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.validation.constraints.Min;
-import models.ServiceCatalogItem;
-import constants.ServiceCategory; // Your enum
+import org.pahappa.systems.hms.models.ServiceCatalogItem;
+import org.pahappa.systems.hms.constants.ServiceCategory; // Your enum
 
-import models.Staff;
-import services.impl.ServiceCatalogServiceImpl;
+import org.pahappa.systems.hms.services.impl.ServiceCatalogServiceImpl;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -93,7 +91,7 @@ public class ServiceCatalogAdminBean implements Serializable {
                 newServiceCategory,
                 newServiceDescription
                 // Pass 'newServiceActive' if your service method supports it,
-                // otherwise, new services are active by default as per entity.
+                // otherwise, new org.pahappa.systems.hms.navigation.services are active by default as per entity.
         );
 
         if (addedItemOpt.isPresent()) {

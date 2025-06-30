@@ -1,6 +1,6 @@
-package dao;
+package org.pahappa.systems.hms.dao;
 
-import models.ServiceCatalogItem;
+import org.pahappa.systems.hms.models.ServiceCatalogItem;
 
 import java.io.Serializable;
 import java.util.List;

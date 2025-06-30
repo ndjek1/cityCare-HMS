@@ -1,8 +1,8 @@
-package dao.impl;
+package org.pahappa.systems.hms.dao.impl;
 
 
-import dao.ServiceCatalogItemDao;
-import models.ServiceCatalogItem;
+import org.pahappa.systems.hms.dao.ServiceCatalogItemDao;
+import org.pahappa.systems.hms.models.ServiceCatalogItem;
 import org.hibernate.query.Query;
 
 import java.util.List;

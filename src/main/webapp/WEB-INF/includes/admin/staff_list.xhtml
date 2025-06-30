@@ -13,7 +13,9 @@
             <p:toolbar styleClass="mb-3">
                 <p:toolbarGroup>
                     <p:commandButton value="Add New Staff" icon="pi pi-plus" styleClass="ui-button-success"
-                                     action="#{pageNavigationBean.navigateAddNewStaff}" />
+                                     action="#{pageNavigationBean.navigateAddNewStaff}"
+                                    process="@this"
+                    />
                 </p:toolbarGroup>
                 <p:toolbarGroup align="right">
                     <p:inputText id="globalFilter" placeholder="Search all fields..." onkeyup="PF('staffTableWidget').filter()"
@@ -61,8 +63,11 @@
                 <!-- Actions -->
                 <p:column headerText="Actions" style="width: 60px;">
                     <p:menuButton icon="pi pi-ellipsis-v" buttonStyleClass="rounded-button ui-button-flat">
-                        <p:menuitem value="View/Edit Profile" icon="pi pi-user-edit"
-                                    action="..." />
+                        <p:menuitem value="View Details" icon="pi pi-eye"
+                                    action="#{userDetailBean.loadStaff(staff.staffId)}"
+                                    process="@this"
+                                    update=":userDetailDialogForm:userDetailContentPanel"
+                                    oncomplete="PF('userDetailDialogWidget').show()" />
                         <p:separator/>
                         <p:menuitem value="#{staff.deleted ? 'Re-activate' : 'Deactivate'}"
                                     icon="#{staff.deleted ? 'pi pi-undo' : 'pi pi-trash'}"

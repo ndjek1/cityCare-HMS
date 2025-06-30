@@ -1,7 +1,7 @@
-package models;
+package org.pahappa.systems.hms.models;
 
 import jakarta.persistence.*;
-import constants.AppointmentStatus;
+import org.pahappa.systems.hms.constants.AppointmentStatus;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -161,7 +161,7 @@ public class Appointment {
 
     // Helper method for the rendered condition
     public boolean isBillFullyPaid() {
-        return this.bill != null && this.bill.getPaymentStatus() == constants.PaymentStatus.PAID;
+        return this.bill != null && this.bill.getPaymentStatus() == org.pahappa.systems.hms.constants.PaymentStatus.PAID;
     }
     public boolean hasBill() {
         return this.bill != null;

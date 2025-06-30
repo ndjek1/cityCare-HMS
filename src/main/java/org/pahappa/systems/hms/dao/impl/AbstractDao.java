@@ -1,7 +1,6 @@
-package dao.impl;
+package org.pahappa.systems.hms.dao.impl;
 
-import dao.GenericDao;
-import jakarta.inject.Inject;
+import org.pahappa.systems.hms.dao.GenericDao;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;

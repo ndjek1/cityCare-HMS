@@ -1,4 +1,4 @@
-package backingbeans; // Adjust package
+package views; // Adjust package
 
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
@@ -6,12 +6,12 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import models.Appointment;
-import models.Patient;
-import models.Staff; // Assuming your Doctor is a type of Staff
-import services.impl.AppointmentServiceImpl;
-import services.impl.PatientServiceImpl;
-import services.impl.StaffServiceImpl;
+import org.pahappa.systems.hms.models.Appointment;
+import org.pahappa.systems.hms.models.Patient;
+import org.pahappa.systems.hms.models.Staff; // Assuming your Doctor is a type of Staff
+import org.pahappa.systems.hms.services.impl.AppointmentServiceImpl;
+import org.pahappa.systems.hms.services.impl.PatientServiceImpl;
+import org.pahappa.systems.hms.services.impl.StaffServiceImpl;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -94,7 +94,7 @@ public class AppointmentBean implements Serializable {
         List<Staff> allStaff = staffService.getAllStaffs();
         if (allStaff != null) {
             availableDoctors = allStaff.stream()
-                    .filter(staff -> staff.getRole() == constants.UserRole.DOCTOR)
+                    .filter(staff -> staff.getRole() == org.pahappa.systems.hms.constants.UserRole.DOCTOR)
                     .collect(Collectors.toList());
         }
     }

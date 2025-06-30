@@ -1,7 +1,7 @@
-package dao;
+package org.pahappa.systems.hms.dao;
 
-import constants.AppointmentStatus;
-import models.Appointment;
+import org.pahappa.systems.hms.constants.AppointmentStatus;
+import org.pahappa.systems.hms.models.Appointment;
 
 import java.time.LocalDate;
 import java.util.List;

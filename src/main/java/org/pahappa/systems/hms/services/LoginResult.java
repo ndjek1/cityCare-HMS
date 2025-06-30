@@ -1,6 +1,6 @@
-package services;
+package org.pahappa.systems.hms.services;
 
-import models.UserAccount;
+import org.pahappa.systems.hms.models.UserAccount;
 
 public class LoginResult {
     private final UserAccount userAccount;

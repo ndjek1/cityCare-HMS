@@ -129,4 +129,13 @@ public class ServiceCatalogServiceImpl implements ServiceCatalogService {
         serviceCatalogItemDao.save(newItem);
         return Optional.of(newItem);
     }
+    @Override
+    public boolean deactivateService(ServiceCatalogItem serviceCatalogItem){
+        return serviceCatalogItemDao.deactivateItem(serviceCatalogItem);
+    }
+
+    @Override
+    public boolean activateService(ServiceCatalogItem serviceCatalogItem){
+        return serviceCatalogItemDao.activateItem(serviceCatalogItem);
+    }
 }

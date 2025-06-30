@@ -1,8 +1,7 @@
-package dao.impl;
+package org.pahappa.systems.hms.dao.impl;
 
-import dao.PaymentDao;
-import jakarta.enterprise.context.ApplicationScoped;
-import models.Payment;
+import org.pahappa.systems.hms.dao.PaymentDao;
+import org.pahappa.systems.hms.models.Payment;
 import org.hibernate.query.Query;
 
 import java.util.Collections;

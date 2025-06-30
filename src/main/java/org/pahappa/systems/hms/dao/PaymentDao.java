@@ -1,6 +1,6 @@
-package dao;
+package org.pahappa.systems.hms.dao;
 
-import models.Payment;
+import org.pahappa.systems.hms.models.Payment;
 
 import java.io.Serializable;
 import java.util.List;

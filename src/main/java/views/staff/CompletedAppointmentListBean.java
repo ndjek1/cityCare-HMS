@@ -1,13 +1,12 @@
-package backingbeans;
+package views.staff;
 
 
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.view.ViewScoped;
-import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import models.Appointment;
+import org.pahappa.systems.hms.models.Appointment;
 
-import services.impl.AppointmentServiceImpl;
+import org.pahappa.systems.hms.services.impl.AppointmentServiceImpl;
 
 import java.io.Serializable;
 import java.util.ArrayList;

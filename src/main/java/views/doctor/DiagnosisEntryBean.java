@@ -1,4 +1,4 @@
-package backingbeans.doctor; // Adjust package
+package views.doctor; // Adjust package
 
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
@@ -6,9 +6,9 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped; // Could also be RequestScoped if dialog state is always fresh
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import models.Appointment;
+import org.pahappa.systems.hms.models.Appointment;
 
-import services.impl.AppointmentServiceImpl;
+import org.pahappa.systems.hms.services.impl.AppointmentServiceImpl;
 
 import java.io.Serializable;
 import java.time.LocalDateTime; // For displaying appointment date/time

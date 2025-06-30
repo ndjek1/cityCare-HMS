@@ -1,16 +1,16 @@
-package backingbeans.doctor;
+package views.doctor;
 
-import backingbeans.UserAccountBean;
-import constants.AppointmentStatus; // Make sure you have this enum
+import views.UserAccountBean;
+import org.pahappa.systems.hms.constants.AppointmentStatus; // Make sure you have this enum
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import models.Appointment;
+import org.pahappa.systems.hms.models.Appointment;
 
-import services.impl.AppointmentServiceImpl;
+import org.pahappa.systems.hms.services.impl.AppointmentServiceImpl;
 
 import java.io.Serializable;
 import java.util.ArrayList;

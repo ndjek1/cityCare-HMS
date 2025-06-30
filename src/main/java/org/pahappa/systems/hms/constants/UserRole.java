@@ -1,4 +1,4 @@
-package constants;
+package org.pahappa.systems.hms.constants;
 
 // --- Enums ---
 public enum UserRole {

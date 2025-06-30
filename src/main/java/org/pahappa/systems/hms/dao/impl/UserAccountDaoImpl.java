@@ -1,9 +1,9 @@
-package dao.impl;
+package org.pahappa.systems.hms.dao.impl;
 
 
-import dao.UserAccountDao;
+import org.pahappa.systems.hms.dao.UserAccountDao;
 
-import models.UserAccount;
+import org.pahappa.systems.hms.models.UserAccount;
 import org.hibernate.query.Query;
 import java.util.Optional;
 

@@ -55,13 +55,5 @@ public class CompletedAppointmentListBean implements Serializable {
         loadAppointments();
     }
 
-//    // Optional: Action method for deleting a staff member (example)
-//    public void deleteAppointment(Appointment patientToDelete) {
-//        if (hospitalService != null && patientToDelete != null) {
-//            System.out.println("Attempting to delete staff: " + patientToDelete.getName());
-//            hospitalService.deleteStaff(patientToDelete.getAppointmentId()); // Assuming deleteStaff takes ID or object
-//            loadAppointments(); // Refresh the list after deletion
-//            // Add FacesMessage for success/failure
-//        }
-//    }
+
 }

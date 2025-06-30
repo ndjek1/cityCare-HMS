@@ -28,17 +28,14 @@ import java.util.Optional;
 
 public class BillingServiceImpl implements BillingService {
 
-    private final SessionFactory factory;
     private  final BillDaoImpl billDao;
-    private final AppointmentServiceImpl appointmentService;
+
     private final PaymentDaoImpl paymentDao;
     @Inject
     private ServiceCatalogServiceImpl serviceCatalogServiceImpl; // Example of service injecting service
 
     public BillingServiceImpl() {
-        this.factory = HibernateUtil.getSessionFactory();
         this.billDao = new BillDaoImpl();
-        this.appointmentService = new AppointmentServiceImpl();
         this.paymentDao = new PaymentDaoImpl();
     }
 

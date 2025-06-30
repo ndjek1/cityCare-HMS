@@ -299,12 +299,6 @@ public class AppointmentServiceImpl {
             session = factory.openSession();
             tx = session.beginTransaction();
 
-            // Assuming UserAccount has 'username' as its @Id or a unique constrained column
-            // If 'username' is the @Id:
-            // account = session.find(UserAccount.class, username);
-
-            // If 'username' is not the @Id, you need a query:
-            // Make sure UserAccount entity has a field 'username'
             Query<Appointment> query = session.createQuery(
                     "FROM Appointment a WHERE a.status = :status", Appointment.class
             );
@@ -373,12 +367,6 @@ public class AppointmentServiceImpl {
             session = factory.openSession();
             tx = session.beginTransaction();
 
-            // Assuming UserAccount has 'username' as its @Id or a unique constrained column
-            // If 'username' is the @Id:
-            // account = session.find(UserAccount.class, username);
-
-            // If 'username' is not the @Id, you need a query:
-            // Make sure UserAccount entity has a field 'username'
             Query<Appointment> query = session.createQuery(
                     "FROM Appointment a WHERE a.patient.patientId = :patientId", Appointment.class
             );

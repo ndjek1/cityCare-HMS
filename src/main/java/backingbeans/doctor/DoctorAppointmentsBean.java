@@ -115,15 +115,4 @@ public class DoctorAppointmentsBean implements Serializable {
         loadAndCategorizeAppointments(); // Refresh all categorized lists
     }
 
-    // You'll still need the DiagnosisEntryBean to handle the dialog for recording diagnosis.
-    // The saveDiagnosis method in DiagnosisEntryBean, after successfully saving,
-    // should call doctorAppointmentsBean.refreshAppointments() to update these lists.
-    // Example:
-    // @Inject
-    // private DoctorAppointmentsBean doctorAppointmentsBean; // In DiagnosisEntryBean
-    // ...
-    // if (success) {
-    //    doctorAppointmentsBean.refreshAppointments();
-    //    ...
-    // }
 }

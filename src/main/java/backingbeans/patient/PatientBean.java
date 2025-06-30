@@ -133,13 +133,7 @@ public class PatientBean implements Serializable {
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Validation Error", "Full name cannot be empty."));
             return;
         }
-        // Add more validation for other required fields (username, password, role, department)
 
-        // You need to decide how your HospitalService.registerStaff method works.
-        // Does it take individual parameters or a Staff object?
-        // Let's assume it takes individual parameters as per your old service method signature:
-        // hospitalService.registerStaff(username, password, role, name, department, address, email, phone, dob_string, gender)
-//
 
 
         System.out.println("Attempting to register staff: " + this.fullName);

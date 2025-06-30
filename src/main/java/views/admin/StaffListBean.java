@@ -1,15 +1,14 @@
-package backingbeans.admin;
+package views.admin;
 
 
-import constants.HospitalDepartment;
-import constants.UserRole;
+import org.pahappa.systems.hms.constants.HospitalDepartment;
+import org.pahappa.systems.hms.constants.UserRole;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.view.ViewScoped; // Good scope for displaying lists
-import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import models.Staff; // Your Staff model
+import org.pahappa.systems.hms.models.Staff; // Your Staff model
 
-import services.impl.StaffServiceImpl;
+import org.pahappa.systems.hms.services.impl.StaffServiceImpl;
 
 import java.io.Serializable;
 import java.util.ArrayList;

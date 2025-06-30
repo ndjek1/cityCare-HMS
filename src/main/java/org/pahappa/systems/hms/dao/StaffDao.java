@@ -1,8 +1,7 @@
-package dao;
+package org.pahappa.systems.hms.dao;
 
-import models.Staff;
+import org.pahappa.systems.hms.models.Staff;
 
-import java.io.Serializable;
 import java.util.Optional;
 
 public interface StaffDao extends GenericDao<Staff, Long> {

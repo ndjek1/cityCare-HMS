@@ -1,8 +1,7 @@
-package dao.impl;
+package org.pahappa.systems.hms.dao.impl;
 
-import dao.StaffDao;
-import jakarta.enterprise.context.ApplicationScoped;
-import models.Staff;
+import org.pahappa.systems.hms.dao.StaffDao;
+import org.pahappa.systems.hms.models.Staff;
 import org.hibernate.Hibernate;
 import java.util.Optional;
 

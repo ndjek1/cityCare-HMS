@@ -1,16 +1,15 @@
-package backingbeans.bill;
+package views.bill;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
-import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import models.*; // Import ServiceCatalogItem, BillItem
+import org.pahappa.systems.hms.models.*;
 
-import services.impl.AppointmentServiceImpl;
-import services.impl.BillingServiceImpl;
-import services.impl.ServiceCatalogServiceImpl;
+import org.pahappa.systems.hms.services.impl.AppointmentServiceImpl;
+import org.pahappa.systems.hms.services.impl.BillingServiceImpl;
+import org.pahappa.systems.hms.services.impl.ServiceCatalogServiceImpl;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -30,7 +29,7 @@ public class BillingBean implements Serializable {
     private Patient billToPatient;
 
     private List<BillItem> currentBillItems; // Items currently on the bill being built
-    private List<ServiceCatalogItem> availableCatalogServices; // Predefined services
+    private List<ServiceCatalogItem> availableCatalogServices; // Predefined org.pahappa.systems.hms.navigation.services
     private Long selectedCatalogServiceId; // For dropdown to select a predefined service
     private int quantityForSelectedItem = 1; // For selected catalog service
 

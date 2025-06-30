@@ -1,10 +1,12 @@
-package services;
+package org.pahappa.systems.hms.services;
 
-import constants.PaymentMethod;
-import models.*;
-import constants.ServiceCategory;
+import org.pahappa.systems.hms.constants.PaymentMethod;
+import org.pahappa.systems.hms.models.Appointment;
+import org.pahappa.systems.hms.models.Bill;
+import org.pahappa.systems.hms.models.BillItem;
+import org.pahappa.systems.hms.models.Payment;
 
-import java.math.BigDecimal;
+
 import java.util.List;
 import java.util.Optional;
 

@@ -1,28 +1,16 @@
-package services.impl;
+package org.pahappa.systems.hms.services.impl;
 
-import constants.AppointmentStatus;
-import constants.PaymentMethod;
-import constants.PaymentStatus;
-import dao.BillDao;
-import dao.impl.BillDaoImpl;
-import dao.impl.PaymentDaoImpl;
-import jakarta.enterprise.context.ApplicationScoped;
+import org.pahappa.systems.hms.constants.PaymentMethod;
+import org.pahappa.systems.hms.constants.PaymentStatus;
+import org.pahappa.systems.hms.dao.impl.BillDaoImpl;
+import org.pahappa.systems.hms.dao.impl.PaymentDaoImpl;
 import jakarta.inject.Inject;
-import jakarta.inject.Named;
-import models.Appointment;
-import models.Bill;
-import models.BillItem;
-import models.Payment;
-import org.hibernate.Hibernate;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.query.Query;
-import services.BillingService;
-import utils.HibernateUtil;
+import org.pahappa.systems.hms.models.Appointment;
+import org.pahappa.systems.hms.models.Bill;
+import org.pahappa.systems.hms.models.BillItem;
+import org.pahappa.systems.hms.models.Payment;
+import org.pahappa.systems.hms.services.BillingService;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 

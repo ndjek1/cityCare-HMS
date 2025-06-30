@@ -1,4 +1,4 @@
-package models;
+package org.pahappa.systems.hms.models;
 
 import jakarta.persistence.Embeddable;
 
@@ -11,7 +11,7 @@ public class BillItem {
     // @Column(name="service_cost") // Optional
     private double costAtTimeOfBilling; // Cost at the time of billing (prices can change)
 
-    private int quantity; // Optional: if services can have quantities (e.g., 2x Paracetamol)
+    private int quantity; // Optional: if org.pahappa.systems.hms.navigation.services can have quantities (e.g., 2x Paracetamol)
 
 
     public BillItem() {

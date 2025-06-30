@@ -1,7 +1,6 @@
-package services;
+package org.pahappa.systems.hms.services;
 
-import models.Patient;
-import models.Staff;
+import org.pahappa.systems.hms.models.Patient;
 
 import java.util.Date;
 import java.util.List;

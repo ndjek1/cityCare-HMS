@@ -1,22 +1,17 @@
-package services.impl;
+package org.pahappa.systems.hms.services.impl;
 
 
-import constants.UserRole;
-import dao.PatientDao;
-import dao.UserAccountDao;
-import dao.impl.PatientDaoImpl;
-import dao.impl.UserAccountDaoImpl;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
-import models.Patient;
-import models.Staff;
-import models.UserAccount;
+import org.pahappa.systems.hms.constants.UserRole;
+import org.pahappa.systems.hms.dao.PatientDao;
+import org.pahappa.systems.hms.dao.UserAccountDao;
+import org.pahappa.systems.hms.dao.impl.PatientDaoImpl;
+import org.pahappa.systems.hms.dao.impl.UserAccountDaoImpl;
+import org.pahappa.systems.hms.models.Patient;
+import org.pahappa.systems.hms.models.UserAccount;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import services.AuthService;
-import services.PatientService;
+import org.pahappa.systems.hms.services.AuthService;
+import org.pahappa.systems.hms.services.PatientService;
 import utils.PasswordUtil;
 
 import java.util.Date;

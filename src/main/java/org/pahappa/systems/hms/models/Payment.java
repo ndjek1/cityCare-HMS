@@ -1,7 +1,7 @@
-package models;
+package org.pahappa.systems.hms.models;
 
 import jakarta.persistence.*;
-import constants.PaymentMethod;
+import org.pahappa.systems.hms.constants.PaymentMethod;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

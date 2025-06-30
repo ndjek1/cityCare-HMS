@@ -1,4 +1,4 @@
-package backingbeans.bill;
+package views.bill;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
@@ -6,12 +6,12 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import models.Bill;
-import models.Patient;
-import models.Payment;
-import constants.PaymentMethod; // Your enum
+import org.pahappa.systems.hms.models.Bill;
+import org.pahappa.systems.hms.models.Patient;
+import org.pahappa.systems.hms.models.Payment;
+import org.pahappa.systems.hms.constants.PaymentMethod; // Your enum
 
-import services.impl.BillingServiceImpl;
+import org.pahappa.systems.hms.services.impl.BillingServiceImpl;
 
 import java.io.Serializable;
 import java.util.Arrays;

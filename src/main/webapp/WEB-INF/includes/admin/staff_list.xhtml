@@ -67,7 +67,7 @@
                         <p:menuitem value="#{staff.deleted ? 'Re-activate' : 'Deactivate'}"
                                     icon="#{staff.deleted ? 'pi pi-undo' : 'pi pi-trash'}"
                                     styleClass="#{staff.deleted ? '' : 'ui-menuitem-danger'}"
-                                    actionListener="..."
+                                    actionListener="#{staffListBean.deleteStaff(staff)}"
                                     process="@this" update="staffTable growl">
                             <p:confirm header="Confirm Action"
                                        message="Are you sure you want to #{staff.deleted ? 're-activate' : 'deactivate'} #{staff.name}?" />

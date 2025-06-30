@@ -5,46 +5,126 @@
       xmlns:ui="jakarta.faces.facelets"
       xmlns:p="http://primefaces.org/ui">
 
+<!-- ========== HEAD ========== -->
 <h:head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>CityCare HMS - <ui:insert name="title">Page Title</ui:insert></title>
+    <title>CityCare HMS – <ui:insert name="title">Page Title</ui:insert></title>
 
-    <!-- PrimeFlex CSS -->
+    <!-- PrimeFlex utility CSS -->
     <link rel="stylesheet" href="https://unpkg.com/primeflex@latest/primeflex.css"/>
 
-    <!-- Custom Styles -->
+    <!-- Your custom overrides (optional) -->
     <h:outputStylesheet library="css" name="style.css"/>
 
-    <!-- JSF Pre-render Event for Authentication Check -->
+    <!-- Authentication guard -->
     <f:event type="preRenderView" listener="#{navigationBean.checkLogin}"/>
-
 </h:head>
 
-<h:body>
-    <!-- Global AJAX Status Indicator -->
-    <!-- Global AJAX Status Indicator -->
-    <p:ajaxStatus styleClass="ajax-status">
-        <f:facet name="start">
-            <i class="pi pi-spinner pi-spin" style="font-size: 2rem; color: var(--primary-color);" />
-        </f:facet>
-        <f:facet name="complete">
-            <!-- This must not be empty for the facet to render correctly -->
-            <h:outputText value="" />
-        </f:facet>
-    </p:ajaxStatus>
+<!-- ========== BODY ========== -->
+<h:body styleClass="flex min-h-screen" style="margin:0;">
 
+    <!-- - FIXED SIDEBAR - -->
+    <nav class="surface-100 shadow-2"
+         style="width:280px;position:fixed;top:0;left:0;bottom:0;overflow-y:auto;z-index:1000;">
+        <h:form id="menuForm">
+            <p:panelMenu style="width:100%;">
 
-    <div class="layout-wrapper">
-        <!-- ================= Header ================= -->
-        <header class="layout-topbar">
-            <h:link action="#{pageNavigationBean.navigateToDashboard}" styleClass="logo">
-                <i class="pi pi-heart-fill"></i>
-                <span>CityCare HMS</span>
+                <!-- - MAIN MENU (visible to all logged‑in users) - -->
+                <p:submenu label="Main Menu">
+                    <p:menuitem value="Dashboard"
+                                action="#{pageNavigationBean.navigateToDashboard}"
+                                icon="pi pi-home"
+                                update=":pageContentForm:mainContentPanel"
+                                styleClass="#{pageNavigationBean.currentPage.contains('dashboard') ? 'ui-menuitem-active' : ''}"/>
+                </p:submenu>
+
+                <!-- - PATIENT PORTAL - -->
+                <p:submenu label="Patient Portal" rendered="#{userAccountBean.isPatient()}">
+                    <p:menuitem value="Book Appointment"
+                                action="#{pageNavigationBean.navigateToBookAppointment}"
+                                icon="pi pi-calendar-plus"
+                                update=":pageContentForm:mainContentPanel"/>
+                    <p:menuitem value="My Appointments"
+                                action="#{pageNavigationBean.navigateToPatientAppointments}"
+                                icon="pi pi-list"
+                                update=":pageContentForm:mainContentPanel"/>
+                </p:submenu>
+
+                <!-- - DOCTOR TOOLS - -->
+                <p:submenu label="Doctor Tools" rendered="#{userAccountBean.isDoctor()}">
+                    <p:menuitem value="My Schedule"
+                                action="#{pageNavigationBean.navigateToManageDoctorSchedule}"
+                                icon="pi pi-calendar-cog"
+                                update=":pageContentForm:mainContentPanel"/>
+                    <p:menuitem value="Patient Appointments"
+                                action="#{pageNavigationBean.navigateToDoctorAppointments}"
+                                icon="pi pi-book"
+                                update=":pageContentForm:mainContentPanel"/>
+                </p:submenu>
+
+                <!-- - RECEPTIONIST MENU - -->
+                <p:submenu label="Front Desk" rendered="#{userAccountBean.isReceptionist()}">
+                    <p:menuitem value="Register Patient"
+                                action="#{pageNavigationBean.navigateAddNewPatient}"
+                                icon="pi pi-user-plus"
+                                update=":pageContentForm:mainContentPanel"/>
+                    <p:menuitem value="Book Patient Appointment"
+                                action="#{pageNavigationBean.navigateToBookAppointment}"
+                                icon="pi pi-calendar-plus"
+                                update=":pageContentForm:mainContentPanel"/>
+                    <p:menuitem value="Patient Bills"
+                                action="#{pageNavigationBean.navigateToUnpaidBills}"
+                                icon="pi pi-dollar"
+                                update=":pageContentForm:mainContentPanel"/>
+                    <p:menuitem value="Completed Appointments"
+                                action="#{pageNavigationBean.navigateToCompletedAppointments}"
+                                icon="pi pi-check-square"
+                                update=":pageContentForm:mainContentPanel"/>
+                </p:submenu>
+
+                <!-- - ADMINISTRATION - -->
+                <p:submenu label="Administration" rendered="#{userAccountBean.isAdministrator()}">
+                    <p:menuitem value="Add Staff"
+                                action="#{pageNavigationBean.navigateAddNewStaff}"
+                                icon="pi pi-user-plus"
+                                update=":pageContentForm:mainContentPanel"/>
+                    <p:menuitem value="Manage Staff"
+                                action="#{pageNavigationBean.navigateToViewStaff}"
+                                icon="pi pi-users"
+                                update=":pageContentForm:mainContentPanel"/>
+                    <p:menuitem value="Manage Patients"
+                                action="#{pageNavigationBean.navigateToViewPatients}"
+                                icon="pi pi-users"
+                                update=":pageContentForm:mainContentPanel"/>
+                    <p:menuitem value="Service Catalog"
+                                action="#{pageNavigationBean.navigateToManageServiceCatalog}"
+                                icon="pi pi-book"
+                                update=":pageContentForm:mainContentPanel"/>
+                </p:submenu>
+
+            </p:panelMenu>
+        </h:form>
+    </nav>
+
+    <!-- - RIGHT‑HAND SIDE (HEADER + MAIN + FOOTER) - -->
+    <div class="flex flex-column flex-grow-1"
+         style="margin-left:280px;width:calc(100% - 280px);min-height:100vh;">
+
+        <!-- ===== HEADER ===== -->
+        <header class="surface-0 shadow-1 px-4 py-3 flex justify-content-between align-items-center"
+                style="position:fixed;top:0;left:280px;width:calc(100% - 280px);z-index:999;height:70px;"
+        >
+            <!-- Logo -->
+            <h:link action="#{pageNavigationBean.navigateToDashboard}"
+                    styleClass="flex align-items-center text-xl font-bold text-primary">
+                <i class="pi pi-heart-fill mr-2"></i>
+                CityCare HMS
             </h:link>
 
+            <!-- User menu -->
             <h:form id="headerUserForm">
-                <div class="flex align-items-center" >
+                <div class="flex align-items-center gap-2">
                     <p:menuButton value="Welcome, #{userAccountBean.currentUserName}"
                                   icon="pi pi-user"
                                   rendered="#{userAccountBean.loggedIn}">
@@ -61,123 +141,48 @@
                     </p:menuButton>
 
                     <p:avatar label="#{userAccountBean.generateInitials(userAccountBean.currentUserName)}"
-                              styleClass="mr-2" size="xlarge" shape="circle"
-                              style="background-color: var(--surface-400); color: var(--text-color)"/>
+                              size="xlarge" shape="circle"
+                              styleClass="bg-gray-300 text-white font-bold"/>
                 </div>
             </h:form>
         </header>
 
-        <!-- ================= Main Layout ================= -->
-        <div class="layout-main-container">
+        <!-- ===== MAIN CONTENT ===== -->
+        <main class="flex-grow-1 p-4" style="overflow-y:auto;">
+            <h:form id="pageContentForm">
+                <p:growl id="pageGrowlMessages" showDetail="true" life="6000"/>
+                <p:outputPanel id="mainContentPanel">
+                    <p:card styleClass="content-card">
+                        <!-- Optional slot for individual pages -->
+                        <ui:insert name="page-content"/>
+                        <!-- Actual page include -->
+                        <ui:include src="#{pageNavigationBean.currentPage}"/>
+                    </p:card>
+                </p:outputPanel>
+            </h:form>
+        </main>
 
-            <!-- Sidebar -->
-            <nav class="layout-sidebar">
-                <h:form id="menuForm">
-                    <p:panelMenu style="width:100%;">
-                        <p:submenu label="Main Menu">
-                            <p:menuitem value="Dashboard"
-                                        action="#{pageNavigationBean.navigateToDashboard}"
-                                        icon="pi pi-home"
-                                        update=":pageContentForm:mainContentPanel"
-                                        styleClass="#{pageNavigationBean.currentPage.contains('dashboard') ? 'ui-menuitem-active' : ''}"/>
-                        </p:submenu>
-
-                        <!-- ========== Patient Menu ========== -->
-                        <p:submenu label="Patient Portal" rendered="#{userAccountBean.isPatient()}">
-                            <p:menuitem value="Book Appointment"
-                                        action="#{pageNavigationBean.navigateToBookAppointment}"
-                                        icon="pi pi-calendar-plus"
-                                        update=":pageContentForm:mainContentPanel"/>
-                            <p:menuitem value="My Appointments"
-                                        action="#{pageNavigationBean.navigateToPatientAppointments}"
-                                        icon="pi pi-list"
-                                        update=":pageContentForm:mainContentPanel"/>
-                        </p:submenu>
-
-                        <!-- ========== Doctor Menu ========== -->
-                        <p:submenu label="Doctor Tools" rendered="#{userAccountBean.isDoctor()}">
-                            <p:menuitem value="My Schedule"
-                                        action="#{pageNavigationBean.navigateToManageDoctorSchedule}"
-                                        icon="pi pi-calendar-cog"
-                                        update=":pageContentForm:mainContentPanel"/>
-                            <p:menuitem value="Patient Appointments"
-                                        action="#{pageNavigationBean.navigateToDoctorAppointments}"
-                                        icon="pi pi-book"
-                                        update=":pageContentForm:mainContentPanel"/>
-                        </p:submenu>
-
-                        <!-- ========== Receptionist Menu ========== -->
-                        <p:submenu label="Front Desk" rendered="#{userAccountBean.isReceptionist()}">
-                            <p:menuitem value="Register Patient"
-                                        action="#{pageNavigationBean.navigateAddNewPatient}"
-                                        icon="pi pi-user-plus"
-                                        update=":pageContentForm:mainContentPanel"/>
-                            <p:menuitem value="Book Patient Appointment"
-                                        action="#{pageNavigationBean.navigateToBookAppointment}"
-                                        icon="pi pi-calendar-plus"
-                                        update=":pageContentForm:mainContentPanel"/>
-                            <p:menuitem value="Patient Bills"
-                                        action="#{pageNavigationBean.navigateToUnpaidBills}"
-                                        icon="pi pi-dollar"
-                                        update=":pageContentForm:mainContentPanel"/>
-                            <p:menuitem value="Completed Appointments"
-                                        action="#{pageNavigationBean.navigateToCompletedAppointments}"
-                                        icon="pi pi-check-square"
-                                        update=":pageContentForm:mainContentPanel"/>
-                        </p:submenu>
-
-                        <!-- ========== Administrator Menu ========== -->
-                        <p:submenu label="Administration" rendered="#{userAccountBean.isAdministrator()}">
-                            <p:menuitem value="Add Staff"
-                                        action="#{pageNavigationBean.navigateAddNewStaff}"
-                                        icon="pi pi-user-plus"
-                                        update=":pageContentForm:mainContentPanel"/>
-                            <p:menuitem value="Manage Staff"
-                                        action="#{pageNavigationBean.navigateToViewStaff}"
-                                        icon="pi pi-users"
-                                        update=":pageContentForm:mainContentPanel"/>
-                            <p:menuitem value="Manage Patients"
-                                        action="#{pageNavigationBean.navigateToViewPatients}"
-                                        icon="pi pi-users"
-                                        update=":pageContentForm:mainContentPanel"/>
-                            <p:menuitem value="Service Catalog"
-                                        action="#{pageNavigationBean.navigateToManageServiceCatalog}"
-                                        icon="pi pi-book"
-                                        update=":pageContentForm:mainContentPanel"/>
-                        </p:submenu>
-                    </p:panelMenu>
-                </h:form>
-            </nav>
-
-            <!-- Page Content -->
-            <main class="layout-main">
-                <h:form id="pageContentForm">
-                    <p:growl id="pageGrowlMessages" showDetail="true" life="6000" />
-                    <p:outputPanel id="mainContentPanel">
-                        <p:card styleClass="content-card">
-                            <ui:insert name="page-content">
-                                <!-- Default content if a page doesn't define it -->
-                                <h1>Welcome to CityCare HMS</h1>
-
-                            </ui:insert>
-                            <!-- This part below will be replaced by your page content -->
-                            <ui:include src="#{pageNavigationBean.currentPage}" />
-                        </p:card>
-                    </p:outputPanel>
-                </h:form>
-            </main>
-        </div>
+        <!-- ===== FOOTER ===== -->
+        <footer class="surface-100 text-center py-3 text-sm text-gray-600">
+            <h:outputText value="© #{java.time.Year.now()} CityCare Hospital Management System. All rights reserved."/>
+        </footer>
     </div>
 
-    <!-- ================= Footer ================= -->
-    <footer class="layout-footer">
-        <h:outputText value="© #{java.time.Year.now()} CityCare Hospital Management System. All rights reserved."/>
-    </footer>
+    <!-- - GLOBAL AJAX SPINNER - -->
+    <p:ajaxStatus styleClass="ajax-status">
+        <f:facet name="start">
+            <i class="pi pi-spinner pi-spin"
+               style="font-size:2rem;color:var(--primary-color);" />
+        </f:facet>
+        <f:facet name="complete">
+            <h:outputText value=""/>
+        </f:facet>
+    </p:ajaxStatus>
 
-    <!-- ================= Common Dialogs ================= -->
-    <ui:include src="/WEB-INF/includes/dialogs/diagnosis_dialog.xhtml" />
-    <ui:include src="/WEB-INF/includes/dialogs/billing_dialog.xhtml" />
-    <ui:include src="/WEB-INF/includes/dialogs/payment_dialog.xhtml" />
+    <!-- - COMMON DIALOGS - -->
+    <ui:include src="/WEB-INF/includes/dialogs/diagnosis_dialog.xhtml"/>
+    <ui:include src="/WEB-INF/includes/dialogs/billing_dialog.xhtml"/>
+    <ui:include src="/WEB-INF/includes/dialogs/payment_dialog.xhtml"/>
 
 </h:body>
 </html>

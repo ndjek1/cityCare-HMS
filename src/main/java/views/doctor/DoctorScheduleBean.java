@@ -1,15 +1,15 @@
-package backingbeans.doctor;
+package views.doctor;
 
 
-import backingbeans.UserAccountBean;
+import views.UserAccountBean;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import models.Staff;
-import services.impl.StaffServiceImpl;
+import org.pahappa.systems.hms.models.Staff;
+import org.pahappa.systems.hms.services.impl.StaffServiceImpl;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -46,13 +46,13 @@ public class DoctorScheduleBean implements Serializable {
     @PostConstruct
     public void init() {
         Object loggedInDetails = userAccountBean.getCurrentUserDetails();
-        if (loggedInDetails instanceof Staff && ((Staff) loggedInDetails).getRole() == constants.UserRole.DOCTOR) {
+        if (loggedInDetails instanceof Staff && ((Staff) loggedInDetails).getRole() == org.pahappa.systems.hms.constants.UserRole.DOCTOR) {
             currentDoctor = (Staff) loggedInDetails;
         } else {
             // Handle error: not a doctor or not logged in - redirect or show error
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Access Denied", "You must be a doctor to manage schedules."));
-            // Potentially navigate away: FacesContext.getCurrentInstance().getApplication().getNavigationHandler().handleNavigation(FacesContext.getCurrentInstance(), null, "/dashboard.xhtml?faces-redirect=true");
+
             return;
         }
 

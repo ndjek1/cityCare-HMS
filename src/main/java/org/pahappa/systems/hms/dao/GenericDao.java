@@ -1,4 +1,4 @@
-package dao;
+package org.pahappa.systems.hms.dao;
 
 
 import java.io.Serializable;

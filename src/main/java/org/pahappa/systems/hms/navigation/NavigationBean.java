@@ -1,10 +1,9 @@
-package backingbeans;
+package org.pahappa.systems.hms.navigation;
 
-import jakarta.enterprise.context.RequestScoped;
+import views.UserAccountBean;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.io.IOException;

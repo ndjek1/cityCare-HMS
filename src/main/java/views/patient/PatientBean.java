@@ -1,4 +1,4 @@
-package backingbeans.patient;
+package views.patient;
 
 
 import annotations.MaxAge;
@@ -6,12 +6,11 @@ import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
-import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.validation.constraints.*;
-import models.Patient;
+import org.pahappa.systems.hms.models.Patient;
 
-import services.impl.PatientServiceImpl;
+import org.pahappa.systems.hms.services.impl.PatientServiceImpl;
 
 import java.io.Serializable;
 import java.util.Date;

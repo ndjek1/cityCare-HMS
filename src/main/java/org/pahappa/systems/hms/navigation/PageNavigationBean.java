@@ -1,6 +1,6 @@
-package backingbeans;
+package org.pahappa.systems.hms.navigation;
 
-import jakarta.enterprise.context.SessionScoped; // Or ViewScoped depending on desired behavior
+import views.UserAccountBean;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;

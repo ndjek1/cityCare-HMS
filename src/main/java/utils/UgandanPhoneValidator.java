@@ -1,4 +1,4 @@
-package backingbeans; // Or any package you prefer
+package utils; // Or any package you prefer
 
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.UIComponent;

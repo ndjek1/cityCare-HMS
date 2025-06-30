@@ -1,16 +1,16 @@
-package backingbeans.staff;
+package views.staff;
 
-import backingbeans.UserAccountBean;
+import views.UserAccountBean;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import models.Staff;
+import org.pahappa.systems.hms.models.Staff;
 
-import services.impl.AuthServiceImpl;
-import services.impl.StaffServiceImpl;
+import org.pahappa.systems.hms.services.impl.AuthServiceImpl;
+import org.pahappa.systems.hms.services.impl.StaffServiceImpl;
 
 import java.io.Serializable;
 import java.util.Optional;

@@ -1,19 +1,16 @@
-package services.impl;
+package org.pahappa.systems.hms.services.impl;
 
-import constants.HospitalDepartment;
-import constants.UserRole;
-import dao.impl.StaffDaoImpl;
-import dao.impl.UserAccountDaoImpl;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
-import models.Staff;
-import models.UserAccount;
+import org.pahappa.systems.hms.constants.HospitalDepartment;
+import org.pahappa.systems.hms.constants.UserRole;
+import org.pahappa.systems.hms.dao.impl.StaffDaoImpl;
+import org.pahappa.systems.hms.dao.impl.UserAccountDaoImpl;
+import org.pahappa.systems.hms.models.Staff;
+import org.pahappa.systems.hms.models.UserAccount;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import services.StaffService;
+import org.pahappa.systems.hms.services.StaffService;
 import utils.HibernateUtil;
 import utils.PasswordUtil;
 
@@ -29,7 +26,7 @@ public class StaffServiceImpl implements StaffService {
     private final StaffDaoImpl staffDao;
     private final UserAccountDaoImpl  userAccountDao;
 
-    private final AuthServiceImpl authServiceImpl; // Inject other services as needed
+    private final AuthServiceImpl authServiceImpl; // Inject other org.pahappa.systems.hms.navigation.services as needed
 
     public StaffServiceImpl() {
         this.staffDao = new StaffDaoImpl();

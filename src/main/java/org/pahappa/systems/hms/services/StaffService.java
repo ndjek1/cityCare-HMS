@@ -1,8 +1,8 @@
-package services;
+package org.pahappa.systems.hms.services;
 
-import constants.HospitalDepartment;
-import constants.UserRole;
-import models.Staff;
+import org.pahappa.systems.hms.constants.HospitalDepartment;
+import org.pahappa.systems.hms.constants.UserRole;
+import org.pahappa.systems.hms.models.Staff;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;

@@ -1,12 +1,10 @@
-package services.impl;
+package org.pahappa.systems.hms.services.impl;
 
-import constants.AppointmentStatus;
-import dao.impl.AppointmentDaoImpl;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Named;
-import models.Appointment;
-import models.Patient;
-import models.Staff;
+import org.pahappa.systems.hms.constants.AppointmentStatus;
+import org.pahappa.systems.hms.dao.impl.AppointmentDaoImpl;
+import org.pahappa.systems.hms.models.Appointment;
+import org.pahappa.systems.hms.models.Patient;
+import org.pahappa.systems.hms.models.Staff;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -37,6 +35,14 @@ public class AppointmentServiceImpl {
                             "JOIN FETCH a.patient " +
                             "WHERE a.doctor.staffId = :doctorId ORDER BY a.dateTime DESC", Appointment.class);
             query.setParameter("doctorId", doctorId);
+            List<Appointment> appointments = query.getResultList();
+            if (!appointments.isEmpty()) {
+                for(Appointment appointment : appointments) {
+                    Hibernate.initialize(appointment.getPatient());
+                    Hibernate.initialize(appointment.getDoctor());
+                    Hibernate.initialize(appointment.getBill());
+                }
+            }
             return query.getResultList();
         } catch (Exception e) {
             e.printStackTrace();
@@ -147,7 +153,7 @@ public class AppointmentServiceImpl {
                 if (tx.isActive()) tx.rollback();
                 return false;
             }
-            if (newDoctor.getRole() != constants.UserRole.DOCTOR){
+            if (newDoctor.getRole() != org.pahappa.systems.hms.constants.UserRole.DOCTOR){
                 System.err.println("SERVICE: Selected new staff (ID: " + newDoctorId + ") is not a DOCTOR.");
                 if (tx.isActive()) tx.rollback();
                 return false;

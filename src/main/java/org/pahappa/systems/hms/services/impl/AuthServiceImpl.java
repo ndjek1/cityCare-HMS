@@ -1,18 +1,15 @@
-package services.impl;
+package org.pahappa.systems.hms.services.impl;
 
 
-import dao.PatientDao;
-import dao.StaffDao;
-import dao.UserAccountDao;
-import dao.impl.PatientDaoImpl;
-import dao.impl.StaffDaoImpl;
-import dao.impl.UserAccountDaoImpl;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
-import models.UserAccount;
-import services.AuthService;
-import services.LoginResult;
+import org.pahappa.systems.hms.dao.PatientDao;
+import org.pahappa.systems.hms.dao.StaffDao;
+import org.pahappa.systems.hms.dao.UserAccountDao;
+import org.pahappa.systems.hms.dao.impl.PatientDaoImpl;
+import org.pahappa.systems.hms.dao.impl.StaffDaoImpl;
+import org.pahappa.systems.hms.dao.impl.UserAccountDaoImpl;
+import org.pahappa.systems.hms.models.UserAccount;
+import org.pahappa.systems.hms.services.AuthService;
+import org.pahappa.systems.hms.services.LoginResult;
 import utils.PasswordUtil;
 
 

@@ -4,83 +4,81 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:ui="jakarta.faces.facelets">
 
-   <h:form id="patientListForm">
-      <div class="card">
-         <p:toolbar styleClass="mb-4">
-            <p:toolbarGroup>
-               <p:commandButton value="Register New Patient" icon="pi pi-user-plus" styleClass="ui-button-success"
-                                action="#{pageNavigationBean.navigateAddNewPatient}" />
-            </p:toolbarGroup>
-            <p:toolbarGroup align="right">
-               <!-- Global filter can be re-enabled if needed -->
-               <span class="p-input-icon-left">
-                        <i class="pi pi-search"></i>
-                        <p:inputText id="globalFilter" onkeyup="PF('patientTableWidget').filter()"
-                                     placeholder="Search all fields..." style="width: 300px;"/>
-                    </span>
-            </p:toolbarGroup>
-         </p:toolbar>
+    <p:card header="Manage Patients" styleClass="shadow-2" style="padding:1rem;">
+        <h:form id="patientListForm" styleClass="p-fluid">
 
-         <!-- ==================== MODERN DATA TABLE ==================== -->
-         <p:dataTable id="patientTable" widgetVar="patientTableWidget"
-                      var="patient" value="#{patientListBean.patientList}"
-                      paginator="true" rows="10"
-         reflow="true"
-         paginatorPosition="bottom"
-         emptyMessage="No patients found matching your search."
-         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-         rowsPerPageTemplate="5,10,20,50">
+            <!-- Notifications -->
+            <p:growl id="growl" showDetail="true" life="4000"/>
 
-         <!-- 1. Rich Patient Info Column (Avatar + Name + Email) -->
-         <p:column headerText="Patient" sortBy="#{patient.name}" filterBy="#{patient.name}" filterMatchMode="contains" style="min-width: 250px;">
-            <div class="patient-info-cell">
-               <p:avatar label="#{staffListBean.generateInitials(patient.name)}" shape="circle" size="large"
-                         style="background-color: var(--blue-500); color: #ffffff;"/>
-               <div class="patient-details">
-                  <span class="patient-name">#{patient.name}</span>
-                  <span class="patient-email">#{patient.email}</span>
-               </div>
-            </div>
-         </p:column>
+            <!-- Toolbar -->
+            <p:toolbar styleClass="mb-3">
+                <p:toolbarGroup>
+                    <p:commandButton value="Register Patient" icon="pi pi-plus" styleClass="ui-button-success"
+                                     action="#{pageNavigationBean.navigateAddNewPatient}" />
+                </p:toolbarGroup>
+                <p:toolbarGroup align="right">
+                    <p:inputText id="globalFilter"
+                                 placeholder="Search all fields..."
+                                 onkeyup="PF('patientTableWidget').filter()"
+                                 styleClass="w-full md:w-20rem" />
+                </p:toolbarGroup>
+            </p:toolbar>
 
-         <!-- 2. Patient ID -->
-         <p:column headerText="Patient ID" sortBy="#{patient.patientId}" style="width: 120px;">
-            <h:outputText value="PID-#{patient.patientId}" />
-         </p:column>
+            <!-- Scrollable DataTable -->
+            <p:dataTable id="patientTable"
+                         var="patient"
+                         value="#{patientListBean.patientList}"
+                         widgetVar="patientTableWidget"
+                         scrollable="true"
+                         scrollHeight="400"
+                         emptyMessage="No patients found."
+                         styleClass="p-datatable-striped p-datatable-sm">
 
-         <!-- 3. Phone Number -->
-         <p:column headerText="Phone Number" sortBy="#{patient.phoneNumber}">
-            <h:outputText value="#{patient.phoneNumber}" />
-         </p:column>
+                <!-- Patient Info Column -->
+                <p:column headerText="Patient" style="min-width: 280px;">
+                    <div class="flex align-items-center gap-2">
+                        <p:avatar label="#{patient.name.substring(0,1)}" shape="circle"
+                                  styleClass="bg-primary text-white font-bold" />
+                        <div class="flex flex-column">
+                            <span>#{patient.name}</span>
+                            <small class="text-muted">#{patient.email}</small>
+                        </div>
+                    </div>
+                </p:column>
 
-         <!-- 4. Status Column (Example) -->
-         <p:column headerText="Status" style="width: 120px;">
-            <!-- Use severity for automatic colors: 'success', 'info', 'warning', 'danger' -->
-            <p:tag severity="success" value="Active" rounded="true" />
-         </p:column>
+                <!-- Phone Number -->
+                <p:column headerText="Phone Number">
+                    <h:outputText value="#{patient.phoneNumber}" />
+                </p:column>
 
-         <!-- 5. Actions Column with a SplitButton -->
-         <p:column headerText="Actions" style="width: 100px; text-align: center;" styleClass="actions-column">
-            <p:splitButton value="View" icon="pi pi-eye" styleClass="ui-button-secondary ui-button-text"
-                           action="..,">
-               <p:menuitem value="Delete" icon="pi pi-trash" styleClass="ui-menuitem-danger"
-                           actionListener="#{patientListBean.deletePatient(patient)}"
-                           process="@this" update="@form:growl @form:patientTable">
-                  <p:confirm header="Confirm Deletion"
-                             message="Delete patient #{patient.name}?" />
-               </p:menuitem>
-            </p:splitButton>
-         </p:column>
+                <!-- Actions -->
+                <p:column headerText="Actions" style="width: 60px;">
+                    <p:menuButton icon="pi pi-ellipsis-v" buttonStyleClass="rounded-button ui-button-flat">
+                        <p:menuitem value="View Profile" icon="pi pi-eye"
+                                    action="#{patientListBean.viewPatient(patient)}" />
+                        <p:menuitem value="Book Appointment" icon="pi pi-calendar-plus"
+                                    action="#{patientListBean.bookAppointment(patient)}" />
+                        <p:separator/>
+                        <p:menuitem value="#{patient.deleted ? 'Re-activate' : 'Deactivate'}"
+                                    icon="#{patient.deleted ? 'pi pi-undo' : 'pi pi-trash'}"
+                                    styleClass="#{patient.deleted ? '' : 'ui-menuitem-danger'}"
+                                    actionListener="#{patientListBean.deletePatient(patient)}"
+                                    process="@this" update="patientTable growl">
+                            <p:confirm header="Confirm Action"
+                                       message="Are you sure you want to #{patient.deleted ? 're-activate' : 'deactivate'} #{patient.name}?" />
+                        </p:menuitem>
+                    </p:menuButton>
+                </p:column>
 
-      </p:dataTable>
-   </div>
+            </p:dataTable>
 
-   <!-- Global Dialogs and Messages -->
-   <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="400">
-      <p:commandButton value="Yes, Delete" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
-      <p:commandButton value="Cancel" type="button" styleClass="ui-confirmdialog-no ui-button-secondary" icon="pi pi-times" />
-   </p:confirmDialog>
+            <!-- Global Confirm Dialog -->
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="400">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+                <p:commandButton value="Cancel" type="button" styleClass="ui-confirmdialog-no ui-button-secondary" icon="pi pi-times" />
+            </p:confirmDialog>
 
-   <p:growl id="growl" showDetail="true" life="4000"/>
-</h:form>
-        </ui:composition>
+        </h:form>
+    </p:card>
+
+</ui:composition>

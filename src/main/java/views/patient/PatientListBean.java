@@ -1,14 +1,14 @@
-package backingbeans.patient;
+package views.patient;
 
 
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.view.ViewScoped;
 
 import jakarta.inject.Named;
-import models.Patient;
+import org.pahappa.systems.hms.models.Patient;
 
-import services.PatientService;
-import services.impl.PatientServiceImpl;
+import org.pahappa.systems.hms.services.PatientService;
+import org.pahappa.systems.hms.services.impl.PatientServiceImpl;
 
 import java.io.Serializable;
 import java.util.ArrayList;

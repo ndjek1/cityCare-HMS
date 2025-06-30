@@ -1,6 +1,6 @@
-package dao;
+package org.pahappa.systems.hms.dao;
 
-import models.Patient;
+import org.pahappa.systems.hms.models.Patient;
 
 import java.util.Optional;
 

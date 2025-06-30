@@ -1,8 +1,7 @@
-package dao.impl;
+package org.pahappa.systems.hms.dao.impl;
 
-import dao.PatientDao;
-import jakarta.enterprise.context.ApplicationScoped;
-import models.Patient;
+import org.pahappa.systems.hms.dao.PatientDao;
+import org.pahappa.systems.hms.models.Patient;
 import org.hibernate.Hibernate;
 import java.util.Optional;
 

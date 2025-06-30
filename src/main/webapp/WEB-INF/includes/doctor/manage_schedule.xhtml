@@ -21,13 +21,13 @@
                                 mindate="#{cc.attrs.today}">
                      <p:ajax event="dateSelect"
                              listener="#{doctorScheduleBean.loadExistingSlotsForDate}"
-                             update="existingSlotsPanel newSlotsPanel scheduleMessages" />
+                             update="@form" />
                   </p:datePicker>
                </div>
                <div class="col-12 md:col-6 lg:col-2 align-self-end">
                   <p:commandButton value="View Date"
                                    action="#{doctorScheduleBean.loadExistingSlotsForDate}"
-                                   update="existingSlotsPanel newSlotsPanel scheduleMessages"
+                                   update="@form"
                                    icon="pi pi-search"
                                    styleClass="mt-3" />
                </div>
@@ -77,7 +77,7 @@
                   <p:column headerText="Actions" style="width: 100px; text-align: center;">
                      <p:commandButton icon="pi pi-trash" title="Remove Slot"
                                       action="#{doctorScheduleBean.removeSlot(slot)}"
-                                      update="existingSlotsPanel scheduleMessages"
+                                      update="@form:existingSlotsPanel scheduleMessages"
                                       process="@this"
                                       styleClass="ui-button-danger">
                         <p:confirm header="Confirmation"

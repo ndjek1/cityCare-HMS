@@ -1,21 +1,41 @@
-package dao.impl;
+package org.pahappa.systems.hms.dao.impl;
 
 
-import constants.AppointmentStatus;
-import dao.AppointmentDao;
-import jakarta.enterprise.context.ApplicationScoped;
-import models.Appointment;
+import org.pahappa.systems.hms.constants.AppointmentStatus;
+import org.pahappa.systems.hms.dao.AppointmentDao;
+import org.pahappa.systems.hms.models.Appointment;
+import org.hibernate.Hibernate;
 import org.hibernate.query.Query;
 
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 
 public class AppointmentDaoImpl extends AbstractDao<Appointment, Long> implements AppointmentDao {
 
     public AppointmentDaoImpl() {
         super(Appointment.class);
+    }
+
+
+    @Override public Optional<Appointment> findById(Long id) {
+        return execute(session -> {
+            if (id == null) {
+                return Optional.empty();
+            }
+
+            Appointment appointment = session.get(Appointment.class, id);
+            if (appointment != null) {
+                Hibernate.initialize(appointment.getPatient());
+                Hibernate.initialize(appointment.getDoctor());
+                Hibernate.initialize(appointment.getBill());
+                // initialize lazy collection
+            }
+
+            return Optional.ofNullable(appointment);
+        });
     }
 
     @Override

@@ -1,6 +1,6 @@
-package services;
+package org.pahappa.systems.hms.services;
 
-import models.Appointment;
+import org.pahappa.systems.hms.models.Appointment;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;

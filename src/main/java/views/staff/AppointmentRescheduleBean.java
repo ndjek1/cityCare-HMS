@@ -1,17 +1,17 @@
-package backingbeans.staff; // Adjust package
+package views.staff; // Adjust package
 
-import backingbeans.PageNavigationBean;
+import org.pahappa.systems.hms.navigation.PageNavigationBean;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import models.Appointment;
-import models.Staff;
+import org.pahappa.systems.hms.models.Appointment;
+import org.pahappa.systems.hms.models.Staff;
 
-import services.impl.AppointmentServiceImpl;
-import services.impl.StaffServiceImpl;
+import org.pahappa.systems.hms.services.impl.AppointmentServiceImpl;
+import org.pahappa.systems.hms.services.impl.StaffServiceImpl;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -58,14 +58,14 @@ public class AppointmentRescheduleBean implements Serializable {
         List<Staff> allStaff = staffService.getAllStaffs();
         if (allStaff != null) {
             availableDoctors = allStaff.stream()
-                    .filter(staff -> staff.getRole() == constants.UserRole.DOCTOR)
+                    .filter(staff -> staff.getRole() == org.pahappa.systems.hms.constants.UserRole.DOCTOR)
                     .collect(Collectors.toList());
         }
     }
 
     // Called when navigating to the reschedule page/view
     // This method would be called by an action that sets appointmentIdToReschedule
-    // For example, via <f:param> or by setting it directly before navigation.
+    // For example, via <f:param> or by setting it directly before org.pahappa.systems.hms.navigation.
     public void loadAppointmentForReschedule() {
         if (appointmentIdToReschedule != null) {
             Optional<Appointment> optApp = appointmentService.findAppointmentById(appointmentIdToReschedule);

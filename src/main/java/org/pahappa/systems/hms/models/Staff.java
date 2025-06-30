@@ -1,8 +1,8 @@
-package models;
+package org.pahappa.systems.hms.models;
 
 import jakarta.persistence.*;
-import constants.HospitalDepartment;
-import constants.UserRole;
+import org.pahappa.systems.hms.constants.HospitalDepartment;
+import org.pahappa.systems.hms.constants.UserRole;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import org.hibernate.annotations.Where;

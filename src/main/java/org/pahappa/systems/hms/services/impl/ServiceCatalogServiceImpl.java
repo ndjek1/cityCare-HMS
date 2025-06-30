@@ -1,15 +1,15 @@
-package services.impl;
+package org.pahappa.systems.hms.services.impl;
 
-import constants.ServiceCategory;
-import dao.impl.ServiceCatalogItemDaoImpl;
+import org.pahappa.systems.hms.constants.ServiceCategory;
+import org.pahappa.systems.hms.dao.impl.ServiceCatalogItemDaoImpl;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Named;
-import models.ServiceCatalogItem;
+import org.pahappa.systems.hms.models.ServiceCatalogItem;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
-import services.ServiceCatalogService;
+import org.pahappa.systems.hms.services.ServiceCatalogService;
 import utils.HibernateUtil;
 
 import java.util.ArrayList;

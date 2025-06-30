@@ -1,4 +1,4 @@
-package constants; // Or your enum package
+package org.pahappa.systems.hms.constants; // Or your enum package
 
 public enum ServiceCategory {
     CONSULTATION("Consultation"),

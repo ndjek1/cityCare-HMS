@@ -1,7 +1,7 @@
-package services;
+package org.pahappa.systems.hms.services;
 
-import constants.ServiceCategory;
-import models.ServiceCatalogItem;
+import org.pahappa.systems.hms.constants.ServiceCategory;
+import org.pahappa.systems.hms.models.ServiceCatalogItem;
 
 import java.util.List;
 import java.util.Optional;

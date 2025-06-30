@@ -252,70 +252,85 @@ body {
 .ui-tag.role-Receptionist  { background-color: #22C55E; color: #ffffff; }
 /* Add more role colors as needed */
 
-/* ===================================
-   Modern & Rich DataTable Style
-   =================================== */
+/* =============================================
+   Professional & Airy DataTable Style (V2)
+   ============================================= */
 
-/* Main table container */
-.ui-datatable-modern {
-    border: 1px solid var(--surface-border);
-    border-radius: 8px;
-    overflow: hidden; /* Important for keeping rounded corners */
+/* Main table container card - remove padding to let the toolbar and table touch the edges */
+.professional-table-card .ui-card-content {
+    padding: 0;
 }
 
-/* Table Header */
-.ui-datatable-modern .ui-datatable-thead > tr > th {
-    background-color: var(--surface-100); /* Slightly off-white header */
+/* Give the main table rounded corners and a border */
+.ui-datatable-professional {
+    border-radius: 8px;
+    border: 1px solid var(--surface-border);
+    overflow: hidden; /* Important for containing the rounded corners */
+}
+
+/* Style the table header: uppercase, spaced out, subtle color */
+.ui-datatable-professional .ui-datatable-thead > tr > th {
+    background-color: var(--surface-50); /* Very light gray background */
     color: var(--text-color-secondary);
     font-weight: 600;
+    font-size: 0.75rem;
     text-transform: uppercase;
-    font-size: 0.8rem;
-    padding: 1rem 1.25rem;
+    letter-spacing: 0.05em; /* Add some space between letters */
+    padding: 1rem 1.5rem;
     border: none;
     border-bottom: 1px solid var(--surface-border);
+    text-align: left;
 }
 
-/* Table Rows & Cells */
-.ui-datatable-modern .ui-datatable-tbody > tr > td {
-    padding: 1rem 1.25rem;
-    border: none;
+/* Style the table body rows and cells */
+.ui-datatable-professional .ui-datatable-tbody > tr > td {
+    padding: 1.25rem 1.5rem; /* Generous padding for an airy feel */
+    border: none; /* Remove all cell borders */
     border-bottom: 1px solid var(--surface-border);
-    vertical-align: middle; /* Key for aligning content nicely */
+    vertical-align: middle;
 }
 
-/* Remove bottom border from the very last row */
-.ui-datatable-modern .ui-datatable-tbody > tr:last-child > td {
+/* Remove the bottom border from the very last row in the table */
+.ui-datatable-professional .ui-datatable-tbody > tr:last-child > td {
     border-bottom: none;
 }
 
-/* Row hover effect */
-.ui-datatable-modern .ui-datatable-tbody > tr:hover {
+/* Row hover effect for interactivity */
+.ui-datatable-professional .ui-datatable-tbody > tr:hover {
     background-color: var(--surface-hover);
 }
 
-/* --- Special Cell for Patient Info --- */
+/* Style the composite "Patient" cell (avatar, name, email) */
 .patient-info-cell {
     display: flex;
     align-items: center;
     gap: 1rem;
 }
-
 .patient-info-cell .patient-details {
     display: flex;
     flex-direction: column;
 }
-
 .patient-info-cell .patient-name {
     font-weight: 600;
     color: var(--text-color);
+    font-size: 1rem;
 }
-
 .patient-info-cell .patient-email {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: var(--text-color-secondary);
 }
 
-/* Style for the actions split button to be compact */
-.actions-column .ui-splitbutton {
-    box-shadow: none;
+/* --- Action Menu Button --- */
+/* Center the button and make it clean */
+.actions-column {
+    text-align: center !important;
+}
+/* Style the 'three dots' menu button to be subtle */
+.actions-column .ui-menubutton .ui-button {
+    background: transparent !important;
+    border: none !important;
+    color: var(--text-color-secondary) !important;
+}
+.actions-column .ui-menubutton .ui-button:hover {
+    background: var(--surface-200) !important;
 }

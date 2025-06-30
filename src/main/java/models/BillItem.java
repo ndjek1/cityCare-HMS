@@ -13,9 +13,6 @@ public class BillItem {
 
     private int quantity; // Optional: if services can have quantities (e.g., 2x Paracetamol)
 
-    // Optional: Reference to the original catalog item, if you want to trace it back
-    // This would make BillItem an @Entity with a @ManyToOne to ServiceCatalogItem
-    // private Long serviceCatalogId; // Store ID, not the full object if embeddable
 
     public BillItem() {
     }

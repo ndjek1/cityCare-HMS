@@ -145,9 +145,7 @@ public class StaffServiceImpl implements StaffService {
 
             Staff doctor = doctorOpt.orElse(null);
             if (doctor != null) {
-                // Ensure the collection is initialized if it's LAZY fetched
-                // While session.get() might initialize it if mappings are correct,
-                // explicit initialization is safer before accessing.
+
 
                 if (doctor.getAvailableSlots() != null) {
                     for (LocalDateTime slotDateTime : doctor.getAvailableSlots()) {

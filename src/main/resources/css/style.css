@@ -334,3 +334,36 @@ body {
 .actions-column .ui-menubutton .ui-button:hover {
     background: var(--surface-200) !important;
 }
+
+/* Limit dialog max size to content size */
+.ui-dialog#billGenerationDialog {
+    max-width: 600px !important;
+    width: auto !important;
+}
+
+.ui-dialog-content {
+    max-height: 80vh;
+    overflow: auto;
+}
+
+/* Ensures PrimeFaces dialog is not full screen */
+#diagnosisDialog.ui-dialog {
+    max-width: 600px !important;
+    width: auto !important;
+}
+
+#diagnosisDialog .ui-dialog-content {
+    max-height: 75vh;
+    overflow: auto;
+}
+/* Make dialogs compact */
+#paymentDialog.ui-dialog {
+    max-width: 600px !important;
+    width: auto !important;
+}
+
+#paymentDialog .ui-dialog-content {
+    max-height: 80vh;
+    overflow: auto;
+}
+

@@ -14,7 +14,9 @@
             <p:toolbar styleClass="mb-3">
                 <p:toolbarGroup>
                     <p:commandButton value="Register Patient" icon="pi pi-plus" styleClass="ui-button-success"
-                                     action="#{pageNavigationBean.navigateAddNewPatient}" />
+                                     action="#{pageNavigationBean.navigateAddNewPatient}"
+                                    process="@this"
+                    />
                 </p:toolbarGroup>
                 <p:toolbarGroup align="right">
                     <p:inputText id="globalFilter"
@@ -55,10 +57,11 @@
                 <p:column headerText="Actions" style="width: 60px;">
                     <p:menuButton icon="pi pi-ellipsis-v" buttonStyleClass="rounded-button ui-button-flat">
                         <p:menuitem value="View Profile" icon="pi pi-eye"
-                                    action="#{patientListBean.viewPatient(patient)}" />
-                        <p:menuitem value="Book Appointment" icon="pi pi-calendar-plus"
-                                    action="#{patientListBean.bookAppointment(patient)}" />
-                        <p:separator/>
+                                    action="#{userDetailBean.loadPatient(patient.patientId)}"
+                                    process="@this"
+                                    update=":userDetailDialogForm:userDetailContentPanel"
+                                    oncomplete="PF('userDetailDialogWidget').show()" />
+
                         <p:menuitem value="#{patient.deleted ? 'Re-activate' : 'Deactivate'}"
                                     icon="#{patient.deleted ? 'pi pi-undo' : 'pi pi-trash'}"
                                     styleClass="#{patient.deleted ? '' : 'ui-menuitem-danger'}"

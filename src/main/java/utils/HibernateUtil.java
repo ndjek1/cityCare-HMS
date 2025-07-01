@@ -1,7 +1,7 @@
 package utils;
 
 
-import models.*;
+import org.pahappa.systems.hms.models.*;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;

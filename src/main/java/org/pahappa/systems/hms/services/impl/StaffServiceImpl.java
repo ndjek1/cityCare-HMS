@@ -70,8 +70,8 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     public List<Staff> getAllStaffs() {
-        try (Session session = factory.openSession()) {
-            return session.createQuery("FROM Staff", Staff.class).getResultList();
+        try {
+            return  staffDao.findAll();
         } catch (Exception e) {
             e.printStackTrace();
             return Collections.emptyList();

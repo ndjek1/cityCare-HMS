@@ -1,8 +1,11 @@
 package org.pahappa.systems.hms.dao.impl;
 
+import org.hibernate.query.Query;
 import org.pahappa.systems.hms.dao.PatientDao;
 import org.pahappa.systems.hms.models.Patient;
 import org.hibernate.Hibernate;
+
+import java.util.List;
 import java.util.Optional;
 
 
@@ -27,6 +30,15 @@ public class PatientDaoImpl extends AbstractDao<Patient, Long> implements Patien
             entity.setDeleted(true);
             session.merge(entity);
             return null;
+        });
+    }
+
+    @Override
+    public List<Patient> findAll() {
+        return execute(session -> {
+            Query<Patient> query = session.createQuery(
+                    "FROM Patient s WHERE s.deleted = false ", Patient.class);
+            return query.getResultList();
         });
     }
 }

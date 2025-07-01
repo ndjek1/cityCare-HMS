@@ -30,17 +30,12 @@ public class CompletedAppointmentListBean implements Serializable {
     }
 
     private void loadAppointments() {
-        if (appointmentService != null) {
-            appointmentList = appointmentService.findCompletedAppointments();
-            if (appointmentList == null) {
-                appointmentList = new ArrayList<>(); // Avoid NullPointerException in DataTable
-                System.err.println("AppointmentListBean: hospitalService.getAllStaffs() returned null.");
-            } else {
-                System.out.println("AppointmentListBean: Loaded " + appointmentList.size() + " staff members.");
-            }
+        appointmentList = appointmentService.findCompletedAppointments();
+        if (appointmentList == null) {
+            appointmentList = new ArrayList<>(); // Avoid NullPointerException in DataTable
+            System.err.println("AppointmentListBean: hospitalService.getAllStaffs() returned null.");
         } else {
-            appointmentList = new ArrayList<>();
-            System.err.println("AppointmentListBean: HospitalService not injected, cannot load staff.");
+            System.out.println("AppointmentListBean: Loaded " + appointmentList.size() + " staff members.");
         }
     }
 

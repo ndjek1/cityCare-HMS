@@ -31,7 +31,7 @@
             <p:panelMenu style="width:100%;">
 
                 <!-- - MAIN MENU (visible to all logged‑in users) - -->
-                <p:submenu label="Main Menu">
+                <p:submenu label="Main Menu"  rendered="#{userAccountBean.isAdministrator()}">
                     <p:menuitem value="Dashboard"
                                 action="#{pageNavigationBean.navigateToDashboard}"
                                 icon="pi pi-home"

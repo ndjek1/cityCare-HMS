@@ -1,8 +1,12 @@
 package org.pahappa.systems.hms.dao.impl;
 
+import org.hibernate.query.Query;
 import org.pahappa.systems.hms.dao.StaffDao;
 import org.pahappa.systems.hms.models.Staff;
 import org.hibernate.Hibernate;
+import org.pahappa.systems.hms.models.UserAccount;
+
+import java.util.List;
 import java.util.Optional;
 
 public class StaffDaoImpl extends AbstractDao<Staff, Long> implements StaffDao {
@@ -40,6 +44,15 @@ public class StaffDaoImpl extends AbstractDao<Staff, Long> implements StaffDao {
             }
 
             return Optional.ofNullable(staff);
+        });
+    }
+
+    @Override
+    public List<Staff> findAll() {
+        return execute(session -> {
+            Query<Staff> query = session.createQuery(
+                    "FROM Staff s WHERE s.deleted = false ", Staff.class);
+            return query.getResultList();
         });
     }
 

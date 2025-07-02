@@ -13,7 +13,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Where(clause = "is_deleted = false")
 public class Staff {
 
     @Id

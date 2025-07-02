@@ -297,37 +297,12 @@ public class AppointmentServiceImpl {
 
     public List<Appointment> findCompletedAppointments() {
 
-        Session session = null; // Method-local session
-        Transaction tx = null;   // Method-local transaction
-        List<Appointment> appointments = null;
-
         try {
-            session = factory.openSession();
-            tx = session.beginTransaction();
-
-            Query<Appointment> query = session.createQuery(
-                    "FROM Appointment a WHERE a.status = :status", Appointment.class
-            );
-            query.setParameter("status", AppointmentStatus.COMPLETED);
-            appointments = query.getResultList();
-
-            tx.commit(); // Commit after read
-            if (!appointments.isEmpty()) {
-                for(Appointment appointment : appointments) {
-                    Hibernate.initialize(appointment.getDoctor());
-                    Hibernate.initialize(appointment.getPatient());
-                }
-            }
-            return appointments;
+            System.err.println("Fetching completed appointments.");
+            return appointmentDao.findByStatus(AppointmentStatus.COMPLETED);
         } catch (Exception e) {
-            if (tx != null && tx.isActive()) {
-                tx.rollback();
-            }
+
             e.printStackTrace(); // Log error
-        } finally {
-            if (session != null && session.isOpen()) {
-                session.close();
-            }
         }
         return null;
     }

@@ -4,12 +4,12 @@ import jakarta.persistence.*;
 import org.pahappa.systems.hms.constants.UserRole;
 import org.hibernate.annotations.Where;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Entity
-@Where(clause = "is_deleted = false")
 public class Patient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,6 +31,7 @@ public class Patient {
     @Column(name = "is_deleted")
     private boolean deleted =  false;
     private String insuranceDetails;
+    private LocalDateTime registrationDate;
 
     public Patient(String name, Date dateOfBirth, String address, String phoneNumber, String email) {
         this.name = name;
@@ -40,6 +41,7 @@ public class Patient {
         this.email = email;
         this.medicalHistory = new ArrayList<>();
         this.deleted = false;
+        this.registrationDate = LocalDateTime.now();
     }
 
     public Patient() {
@@ -65,6 +67,7 @@ public class Patient {
     public String getEmail() { return email; }
     public List<String> getMedicalHistory() { return medicalHistory; }
     public String getInsuranceDetails() { return insuranceDetails; }
+    public  LocalDateTime getRegistrationDate() { return registrationDate; }
 
     // Setters for mutable fields
     public void setName(String name) { this.name = name; }
@@ -74,7 +77,7 @@ public class Patient {
     public void setEmail(String email) { this.email = email; }
     public void addMedicalHistory(String entry) { this.medicalHistory.add(entry); }
     public void setInsuranceDetails(String insuranceDetails) { this.insuranceDetails = insuranceDetails; }
-
+    public void setRegistrationDate(LocalDateTime registrationDate) { this.registrationDate = registrationDate; }
     @Override
     public String toString() {
         String lineSeparator = System.lineSeparator();

@@ -46,26 +46,30 @@
                </p:column>
 
                <p:column headerText="Actions" style="text-align:center; width:200px;">
-                  <p:commandButton value="Reschedule"
-                                   icon="pi pi-calendar-plus"
-                                   title="Reschedule Appointment"
-                                   action="#{appointmentRescheduleBean.prepareReschedule(aptmnt.appointmentId)}"
-                                   process="@this"
-                                   update=":pageContentForm:mainContentPanel"
-                                   styleClass="ui-button-warning mr-2">
-                     <p:confirm header="Confirmation" message="Are you sure you want to reschedule?" icon="pi pi-exclamation-triangle"/>
-                  </p:commandButton>
+                  <p:menuButton icon="pi pi-ellipsis-v" buttonStyleClass="rounded-button ui-button-flat">
+                     <p:menuitem value="Reschedule"
+                                 icon="pi pi-calendar-plus"
+                                 title="Reschedule Appointment"
+                                 action="#{appointmentRescheduleBean.prepareReschedule(aptmnt.appointmentId)}"
+                                 process="@this"
+                                 rendered="#{aptmnt.status.toString() == 'SCHEDULED'}"
+                                 update=":pageContentForm:mainContentPanel"
+                                 styleClass="ui-button-warning mr-2" >
+                        <p:confirm header="Confirmation" message="Are you sure you want to reschedule?" icon="pi pi-exclamation-triangle"/>
+                     </p:menuitem>
 
-                  <p:commandButton value="Cancel"
-                                   icon="pi pi-times"
-                                   title="Cancel Appointment"
-                                   process="@this"
-                                   update="appointmentTable appointmentMessages"
-                                   action="#{appointmentListBean.cancelAppointment(aptmnt)}"
-                                   styleClass="ui-button-secondary"
-                                   rendered="#{aptmnt.status.toString() != 'CANCELLED'}">
-                     <p:confirm header="Confirmation" message="Are you sure you want to cancel?" icon="pi pi-exclamation-triangle"/>
-                  </p:commandButton>
+                     <p:menuitem value="Cancel"
+                                 icon="pi pi-times"
+                                 title="Cancel Appointment"
+                                 process="@this"
+                                 update="appointmentTable appointmentMessages"
+                                 action="#{appointmentListBean.cancelAppointment(aptmnt)}"
+                                 styleClass="ui-button-secondary"
+                                 rendered="#{aptmnt.status.toString() != 'CANCELLED' and aptmnt.status.toString() != 'COMPLETED'}">
+                        <p:confirm header="Confirmation" message="Are you sure you want to reschedule?" icon="pi pi-exclamation-triangle"/>
+                     </p:menuitem>
+                  </p:menuButton>
+
                </p:column>
             </p:dataTable>
          </div>

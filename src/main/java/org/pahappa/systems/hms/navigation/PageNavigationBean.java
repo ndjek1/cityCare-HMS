@@ -90,6 +90,10 @@ public class PageNavigationBean implements Serializable {
         this.currentPage = "/WEB-INF/includes/shared/reschedule_appointment.xhtml";
         return null;
     }
+    public String navigateToMyPrescriptions() {
+        this.currentPage = "/WEB-INF/includes/patient/my_prescriptions.xhtml";
+        return null;
+    }
 
     public String navigateToProfile() {
         if (userAccountBean.isPatient()) {

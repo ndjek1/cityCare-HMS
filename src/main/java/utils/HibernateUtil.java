@@ -32,6 +32,7 @@ public class HibernateUtil {
             configuration.addAnnotatedClass(Staff.class);
             configuration.addAnnotatedClass(Appointment.class);
             configuration.addAnnotatedClass(ServiceCatalogItem.class);
+            configuration.addAnnotatedClass(Prescription.class);
             // Hibernate 5+ uses ServiceRegistry
             // If you are using Hibernate 4, the way to build SessionFactory is slightly different:
             // sessionFactory = configuration.buildSessionFactory(new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build());

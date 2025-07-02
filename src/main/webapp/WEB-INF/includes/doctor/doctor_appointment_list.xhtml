@@ -114,14 +114,24 @@
                   </p:column>
 
                   <p:column headerText="Actions" width="150" styleClass="text-center">
+                     <p:menuButton icon="pi pi-ellipsis-v" buttonStyleClass="rounded-button ui-button-flat">
+                        <p:menuitem value="Generate Bill" icon="pi pi-file"
+                                    actionListener="#{billingBean.prepareBillDialog(apt)}"
+                                    oncomplete="PF('billGenerationDialogWidget').show()"
+                                    update="@widgetVar(billGenerationDialogWidget)"
+                                    process="@this"
+                                    styleClass="ui-button-success"
+                                    rendered="#{apt.status eq 'COMPLETED' and apt.hasBill() != true}" />
+                        <p:menuitem value="Manage Prescriptions" icon="pi pi-book"
+                                    oncomplete="PF('prescriptionDialogWidget').show()"
+                                    update=":prescriptionDialogForm"
+                                    process="@this"
+                                    actionListener="#{prescriptionBean.prepareDialog(apt)}"
+                                    rendered="#{apt.status == 'COMPLETED'}">
+                        </p:menuitem>
+                     </p:menuButton>
 
-                     <p:commandButton value="Generate Bill" icon="pi pi-file"
-                                      actionListener="#{billingBean.prepareBillDialog(apt)}"
-                                      oncomplete="PF('billGenerationDialogWidget').show()"
-                                      update="@widgetVar(billGenerationDialogWidget)"
-                                      process="@this"
-                                      styleClass="ui-button-success"
-                                      rendered="#{apt.status eq 'COMPLETED' and apt.hasBill() != true}" />
+
                   </p:column>
                </p:dataTable>
             </p:fieldset>

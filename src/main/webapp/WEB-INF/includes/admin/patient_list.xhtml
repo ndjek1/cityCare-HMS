@@ -18,12 +18,6 @@
                                     process="@this"
                     />
                 </p:toolbarGroup>
-                <p:toolbarGroup align="right">
-                    <p:inputText id="globalFilter"
-                                 placeholder="Search all fields..."
-                                 onkeyup="PF('patientTableWidget').filter()"
-                                 styleClass="w-full md:w-20rem" />
-                </p:toolbarGroup>
             </p:toolbar>
 
             <!-- Scrollable DataTable -->
@@ -36,16 +30,17 @@
                          emptyMessage="No patients found."
                          styleClass="p-datatable-striped p-datatable-sm">
 
-                <!-- Patient Info Column -->
-                <p:column headerText="Patient" style="min-width: 280px;">
-                    <div class="flex align-items-center gap-2">
-                        <p:avatar label="#{patient.name.substring(0,1)}" shape="circle"
-                                  styleClass="bg-primary text-white font-bold" />
-                        <div class="flex flex-column">
-                            <span>#{patient.name}</span>
-                            <small class="text-muted">#{patient.email}</small>
-                        </div>
-                    </div>
+                <!-- Patient Name Filter -->
+                <p:column headerText="Patient Name"
+                          filterBy="#{patient.name}"
+                          filterMatchMode="contains"
+                          style="min-width: 250px;">
+                    <h:outputText value="#{patient.name}" />
+                </p:column>
+
+                <!-- Email (not filterable for now) -->
+                <p:column headerText="Email">
+                    <h:outputText value="#{patient.email}" />
                 </p:column>
 
                 <!-- Phone Number -->

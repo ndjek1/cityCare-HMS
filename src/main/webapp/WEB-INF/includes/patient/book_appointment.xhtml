@@ -41,9 +41,10 @@
                      <f:selectItems value="#{appointmentBookingBean.availableDoctors}" var="doc"
                                     itemLabel="#{doc.name} (#{doc.department})"
                                     itemValue="#{doc.staffId}" />
+
                      <p:ajax event="change"
                              listener="#{appointmentBookingBean.onDoctorOrDateChange}"
-                             update="timeSlotSelect appointmentMessages" />
+                             update="@form" />
                   </p:selectOneMenu>
                </div>
 
@@ -55,7 +56,11 @@
                                 mindate="#{cc.attrs.today}">
                      <p:ajax event="dateSelect"
                              listener="#{appointmentBookingBean.onDoctorOrDateChange}"
-                             update="timeSlotSelect appointmentMessages" />
+                             update="@form" />
+                     <p:ajax event="keyup"
+                             listener="#{appointmentBookingBean.onDoctorOrDateChange}"
+                             update="@form"
+                             delay="500" />
                   </p:datePicker>
                </div>
 

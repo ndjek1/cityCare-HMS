@@ -13,6 +13,7 @@ import org.pahappa.systems.hms.services.impl.PatientServiceImpl;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Named("patientListBean")
 @ViewScoped
@@ -24,6 +25,25 @@ private final PatientService patientService;
 public PatientListBean() {
     this.patientService = new PatientServiceImpl();
 }
+    private List<Patient> filteredPatients;
+    private String globalFilterValue;
+
+
+
+    // This is your custom filtering function
+    public boolean filterGlobal(Object value, Object filter, Locale locale) {
+        String filterText = (filter == null) ? null : filter.toString().toLowerCase();
+
+        if (filterText == null || filterText.trim().isEmpty()) {
+            return true;
+        }
+
+        Patient patient = (Patient) value;
+
+        return (patient.getName() != null && patient.getName().toLowerCase().contains(filterText))
+                || (patient.getEmail() != null && patient.getEmail().toLowerCase().contains(filterText))
+                || (patient.getPhoneNumber() != null && patient.getPhoneNumber().toLowerCase().contains(filterText));
+    }
     @PostConstruct
     public void init() {
         loadPatients();
@@ -57,5 +77,21 @@ public PatientListBean() {
             loadPatients(); // Refresh the list after deletion
             // Add FacesMessage for success/failure
         }
+    }
+
+    public List<Patient> getFilteredPatients() {
+        return filteredPatients;
+    }
+
+    public void setFilteredPatients(List<Patient> filteredPatients) {
+        this.filteredPatients = filteredPatients;
+    }
+
+    public String getGlobalFilterValue() {
+        return globalFilterValue;
+    }
+
+    public void setGlobalFilterValue(String globalFilterValue) {
+        this.globalFilterValue = globalFilterValue;
     }
 }

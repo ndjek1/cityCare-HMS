@@ -4,36 +4,31 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:ui="jakarta.faces.facelets">
 
-    <!--
-        =============================================
-        Unpaid / Partially Paid Bills List (Compact)
-        - PrimeFlex utilities for spacing & flex bar
-        - p:card instead of p:panel for modern look
-        - Minimal vertical space; built‑in table paginator
-        =============================================
-    -->
-
-
-    <p:card header="Unpaid / Partially Paid Bills" styleClass="unpaid-bills-card shadow-2">
+    <p:card header="Unpaid / Partially Paid Bills" styleClass="shadow-2 p-3">
         <h:form id="unpaidBillsForm" styleClass="p-fluid">
 
             <!-- Global Messages -->
-            <p:messages id="adminBillMessages" showDetail="true" closable="true" autoUpdate="true"/>
+            <p:messages id="adminBillMessages" showDetail="true" closable="true" autoUpdate="true" />
 
-            <!-- ======== Toolbar ======== -->
-            <div class="flex justify-content-end mb-3">
-                <p:commandButton value="Refresh" icon="pi pi-refresh" styleClass="toolbar-btn"
-                                 process="@this" update="unpaidBillsTable"
-                                 action="#{billBean.loadAllUnpaidBills}" />
+            <!-- Toolbar -->
+            <div class="flex justify-content-end mb-2">
+                <p:commandButton value="Refresh" icon="pi pi-refresh"
+                                 action="#{billBean.loadAllUnpaidBills}"
+                                 update="unpaidBillsTable"
+                                 styleClass="ui-button-secondary"
+                />
             </div>
 
-            <!-- ======== DataTable ======== -->
+            <!-- DataTable -->
             <p:dataTable id="unpaidBillsTable" widgetVar="unpaidBillsTableWidget"
                          value="#{billBean.allUnpaidBills}" var="bill"
-                         paginator="true" rows="15" reflow="true"
-                         emptyMessage="No unpaid bills found." styleClass="text-sm">
+                         paginator="true" rows="15"
+                         reflow="true"
+                         style="width: 100%;"
+                         styleClass="p-datatable-sm p-datatable-striped"
+                         emptyMessage="No unpaid bills found.">
 
-                <p:column headerText="Bill ID" style="width:8rem;">
+                <p:column headerText="Bill ID" style="width: 8rem;">
                     <h:outputText value="#{bill.billId}" />
                 </p:column>
 
@@ -42,24 +37,24 @@
                     <h:outputText value="#{bill.patient.name}" />
                 </p:column>
 
-                <p:column headerText="Appointment ID" style="width:10rem;">
+                <p:column headerText="Appointment ID" style="width: 10rem;">
                     <h:outputText value="#{bill.appointment.appointmentId}" />
                 </p:column>
 
-                <p:column headerText="Bill Date" style="width:12rem;">
+                <p:column headerText="Bill Date" style="width: 14rem;">
                     <h:outputText value="#{bill.billDate}">
                         <f:convertDateTime type="localDateTime" pattern="MMM dd, yyyy hh:mm a" />
                     </h:outputText>
                 </p:column>
 
-                <p:column headerText="Total Amount" style="width:10rem; text-align:right;">
+                <p:column headerText="Amount" style="width: 11rem; text-align: right;">
                     <h:outputText value="#{bill.totalAmount}">
                         <f:convertNumber type="currency" currencySymbol="UGX " />
                     </h:outputText>
                 </p:column>
 
-                <!-- Payment Status with custom filter -->
-                <p:column headerText="Status" style="width:10rem; text-align:center;">
+                <p:column headerText="Status" style="width: 10rem; text-align: center;"
+                          filterBy="#{bill.paymentStatus}" filterMatchMode="equals">
                     <f:facet name="filter">
                         <p:selectOneMenu onchange="PF('unpaidBillsTableWidget').filter()" styleClass="w-full">
                             <f:selectItem itemLabel="All" itemValue="#{null}" noSelectionOption="true" />
@@ -67,18 +62,18 @@
                             <f:selectItem itemLabel="Partially Paid" itemValue="PARTIALLY_PAID" />
                         </p:selectOneMenu>
                     </f:facet>
-
-                    <h:outputText value="#{bill.paymentStatus}" styleClass="payment-status #{bill.paymentStatus}" />
+                    <h:outputText value="#{bill.paymentStatus}" styleClass="font-bold" />
                 </p:column>
 
-                <!-- Actions -->
-                <p:column headerText="Actions" style="width:8rem; text-align:center;">
-                    <p:commandButton icon="pi pi-credit-card" tooltip="Process Payment"
-                                     process="@this" update="@widgetVar(paymentDialogWidget)"
+                <p:column headerText="Actions" style="width: 6rem; text-align: center;">
+                    <p:commandButton icon="pi pi-credit-card"
+                                     tooltip="Process Payment"
                                      action="#{paymentBean.preparePaymentForBill(bill.billId)}"
+                                     update="@widgetVar(paymentDialogWidget)"
                                      oncomplete="PF('paymentDialogWidget').show()"
                                      styleClass="rounded-button ui-button-info" />
                 </p:column>
+
             </p:dataTable>
         </h:form>
     </p:card>

@@ -33,16 +33,17 @@
                          emptyMessage="No staff members found."
                          styleClass="p-datatable-striped p-datatable-sm">
 
-                <!-- Staff Info -->
-                <p:column headerText="Staff Member" style="min-width: 280px;">
-                    <div class="flex align-items-center gap-2">
-                        <p:avatar label="#{staffListBean.generateInitials(staff.name)}" shape="circle"
-                                  styleClass="bg-primary text-white font-bold" />
-                        <div class="flex flex-column">
-                            <span>#{staff.name}</span>
-                            <small class="text-muted">#{staff.email}</small>
-                        </div>
-                    </div>
+                <!-- Staff Name Filter -->
+                <p:column headerText="Patient Name"
+                          filterBy="#{staff.name}"
+                          filterMatchMode="contains"
+                          style="min-width: 250px;">
+                    <h:outputText value="#{staff.name}" />
+                </p:column>
+
+                <!-- Email (not filterable for now) -->
+                <p:column headerText="Email">
+                    <h:outputText value="#{staff.email}" />
                 </p:column>
 
                 <!-- Role -->

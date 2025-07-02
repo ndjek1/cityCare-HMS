@@ -17,6 +17,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date; // For p:datePicker
@@ -99,28 +100,31 @@ public class AppointmentBean implements Serializable {
         }
     }
 
-    // AJAX listener when doctor or date changes to load time slots
     public void onDoctorOrDateChange() {
-        availableTimeSlots.clear();
         if (selectedDoctorId != null && appointmentDate != null) {
-            // Convert java.util.Date to LocalDate
+            // Clear previous results only if valid selection
+            availableTimeSlots.clear();
+
             LocalDate selectedDate = appointmentDate.toInstant()
-                    .atZone(java.time.ZoneId.systemDefault())
+                    .atZone(ZoneId.systemDefault())
                     .toLocalDate();
 
-            // Fetch doctor's availability for that specific date from HospitalService
-            // This requires a new method in HospitalService, e.g., getAvailableSlotsForDoctorOnDate
             List<LocalDateTime> doctorSlots = staffService.getDoctorAvailableSlotsForDate(selectedDoctorId, selectedDate);
-            if(doctorSlots != null) {
-                availableTimeSlots = doctorSlots.stream().map(LocalDateTime::toLocalTime).sorted().collect(Collectors.toList());
+            if (doctorSlots != null) {
+                availableTimeSlots = doctorSlots.stream()
+                        .map(LocalDateTime::toLocalTime)
+                        .sorted()
+                        .collect(Collectors.toList());
             }
 
             if (availableTimeSlots.isEmpty()) {
                 FacesContext.getCurrentInstance().addMessage(null,
-                        new FacesMessage(FacesMessage.SEVERITY_INFO, "No slots available", "Selected doctor has no available slots on this date."));
+                        new FacesMessage(FacesMessage.SEVERITY_INFO, "No slots available",
+                                "Selected doctor has no available slots on this date."));
             }
         }
     }
+
 
     // --- Formatting methods for the XHTML ---
     public String formatLocalTimeForDisplay(LocalTime time) {

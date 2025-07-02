@@ -1,0 +1,79 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="jakarta.faces.facelets">
+
+    <!-- Main Card -->
+    <p:card header="Prescriptions" styleClass="shadow-2 p-3">
+
+        <h:form id="prescriptionListForm">
+
+            <!-- Messages -->
+            <p:messages id="prescriptionMessages" showDetail="true" closable="true" />
+
+            <!-- Toolbar -->
+            <p:toolbar styleClass="mb-3">
+                <p:toolbarGroup>
+                    <p:commandButton value="Refresh List" icon="pi pi-refresh"
+                                     styleClass="ui-button-secondary ml-2"
+                                     update="prescriptionsTable" />
+                </p:toolbarGroup>
+            </p:toolbar>
+
+            <!-- Table -->
+            <p:dataTable id="prescriptionsTable"
+                         var="pres"
+                         value="#{patientPrescriptionsList.patientPrescriptions}"
+                         emptyMessage="You have no prescriptions on record."
+                         rows="10"
+                         paginator="true"
+                         rowsPerPageTemplate="5,10,20"
+                         paginatorPosition="bottom">
+
+                <f:facet name="header">
+                    Prescription History
+                </f:facet>
+
+                <p:column headerText="Start Date" sortBy="#{pres.startDate}" style="width: 120px;">
+                    <h:outputText value="#{pres.startDate}">
+                        <f:convertDateTime type="localDate" pattern="yyyy-MM-dd" />
+                    </h:outputText>
+                </p:column>
+
+                <p:column headerText="Medication" sortBy="#{pres.medicationName}">
+                    <h:outputText value="#{pres.medicationName}" />
+                </p:column>
+
+                <p:column headerText="Dosage" style="width: 120px;">
+                    <h:outputText value="#{pres.dosage}" />
+                </p:column>
+
+                <p:column headerText="Frequency">
+                    <h:outputText value="#{pres.frequency}" />
+                </p:column>
+
+                <p:column headerText="Prescribed by" sortBy="#{pres.doctor.name}">
+                    <h:outputText value="Dr. #{pres.doctor.name}" />
+                </p:column>
+
+                <p:column headerText="Status" sortBy="#{pres.status}" style="width: 100px;">
+                    <p:badge value="#{pres.status}"
+                             styleClass="#{pres.status == 'ACTIVE' ? 'bg-green-500' : (pres.status == 'COMPLETED' ? 'bg-gray-500' : 'bg-orange-500')}" />
+                </p:column>
+
+                <p:column headerText="Details" style="width: 80px; text-align: center;">
+                    <p:commandButton icon="pi pi-search"
+                                     action="#{patientPrescriptionsList.setSelectedPrescription(pres)}"
+                                     update=":prescriptionDetailDialog"
+                                     oncomplete="PF('prescriptionDetailDialog').show()"
+                                     process="@this" />
+
+                </p:column>
+
+            </p:dataTable>
+        </h:form>
+    </p:card>
+
+
+</ui:composition>

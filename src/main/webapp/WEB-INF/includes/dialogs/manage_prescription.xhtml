@@ -1,0 +1,100 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="jakarta.faces.facelets">
+
+   <!-- ────────────── MANAGE PRESCRIPTIONS DIALOG ────────────── -->
+   <p:dialog  header="Manage Prescriptions – Appointment ##{prescriptionBean.selectedAppointment.appointmentId}"
+              widgetVar="prescriptionDialogWidget" modal="true"
+              width="700" closable="true" resizable="false" closeOnEscape="true">
+
+      <h:form id="prescriptionDialogForm" styleClass="p-fluid">
+
+         <!-- Toast‑style messages -->
+         <p:messages id="prescriptionMessages" showDetail="true" closable="true" />
+
+         <!-- ░░░░░ Add New Prescription ░░░░░ -->
+         <p:card header="Add New Prescription" styleClass="mb-3">
+            <div class="formgrid grid">
+
+               <div class="field col-12 md:col-6">
+                  <p:outputLabel for="medName" value="Medication *" />
+                  <p:inputText id="medName" value="#{prescriptionBean.newPrescription.medicationName}"
+                               required="true" placeholder="e.g. Amoxicillin" />
+               </div>
+
+               <div class="field col-12 md:col-6">
+                  <p:outputLabel for="dosage" value="Dosage" />
+                  <p:inputText id="dosage" value="#{prescriptionBean.newPrescription.dosage}"
+                               placeholder="e.g. 500 mg" />
+               </div>
+
+               <div class="field col-12 md:col-6">
+                  <p:outputLabel for="frequency" value="Frequency" />
+                  <p:inputText id="frequency" value="#{prescriptionBean.newPrescription.frequency}"
+                               placeholder="e.g. 3× daily" />
+               </div>
+
+               <div class="field col-12">
+                  <p:outputLabel for="instructions" value="Special Instructions" />
+                  <p:inputTextarea id="instructions"
+                                   value="#{prescriptionBean.newPrescription.instructions}"
+                                   rows="3" autoResize="true"
+                                   placeholder="Take after meals …" />
+               </div>
+
+            </div>
+
+            <p:commandButton value="Add Prescription"
+                             icon="pi pi-plus"
+                             actionListener="#{prescriptionBean.saveNewPrescription}"
+                             update="existingPrescriptionsTable prescriptionMessages @form"
+                             process="@form"
+                             styleClass="ui-button-success w-auto mt-2" />
+         </p:card>
+
+         <!-- ░░░░░ Existing Prescriptions ░░░░░ -->
+         <p:card header="Existing Prescriptions">
+            <p:dataTable id="existingPrescriptionsTable"
+                         var="pres"
+                         lazy="false"
+                         value="#{prescriptionBean.existingPrescriptions}"
+                         emptyMessage="No prescriptions on record for this appointment."
+                         styleClass="p-datatable-striped p-datatable-sm"
+                         scrollable="true" scrollHeight="220">
+
+               <p:column headerText="Medication">
+                  <h:outputText value="#{pres.medicationName}" />
+               </p:column>
+
+               <p:column headerText="Dosage" style="width:25%;">
+                  <h:outputText value="#{pres.dosage}" />
+               </p:column>
+
+               <p:column headerText="Actions" style="width:90px;text-align:center;">
+                  <p:commandButton icon="pi pi-trash"
+                                   styleClass="rounded-button ui-button-danger"
+                                   update="existingPrescriptionsTable prescriptionMessages"
+                                   process="@this">
+                     <p:confirm header="Delete Prescription"
+                                message="Are you sure you want to delete “#{pres.medicationName}”?"
+                                icon="pi pi-exclamation-triangle" />
+                  </p:commandButton>
+               </p:column>
+            </p:dataTable>
+         </p:card>
+
+         <!-- Global confirm dialog (re‑used by p:confirm) -->
+         <p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+                          responsive="true" width="350">
+            <p:commandButton value="Yes" type="button"
+                             styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+            <p:commandButton value="No"  type="button"
+                             styleClass="ui-confirmdialog-no ui-button-secondary" icon="pi pi-times" />
+         </p:confirmDialog>
+
+      </h:form>
+   </p:dialog>
+
+</ui:composition>

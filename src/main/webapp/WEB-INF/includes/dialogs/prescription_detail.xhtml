@@ -1,0 +1,49 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="jakarta.faces.facelets">
+
+   <p:dialog id="prescriptionDetailDialog"
+             widgetVar="prescriptionDetailDialog"
+             header="Prescription Details"
+             modal="true"
+             resizable="false"
+             width="500">
+
+      <h:form id="prescriptionDetailForm">
+         <p:outputPanel id="prescriptionDetailPanel"
+                        rendered="#{patientPrescriptionsList.selectedPrescription != null}">
+            <h:panelGrid columns="2" cellpadding="7">
+               <h:outputText value="Medication:" styleClass="font-bold"/>
+               <h:outputText value="#{patientPrescriptionsList.selectedPrescription.medicationName}" />
+
+               <h:outputText value="Dosage:" styleClass="font-bold"/>
+               <h:outputText value="#{patientPrescriptionsList.selectedPrescription.dosage}" />
+
+               <h:outputText value="Frequency:" styleClass="font-bold"/>
+               <h:outputText value="#{patientPrescriptionsList.selectedPrescription.frequency}" />
+
+               <h:outputText value="Instructions:" styleClass="font-bold"/>
+               <h:outputText value="#{patientPrescriptionsList.selectedPrescription.instructions}" style="white-space: pre-wrap;" />
+
+               <h:outputText value="Start Date:" styleClass="font-bold"/>
+               <h:outputText value="#{patientPrescriptionsList.selectedPrescription.startDate}" />
+
+               <h:outputText value="End Date:" styleClass="font-bold"/>
+               <h:outputText value="#{patientPrescriptionsList.selectedPrescription.endDate != null ? patientPrescriptionsList.selectedPrescription.endDate : 'N/A'}" />
+
+               <h:outputText value="Status:" styleClass="font-bold"/>
+               <p:badge value="#{patientPrescriptionsList.selectedPrescription.status}" styleClass="bg-green-500" />
+
+               <h:outputText value="Prescribed by:" styleClass="font-bold"/>
+               <h:outputText value="Dr. #{patientPrescriptionsList.selectedPrescription.doctor.name}" />
+
+               <h:outputText value="Related Appointment:" styleClass="font-bold"/>
+               <h:outputText value="#{patientPrescriptionsList.selectedPrescription.appointment.dateTime}" />
+            </h:panelGrid>
+         </p:outputPanel>
+      </h:form>
+   </p:dialog>
+
+</ui:composition>

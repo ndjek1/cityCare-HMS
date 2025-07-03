@@ -49,6 +49,10 @@
                                 action="#{pageNavigationBean.navigateToPatientAppointments}"
                                 icon="pi pi-list"
                                 update=":pageContentForm:mainContentPanel"/>
+                    <p:menuitem value="My Prescriptions"
+                                action="#{pageNavigationBean.navigateToMyPrescriptions}"
+                                icon="pi pi-list"
+                                update=":pageContentForm:mainContentPanel"/>
                 </p:submenu>
                 <!-- - DOCTOR TOOLS - -->
                 <p:submenu label="Doctor Tools" rendered="#{userAccountBean.isDoctor()}">
@@ -183,6 +187,9 @@
     <ui:include src="/WEB-INF/includes/dialogs/billing_dialog.xhtml"/>
     <ui:include src="/WEB-INF/includes/dialogs/payment_dialog.xhtml"/>
     <ui:include src="/WEB-INF/includes/dialogs/user_detail_dialog.xhtml"/>
+    <ui:include src="/WEB-INF/includes/dialogs/manage_prescription.xhtml"/>
+    <ui:include src="/WEB-INF/includes/dialogs/prescription_detail.xhtml"/>
+
 
 </h:body>
 </html>

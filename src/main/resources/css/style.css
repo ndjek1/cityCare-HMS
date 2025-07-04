@@ -13,6 +13,55 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+.bg-blue-800 {
+    background-color: #1e3a8a !important;
+}
+.font-bold {
+    font-weight: bold;
+}
+
+
+.bg-patients {
+    background-color: #1175bd !important; /* blue */
+    color: #ffffff !important;
+}
+.bg-blue{
+    background-color: #1175bd !important;
+    color: white !important;
+}
+
+.bg-staff {
+    background-color: #e8f5e9 !important; /* light green */
+    color: #1b5e20 !important;
+}
+
+.bg-appointments {
+    background-color: #fff3e0 !important; /* light orange */
+    color: #e65100 !important;
+}
+
+.bg-open-bills {
+    background-color: #ffebee !important; /* light red */
+    color: #b71c1c !important;
+}
+
+.bg-unpaid {
+    background-color: #fce4ec !important; /* light pink */
+    color: #880e4f !important;
+}
+
+.bg-closed-bills {
+    background-color: #f1f8e9 !important; /* light lime */
+    color: #33691e !important;
+}
+
+.bg-paid {
+    background-color: #e8f5e9 !important; /* soft green */
+    color: #1b5e20 !important;
+}
+
+
+
 .layout-wrapper {
     display: flex;
     flex-direction: column;

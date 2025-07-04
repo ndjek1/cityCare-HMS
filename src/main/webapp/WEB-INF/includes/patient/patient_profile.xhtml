@@ -4,110 +4,115 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:ui="jakarta.faces.facelets">
 
-   <style type="text/css"> /* Move to main CSS */
-   .profile-panel .ui-panelgrid .ui-grid-responsive .ui-grid-col-4,
-   .profile-panel .ui-panelgrid .ui-grid-responsive .ui-grid-col-8 {
-      padding: 0.5em;
-   }
-   .profile-panel .ui-outputlabel { font-weight: bold; }
-   .profile-panel .ui-inputtext,
-   .profile-panel .ui-inputtextarea,
-   .profile-panel .ui-selectonemenu,
-   .profile-panel .ui-calendar,
-   .profile-panel .ui-password { width: 100% !important; }
-   .button-bar { margin-top: 20px; text-align: right; }
-   .button-bar .ui-button { margin-left: .5em; }
-   </style>
-
-   <p:panel header="My Profile" styleClass="profile-panel">
+   <p:panel header="My Profile">
       <h:form id="profileForm">
-         <p:messages id="profileMessages" showDetail="true" closable="true" autoUpdate="true"/>
 
+         <!-- Messages -->
+         <p:messages id="profileMessages" showDetail="true" autoUpdate="true" closable="true"/>
+
+         <!-- No Patient Logged In -->
          <p:outputPanel rendered="#{patientProfileBean.currentPatient == null}">
-            <p:staticMessage severity="warn" summary="Profile Not Available" detail="Please log in as a patient to view your profile."/>
+            <p:staticMessage severity="warn" summary="Profile Not Available"
+                             detail="Please log in as a patient to view your profile."/>
          </p:outputPanel>
 
-         <p:outputPanel id="profileDisplayPanel" rendered="#{patientProfileBean.currentPatient != null and !patientProfileBean.editMode}">
-            <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank">
-               <h:outputText value="Full Name:" styleClass="responsive-label"/>
+         <!-- ========== Display Mode ========== -->
+         <p:outputPanel id="profileDisplayPanel"
+                        rendered="#{patientProfileBean.currentPatient != null and !patientProfileBean.editMode}">
+            <p:panelGrid columns="2">
+               <h:outputText value="Full Name:"/>
                <h:outputText value="#{patientProfileBean.currentPatient.name}"/>
 
-               <h:outputText value="Username:" styleClass="responsive-label"/>
+               <h:outputText value="Username:"/>
                <h:outputText value="#{patientProfileBean.currentUsername}"/>
 
-               <h:outputText value="Email:" styleClass="responsive-label"/>
+               <h:outputText value="Email:"/>
                <h:outputText value="#{patientProfileBean.currentPatient.email}"/>
 
-               <h:outputText value="Phone:" styleClass="responsive-label"/>
+               <h:outputText value="Phone:"/>
                <h:outputText value="#{patientProfileBean.currentPatient.phoneNumber}"/>
 
-               <h:outputText value="Address:" styleClass="responsive-label"/>
-               <h:outputText value="#{patientProfileBean.currentPatient.address}" style="white-space: pre-wrap;"/>
+               <h:outputText value="Address:"/>
+               <h:outputText value="#{patientProfileBean.currentPatient.address}"/>
 
-               <h:outputText value="Date of Birth:" styleClass="responsive-label"/>
+               <h:outputText value="Date of Birth:"/>
                <h:outputText value="#{patientProfileBean.currentPatient.dateOfBirth}"/>
 
-
-               <h:outputText value="Insurance Details:" styleClass="responsive-label"/>
-               <h:outputText value="#{patientProfileBean.currentPatient.insuranceDetails}" style="white-space: pre-wrap;"/>
+               <h:outputText value="Insurance Details:"/>
+               <h:outputText value="#{patientProfileBean.currentPatient.insuranceDetails}"/>
             </p:panelGrid>
-            <div class="button-bar">
-               <p:commandButton value="Edit Profile" action="#{patientProfileBean.toggleEditMode}"
-                                update="@form" icon="pi pi-pencil" process="@this"/>
-            </div>
+
+            <p:commandButton value="Edit Profile" icon="pi pi-pencil"
+                             action="#{patientProfileBean.toggleEditMode}"
+                             update="@form" process="@this"/>
          </p:outputPanel>
 
-         <p:outputPanel id="profileEditPanel" rendered="#{patientProfileBean.currentPatient != null and patientProfileBean.editMode}">
+         <!-- ========== Edit Mode ========== -->
+         <p:outputPanel id="profileEditPanel"
+                        rendered="#{patientProfileBean.currentPatient != null and patientProfileBean.editMode}">
+
+            <!-- Personal Info -->
             <p:fieldset legend="Personal Information">
-               <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
-                            columnClasses="ui-g-12 ui-md-4 responsive-label, ui-g-12 ui-md-8">
+               <p:panelGrid columns="2" layout="grid">
                   <p:outputLabel for="editName" value="Full Name:"/>
                   <p:inputText id="editName" value="#{patientProfileBean.currentPatient.name}" required="true"/>
 
                   <p:outputLabel for="editEmail" value="Email:"/>
                   <p:inputText id="editEmail" value="#{patientProfileBean.currentPatient.email}" required="true" type="email">
-                     <f:validateRegex pattern="^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$" />
+                     <f:validateRegex pattern="^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"/>
                   </p:inputText>
 
                   <p:outputLabel for="editPhone" value="Phone:"/>
                   <p:inputMask id="editPhone" value="#{patientProfileBean.currentPatient.phoneNumber}" mask="999 999 9999">
-                     <f:validator validatorId="custom.ugandanPhoneValidator" />
+                     <f:validator validatorId="custom.ugandanPhoneValidator"/>
                   </p:inputMask>
 
                   <p:outputLabel for="editAddress" value="Address:"/>
-                  <p:inputTextarea id="editAddress" value="#{patientProfileBean.currentPatient.address}" rows="3" autoResize="false"/>
+                  <p:inputTextarea id="editAddress" value="#{patientProfileBean.currentPatient.address}" rows="2"/>
 
                   <p:outputLabel for="editDob" value="Date of Birth:"/>
-                  <p:datePicker id="editDob" value="#{patientProfileBean.currentPatient.dateOfBirth}" showIcon="true" pattern="MM/dd/yyyy" yearRange="c-100:c"/>
+                  <p:datePicker id="editDob" value="#{patientProfileBean.currentPatient.dateOfBirth}"
+                                showIcon="true" pattern="MM/dd/yyyy" yearRange="c-100:c"/>
 
                   <p:outputLabel for="editInsurance" value="Insurance Details:"/>
-                  <p:inputTextarea id="editInsurance" value="#{patientProfileBean.currentPatient.insuranceDetails}" rows="3" autoResize="false"/>
+                  <p:inputTextarea id="editInsurance" value="#{patientProfileBean.currentPatient.insuranceDetails}" rows="2"/>
                </p:panelGrid>
             </p:fieldset>
 
-            <p:fieldset legend="Login Credentials (Optional - only fill to change)" style="margin-top:20px;">
-               <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
-                            columnClasses="ui-g-12 ui-md-4 responsive-label, ui-g-12 ui-md-8">
+            <!-- Credentials -->
+            <p:fieldset legend="Login Credentials (Optional)">
+               <p:panelGrid columns="2" layout="grid">
                   <p:outputLabel for="newUsername" value="New Username:"/>
-                  <p:inputText id="newUsername" value="#{patientProfileBean.newUsername}" placeholder="Current: #{patientProfileBean.currentUsername}"/>
+                  <p:inputText id="newUsername" value="#{patientProfileBean.newUsername}"
+                               placeholder="Current: #{patientProfileBean.currentUsername}"/>
 
                   <p:outputLabel for="newPassword" value="New Password:"/>
-                  <p:password id="newPassword" value="#{patientProfileBean.newPassword}" feedback="true" weakLabel="Weak" goodLabel="Good" strongLabel="Strong" match="confirmNewPassword"/>
+                  <p:password id="newPassword" value="#{patientProfileBean.newPassword}"
+                              feedback="true" weakLabel="Weak" goodLabel="Good" strongLabel="Strong"
+                              match="confirmNewPassword"/>
 
-                  <p:outputLabel for="confirmNewPassword" value="Confirm New Password:"/>
-                  <p:password id="confirmNewPassword" value="#{patientProfileBean.confirmNewPassword}" feedback="false"/>
+                  <p:outputLabel for="confirmNewPassword" value="Confirm Password:"/>
+                  <p:password id="confirmNewPassword" value="#{patientProfileBean.confirmNewPassword}"
+                              feedback="false"/>
                </p:panelGrid>
             </p:fieldset>
 
-            <div class="button-bar">
-               <p:commandButton value="Save Changes" action="#{patientProfileBean.saveProfileChanges}"
-                                update="@form"
-                                process="@form"
-                                icon="pi pi-save" styleClass="ui-button-success"/>
-               <p:commandButton value="Cancel Edit" action="#{patientProfileBean.toggleEditMode}"
-                                update="@form" icon="pi pi-times" process="@this" immediate="true" styleClass="ui-button-warning"/>
-               <!-- immediate="true" bypasses validation for cancel -->
-            </div>
+            <!-- Buttons -->
+            <p:outputPanel layout="inline" style="margin-top: 50px;">
+            <h:panelGroup styleClass="mr-2">
+                  <p:commandButton value="Save Changes" icon="pi pi-save"
+                                   action="#{patientProfileBean.saveProfileChanges}"
+                                   update="@form" process="@form"/>
+               </h:panelGroup>
+
+               <h:panelGroup>
+                  <p:commandButton value="Cancel" icon="pi pi-times"
+                                   action="#{patientProfileBean.toggleEditMode}"
+                                   update="@form" process="@this" immediate="true"/>
+               </h:panelGroup>
+            </p:outputPanel>
+
+
          </p:outputPanel>
       </h:form>
    </p:panel>

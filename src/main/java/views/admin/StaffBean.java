@@ -2,6 +2,7 @@ package views.admin;
 
 
 import annotations.MaxAge;
+import jakarta.enterprise.context.SessionScoped;
 import org.pahappa.systems.hms.constants.HospitalDepartment;
 import org.pahappa.systems.hms.constants.UserRole;
 import jakarta.annotation.PostConstruct;
@@ -22,7 +23,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 @Named("staffBean")
-@ViewScoped
+@SessionScoped
 public class StaffBean implements Serializable {
 
     // --- Validation directly on the fields ---

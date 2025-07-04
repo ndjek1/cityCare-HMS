@@ -13,6 +13,39 @@
 
     <!-- PrimeFlex utility CSS -->
     <link rel="stylesheet" href="https://unpkg.com/primeflex@latest/primeflex.css"/>
+    <!-- In template.xhtml, inside the <style type="text/css"> block -->
+
+    <style type="text/css">
+        /* ... your existing styles ... */
+
+        /* Style for the command links in the menu */
+        .menu-link {
+            display: flex; /* Helps align icon and text */
+            align-items: center;
+            text-decoration: none;
+            padding: 0.75rem 1rem; /* Adjust padding */
+            border-radius: 6px;
+            transition: background-color 0.2s, color 0.2s;
+            font-weight: 500;
+            color: gainsboro; /* Use a theme variable for text color */
+        }
+        .menu-link:hover {
+            background-color: var(--blue-600); /* Use a theme variable for hover */
+            color: var(--blue-50);
+        }
+
+        /* THIS IS THE KEY STYLE FOR THE HIGHLIGHTED LINK */
+        .menu-link-active {
+            background-color: var(--blue-50) !important; /* A light background */
+            color: var(--blue-800) !important; /* A dark text color, !important to override .text-white */
+            font-weight: 700 !important;
+        }
+
+        /* Icon styling within the link */
+        .menu-link .ui-icon {
+            margin-right: 0.75rem;
+        }
+    </style>
 
     <!-- Your custom overrides (optional) -->
     <h:outputStylesheet library="css" name="style.css"/>
@@ -24,131 +57,147 @@
 <!-- ========== BODY ========== -->
 <h:body styleClass="flex min-h-screen" style="margin:0;">
 
-    <!-- - FIXED SIDEBAR - -->
-    <nav class="surface-100 shadow-2"
+    <nav class="bg-blue text-white shadow-4"
          style="width:280px;position:fixed;top:0;left:0;bottom:0;overflow-y:auto;z-index:1000;">
-        <h:form id="menuForm">
-            <p:panelMenu style="width:100%;">
 
-                <!-- - MAIN MENU (visible to all logged‑in users) - -->
-                <p:submenu label="Main Menu"  rendered="#{userAccountBean.isAdministrator()}">
-                    <p:menuitem value="Dashboard"
-                                action="#{pageNavigationBean.navigateToDashboard}"
-                                icon="pi pi-home"
-                                update=":pageContentForm:mainContentPanel"
-                                styleClass="#{pageNavigationBean.currentPage.contains('dashboard') ? 'ui-menuitem-active' : ''}"/>
-                </p:submenu>
+        <div class="flex flex-column h-full p-3">
+            <!-- Logo/Header -->
+            <div class="text-center mb-4">
+                <i class="pi pi-heart-fill text-3xl text-blue-100"></i>
+                <div class="text-xl font-bold mt-2">CityCare HMS</div>
+            </div>
 
-                <!-- - PATIENT PORTAL - -->
-                <p:submenu label="Patient Portal" rendered="#{userAccountBean.isPatient()}">
-                    <p:menuitem value="Book Appointment"
-                                action="#{pageNavigationBean.navigateToBookAppointment}"
-                                icon="pi pi-calendar-plus"
-                                update=":pageContentForm:mainContentPanel"/>
-                    <p:menuitem value="My Appointments"
-                                action="#{pageNavigationBean.navigateToPatientAppointments}"
-                                icon="pi pi-list"
-                                update=":pageContentForm:mainContentPanel"/>
-                    <p:menuitem value="My Prescriptions"
-                                action="#{pageNavigationBean.navigateToMyPrescriptions}"
-                                icon="pi pi-list"
-                                update=":pageContentForm:mainContentPanel"/>
-                </p:submenu>
-                <!-- - DOCTOR TOOLS - -->
-                <p:submenu label="Doctor Tools" rendered="#{userAccountBean.isDoctor()}">
-                    <p:menuitem value="My Schedule"
-                                action="#{pageNavigationBean.navigateToManageDoctorSchedule}"
-                                icon="pi pi-calendar-cog"
-                                update=":pageContentForm:mainContentPanel"/>
-                    <p:menuitem value="Patient Appointments"
-                                action="#{pageNavigationBean.navigateToDoctorAppointments}"
-                                icon="pi pi-book"
-                                update=":pageContentForm:mainContentPanel"/>
-                </p:submenu>
+            <!-- Navigation -->
+            <h:form id="menuForm" styleClass="flex-grow-1">
+                <div class="flex flex-column gap-2">
 
-                <!-- - RECEPTIONIST MENU - -->
-                <p:submenu label="Front Desk" rendered="#{userAccountBean.isReceptionist()}">
-                    <p:menuitem value="Register Patient"
-                                action="#{pageNavigationBean.navigateAddNewPatient}"
-                                icon="pi pi-user-plus"
-                                update=":pageContentForm:mainContentPanel"/>
-                    <p:menuitem value="Book Patient Appointment"
-                                action="#{pageNavigationBean.navigateToBookAppointment}"
-                                icon="pi pi-calendar-plus"
-                                update=":pageContentForm:mainContentPanel"/>
-                    <p:menuitem value="Patient Bills"
-                                action="#{pageNavigationBean.navigateToUnpaidBills}"
-                                icon="pi pi-dollar"
-                                update=":pageContentForm:mainContentPanel"/>
-                    <p:menuitem value="Completed Appointments"
-                                action="#{pageNavigationBean.navigateToCompletedAppointments}"
-                                icon="pi pi-check-square"
-                                update=":pageContentForm:mainContentPanel"/>
-                </p:submenu>
+                    <!-- Dashboard (Admin only) -->
+                    <p:commandLink value="Dashboard"
+                                   icon="pi pi-home"
+                                   action="#{pageNavigationBean.navigateToDashboard}"
+                                   rendered="#{userAccountBean.isAdministrator()}"
+                                   update=":pageContentForm:mainContentPanel :menuForm"
+                                   styleClass="menu-link #{pageNavigationBean.selectedMenu == 'dashboard' ? 'menu-link-active' : ''}" />
 
-                <!-- - ADMINISTRATION - -->
-                <p:submenu label="Administration" rendered="#{userAccountBean.isAdministrator()}">
-                    <p:menuitem value="Add Staff"
-                                action="#{pageNavigationBean.navigateAddNewStaff}"
-                                icon="pi pi-user-plus"
-                                update=":pageContentForm:mainContentPanel"/>
-                    <p:menuitem value="Manage Staff"
-                                action="#{pageNavigationBean.navigateToViewStaff}"
-                                icon="pi pi-users"
-                                update=":pageContentForm:mainContentPanel"/>
-                    <p:menuitem value="Manage Patients"
-                                action="#{pageNavigationBean.navigateToViewPatients}"
-                                icon="pi pi-users"
-                                update=":pageContentForm:mainContentPanel"/>
-                    <p:menuitem value="Service Catalog"
-                                action="#{pageNavigationBean.navigateToManageServiceCatalog}"
-                                icon="pi pi-book"
-                                update=":pageContentForm:mainContentPanel"/>
-                </p:submenu>
+                    <!-- Patient Links -->
+                    <p:commandLink value="Book Appointment"
+                                   icon="pi pi-calendar-plus"
+                                   action="#{pageNavigationBean.navigateToBookAppointment}"
+                                   rendered="#{userAccountBean.isPatient() or userAccountBean.isReceptionist()}"
+                                   update=":pageContentForm:mainContentPanel :menuForm"
+                                   styleClass="menu-link #{pageNavigationBean.selectedMenu == 'book_appointment' ? 'menu-link-active' : ''}" />
 
-            </p:panelMenu>
-        </h:form>
+                    <p:commandLink value="My Appointments"
+                                   icon="pi pi-list"
+                                   action="#{pageNavigationBean.navigateToPatientAppointments}"
+                                   rendered="#{userAccountBean.isPatient()}"
+                                   update=":pageContentForm:mainContentPanel :menuForm"
+                                   styleClass="menu-link #{pageNavigationBean.selectedMenu == 'patient_appointments' ? 'menu-link-active' : ''}" />
+
+                    <p:commandLink value="My Prescriptions"
+                                   icon="pi pi-list"
+                                   action="#{pageNavigationBean.navigateToMyPrescriptions()}"
+                                   rendered="#{userAccountBean.isPatient()}"
+                                   update=":pageContentForm:mainContentPanel :menuForm"
+                                   styleClass="menu-link #{pageNavigationBean.selectedMenu == 'my_prescriptions' ? 'menu-link-active' : ''}" />
+
+                    <!-- Doctor Links -->
+                    <p:commandLink value="My Schedule"
+                                   icon="pi pi-calendar-clock"
+                                   action="#{pageNavigationBean.navigateToManageDoctorSchedule}"
+                                   rendered="#{userAccountBean.isDoctor()}"
+                                   update=":pageContentForm:mainContentPanel :menuForm"
+                                   styleClass="menu-link #{pageNavigationBean.selectedMenu == 'manage_schedule' ? 'menu-link-active' : ''}" />
+
+                    <p:commandLink value="Patient Appointments"
+                                   icon="pi pi-users"
+                                   action="#{pageNavigationBean.navigateToDoctorAppointments}"
+                                   rendered="#{userAccountBean.isDoctor()}"
+                                   update=":pageContentForm:mainContentPanel :menuForm"
+                                   styleClass="menu-link #{pageNavigationBean.selectedMenu == 'doctor_appointment_list' ? 'menu-link-active' : ''}" />
+
+                    <!-- Receptionist Links -->
+                    <p:commandLink value="Register Patient"
+                                   icon="pi pi-user-plus"
+                                   action="#{pageNavigationBean.navigateAddNewPatient}"
+                                   rendered="#{userAccountBean.isReceptionist()}"
+                                   update=":pageContentForm:mainContentPanel :menuForm"
+                                   styleClass="menu-link #{pageNavigationBean.selectedMenu == 'patientRegistration' ? 'menu-link-active' : ''}" />
+
+                    <p:commandLink value="Patient Bills"
+                                   icon="pi pi-wallet"
+                                   action="#{pageNavigationBean.navigateToUnpaidBills}"
+                                   rendered="#{userAccountBean.isReceptionist()}"
+                                   update=":pageContentForm:mainContentPanel :menuForm"
+                                   styleClass="menu-link #{pageNavigationBean.selectedMenu == 'unpaid_bills' ? 'menu-link-active' : ''}" />
+
+                    <p:commandLink value="Completed Appointments"
+                                   icon="pi pi-check-square"
+                                   action="#{pageNavigationBean.navigateToCompletedAppointments}"
+                                   rendered="#{userAccountBean.isReceptionist()}"
+                                   update=":pageContentForm:mainContentPanel :menuForm"
+                                   styleClass="menu-link #{pageNavigationBean.selectedMenu == 'completed_appointments' ? 'menu-link-active' : ''}" />
+
+                    <!-- Admin Only -->
+                    <p:commandLink value="Add Staff"
+                                   icon="pi pi-user-plus"
+                                   action="#{pageNavigationBean.navigateAddNewStaff}"
+                                   rendered="#{userAccountBean.isAdministrator()}"
+                                   update=":pageContentForm:mainContentPanel :menuForm"
+                                   styleClass="menu-link #{pageNavigationBean.selectedMenu == 'staffRegistration' ? 'menu-link-active' : ''}" />
+
+                    <p:commandLink value="Manage Staff"
+                                   icon="pi pi-users"
+                                   action="#{pageNavigationBean.navigateToViewStaff}"
+                                   rendered="#{userAccountBean.isAdministrator()}"
+                                   update=":pageContentForm:mainContentPanel :menuForm"
+                                   styleClass="menu-link #{pageNavigationBean.selectedMenu == 'staff_list' ? 'menu-link-active' : ''}" />
+
+                    <p:commandLink value="Manage Patients"
+                                   icon="pi pi-user-edit"
+                                   action="#{pageNavigationBean.navigateToViewPatients}"
+                                   rendered="#{userAccountBean.isAdministrator()}"
+                                   update=":pageContentForm:mainContentPanel :menuForm"
+                                   styleClass="menu-link #{pageNavigationBean.selectedMenu == 'patient_list' ? 'menu-link-active' : ''}" />
+
+                    <p:commandLink value="Service Catalog"
+                                   icon="pi pi-book"
+                                   action="#{pageNavigationBean.navigateToManageServiceCatalog}"
+                                   rendered="#{userAccountBean.isAdministrator()}"
+                                   update=":pageContentForm:mainContentPanel :menuForm"
+                                   styleClass="menu-link #{pageNavigationBean.selectedMenu == 'service_catalog' ? 'menu-link-active' : ''}" />
+                </div>
+            </h:form>
+
+            <!-- Sidebar Footer -->
+            <div class="text-sm text-center mt-auto pt-3 border-top-1 border-blue-100">
+                <h:form id="footerMenuForm">
+                    <div class="flex flex-column gap-2">
+                        <p:commandLink value="My Profile"
+                                       icon="pi pi-id-card"
+                                       action="#{pageNavigationBean.navigateToProfile()}"
+                                       update=":pageContentForm:mainContentPanel :menuForm :footerMenuForm"
+                        rendered="#{userAccountBean.loggedIn}"
+                        styleClass="menu-link #{pageNavigationBean.selectedMenu == 'profile' ? 'menu-link-active' : ''}" />
+
+                        <p:commandButton value="Logout"
+                                         icon="pi pi-sign-out"
+                                         action="#{userAccountBean.logout}"
+                                         immediate="true"
+                                         styleClass="p-button-danger p-button-text" />
+                    </div>
+                    <h:outputText value="© 2025 CityCare" styleClass="text-blue-100 mt-3 d-block"/>
+                </h:form>
+            </div>
+        </div>
     </nav>
+
 
     <!-- - RIGHT‑HAND SIDE (HEADER + MAIN + FOOTER) - -->
     <div class="flex flex-column flex-grow-1"
          style="margin-left:280px;width:calc(100% - 280px);min-height:100vh;">
 
-        <!-- ===== HEADER ===== -->
-        <header class="surface-100 shadow-2 px-4 py-3 flex justify-content-between align-items-center"
-                style="position:fixed;top:0;left:280px;width:calc(100% - 280px);z-index:999;height:70px;"
-        >
-            <!-- Logo -->
-            <h:link action="#{pageNavigationBean.navigateToDashboard}"
-                    styleClass="flex align-items-center text-xl font-bold text-primary">
-                <i class="pi pi-heart-fill mr-2"></i>
-                CityCare HMS
-            </h:link>
 
-            <!-- User menu -->
-            <h:form id="headerUserForm">
-                <div class="flex align-items-center gap-2">
-                    <p:menuButton value="Welcome, #{userAccountBean.currentUserName}"
-                                  icon="pi pi-user"
-                                  rendered="#{userAccountBean.loggedIn}">
-                        <p:menuitem value="My Profile"
-                                    icon="pi pi-id-card"
-                                    action="#{pageNavigationBean.navigateToProfile}"
-                                    update=":pageContentForm:mainContentPanel"/>
-                        <p:separator/>
-                        <p:menuitem value="Logout"
-                                    icon="pi pi-sign-out"
-                                    action="#{userAccountBean.logout}"
-                                    immediate="true"
-                                    styleClass="ui-button-danger"/>
-                    </p:menuButton>
-
-                    <p:avatar label="#{userAccountBean.generateInitials(userAccountBean.currentUserName)}"
-                              size="xlarge" shape="circle"
-                              styleClass="bg-gray-300 text-white font-bold"/>
-                </div>
-            </h:form>
-        </header>
 
         <!-- ===== MAIN CONTENT ===== -->
         <main class="flex-grow-1 p-4" style="overflow-y:auto;">
@@ -167,7 +216,7 @@
 
         <!-- ===== FOOTER ===== -->
         <footer class="surface-100 text-center py-3 text-sm text-gray-600">
-            <h:outputText value="© #{java.time.Year.now()} CityCare Hospital Management System. All rights reserved."/>
+            <h:outputText value="© 2025 CityCare Hospital Management System. All rights reserved."/>
         </footer>
     </div>
 

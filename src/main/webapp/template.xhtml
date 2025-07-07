@@ -29,6 +29,17 @@
             font-weight: 500;
             color: white !important; /* Use a theme variable for text color */
         }
+        .menu-link-logout {
+            display: flex; /* Helps align icon and text */
+            align-items: center;
+            text-decoration: none;
+            padding: 0.75rem 1rem; /* Adjust padding */
+            border-radius: 6px;
+            transition: background-color 0.2s, color 0.2s;
+            font-weight: 500;
+            color: white !important; /* Use a theme variable for text color */
+            background-color: red;
+        }
         .menu-link:hover {
             background-color: var(--blue-600); /* Use a theme variable for hover */
             color: var(--blue-50);
@@ -165,28 +176,40 @@
                                    rendered="#{userAccountBean.isAdministrator()}"
                                    update=":pageContentForm:mainContentPanel :menuForm"
                                    styleClass="menu-link #{pageNavigationBean.selectedMenu == 'service_catalog' ? 'menu-link-active' : ''}" />
+                    <p:commandLink value="Medication Catalog"
+                                   action="#{pageNavigationBean.navigateToManageMedicationCatalog}"
+                                   icon="pi pi-pills"
+                                   rendered="#{userAccountBean.isAdministrator()}"
+                                   update=":pageContentForm:mainContentPanel :menuForm"
+                                   styleClass="menu-link #{pageNavigationBean.selectedMenu == 'medication_catalog' ? 'menu-link-active' : ''}"/>
                 </div>
             </h:form>
 
             <!-- Sidebar Footer -->
             <div class="text-sm text-center mt-auto pt-3 border-top-1 border-blue-100">
+
                 <h:form id="footerMenuForm">
                     <div class="flex flex-column gap-2">
                         <p:commandLink value="My Profile"
                                        icon="pi pi-id-card"
                                        action="#{pageNavigationBean.navigateToProfile()}"
                                        update=":pageContentForm:mainContentPanel :menuForm :footerMenuForm"
-                        rendered="#{userAccountBean.loggedIn}"
-                        styleClass="menu-link #{pageNavigationBean.selectedMenu == 'profile' ? 'menu-link-active' : ''}" />
+                                       rendered="#{userAccountBean.loggedIn}"
+                                       styleClass="menu-link #{pageNavigationBean.selectedMenu == 'profile' ? 'menu-link-active' : ''}" />
 
-                        <p:commandButton value="Logout"
-                                         icon="pi pi-sign-out"
-                                         action="#{userAccountBean.logout}"
-                                         immediate="true"
-                                         styleClass="p-button-danger p-button-text" />
+                        <p:commandLink value="Logout"
+                                       icon="pi pi-sign-out"
+                                       action="#{userAccountBean.logout}"
+                                       immediate="true"
+                                       styleClass="menu-link-logout" />
                     </div>
-                    <h:outputText value="© 2025 CityCare" styleClass="text-blue-100 mt-3 d-block"/>
                 </h:form>
+
+                <!-- Properly aligned and styled outputText -->
+                <div class="mt-4 text-xs text-blue-200">
+                    <h:outputText value="© 2025 CityCare"/>
+                </div>
+
             </div>
         </div>
     </nav>
@@ -237,6 +260,7 @@
     <ui:include src="/WEB-INF/includes/dialogs/user_detail_dialog.xhtml"/>
     <ui:include src="/WEB-INF/includes/dialogs/manage_prescription.xhtml"/>
     <ui:include src="/WEB-INF/includes/dialogs/prescription_detail.xhtml"/>
+    <ui:include src="/WEB-INF/includes/dialogs/medication_dialog.xhtml"/>
 
 
 </h:body>

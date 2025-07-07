@@ -123,10 +123,10 @@
                                     styleClass="ui-button-success"
                                     rendered="#{apt.status eq 'COMPLETED' and apt.hasBill() != true}" />
                         <p:menuitem value="Manage Prescriptions" icon="pi pi-book"
-                                    oncomplete="PF('prescriptionDialogWidget').show()"
-                                    update=":prescriptionDialogForm"
+                                    oncomplete="PF('managePrescriptionDialogWidget').show()"
+                                    update=":managePrescriptionDialog"
                                     process="@this"
-                                    actionListener="#{prescriptionBean.prepareDialog(apt)}"
+                                    actionListener="#{prescriptionBean.prepareNewPrescription(apt)}"
                                     rendered="#{apt.status == 'COMPLETED'}">
                         </p:menuitem>
                      </p:menuButton>

@@ -27,7 +27,7 @@
             border-radius: 6px;
             transition: background-color 0.2s, color 0.2s;
             font-weight: 500;
-            color: gainsboro; /* Use a theme variable for text color */
+            color: white !important; /* Use a theme variable for text color */
         }
         .menu-link:hover {
             background-color: var(--blue-600); /* Use a theme variable for hover */
@@ -131,7 +131,7 @@
                                    update=":pageContentForm:mainContentPanel :menuForm"
                                    styleClass="menu-link #{pageNavigationBean.selectedMenu == 'unpaid_bills' ? 'menu-link-active' : ''}" />
 
-                    <p:commandLink value="Completed Appointments"
+                    <p:commandLink value="Appointments"
                                    icon="pi pi-check-square"
                                    action="#{pageNavigationBean.navigateToCompletedAppointments}"
                                    rendered="#{userAccountBean.isReceptionist()}"

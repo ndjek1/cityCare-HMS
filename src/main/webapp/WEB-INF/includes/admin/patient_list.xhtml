@@ -15,6 +15,7 @@
                 <p:toolbarGroup>
                     <p:commandButton value="Register Patient" icon="pi pi-plus" styleClass="ui-button-success"
                                      action="#{pageNavigationBean.navigateAddNewPatient}"
+                                     update=":pageContentForm:mainContentPanel"
                                     process="@this"
                     />
                 </p:toolbarGroup>

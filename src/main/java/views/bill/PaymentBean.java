@@ -1,6 +1,7 @@
 package views.bill;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
@@ -19,7 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Named("paymentBean")
-@ViewScoped
+@SessionScoped
 public class PaymentBean implements Serializable {
 
     private final BillingServiceImpl billingService;

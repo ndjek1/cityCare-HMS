@@ -68,6 +68,7 @@
                 <p:column headerText="Actions" style="width: 6rem; text-align: center;">
                     <p:commandButton icon="pi pi-credit-card"
                                      tooltip="Process Payment"
+                                     process="@this"
                                      action="#{paymentBean.preparePaymentForBill(bill.billId)}"
                                      update="@widgetVar(paymentDialogWidget)"
                                      oncomplete="PF('paymentDialogWidget').show()"

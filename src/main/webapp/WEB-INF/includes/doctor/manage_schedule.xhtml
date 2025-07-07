@@ -48,7 +48,7 @@
                </p:selectManyCheckbox>
 
                <p:commandButton value="Add Selected Slots"
-                                action="#{doctorScheduleBean.addSelectedSlots}"
+                                action="#{doctorScheduleBean.addSelectedSlots()}"
                                 icon="pi pi-plus"
                                 process="@form"
                                 update="@form:scheduleMessages existingSlotsPanel"

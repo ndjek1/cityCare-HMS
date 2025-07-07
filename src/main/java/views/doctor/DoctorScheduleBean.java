@@ -1,6 +1,7 @@
 package views.doctor;
 
 
+import jakarta.enterprise.context.SessionScoped;
 import views.UserAccountBean;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
@@ -22,7 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Named("doctorScheduleBean")
-@ViewScoped
+@SessionScoped
 public class DoctorScheduleBean implements Serializable {
 
 
@@ -90,6 +91,7 @@ public class DoctorScheduleBean implements Serializable {
     }
 
     public void addSelectedSlots() {
+        System.out.println("BEAN: addSelectedSlots() called.");
         FacesContext context = FacesContext.getCurrentInstance();
         if (currentDoctor == null) {
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Doctor not identified."));
@@ -103,7 +105,7 @@ public class DoctorScheduleBean implements Serializable {
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "No Selection", "Please select time slots to add."));
             return;
         }
-
+        System.out.println("BEAN: " + timesToAdd.size() + " time slots selected by user: " + timesToAdd);
         LocalDate localSelectedDate = selectedDateForView.toInstant()
                 .atZone(java.time.ZoneId.systemDefault())
                 .toLocalDate();
@@ -114,6 +116,7 @@ public class DoctorScheduleBean implements Serializable {
                 .collect(Collectors.toList());
 
         if (slotsToPersist.isEmpty() && !timesToAdd.isEmpty()){
+            System.out.println("BEAN: All selected slots already exist. Nothing new to add.");
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Slots Exist", "Selected time slots are already marked as available."));
             timesToAdd.clear();
             return;

@@ -1,0 +1,63 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:c="jakarta.tags.core">
+
+   <!-- Dialog for Adding/Editing Medication -->
+   <p:dialog header="#{medicationAdminBean.is_New ? 'Add New Medication' : 'Edit Medication'}"
+             widgetVar="medicationDialogWidget" id="medicationDialog"
+             modal="true" closable="true" resizable="false" width="600"
+             draggable="true"
+             showEffect="fade" hideEffect="fade" appendTo="@(body)">
+
+      <h:form id="medicationDialogForm">
+         <p:outputPanel id="medicationDialogContent" rendered="#{medicationAdminBean.selectedMedication != null}">
+            <p:messages id="dialogMessages" showDetail="true" closable="true"/>
+
+            <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+                         columnClasses="ui-g-12 ui-md-3, ui-g-12 ui-md-9">
+
+               <p:outputLabel for="medName" value="Name:"/>
+               <p:inputText id="medName" value="#{medicationAdminBean.selectedMedication.name}"
+                            required="true" requiredMessage="Name is required."/>
+
+               <p:outputLabel for="medDesc" value="Description:"/>
+               <p:inputTextarea id="medDesc" value="#{medicationAdminBean.selectedMedication.description}"
+                                rows="3" autoResize="false"/>
+
+               <p:outputLabel for="medPrice" value="Unit Price (UGX):"/>
+               <p:inputNumber id="medPrice" value="#{medicationAdminBean.selectedMedication.unitPrice}"
+                              required="true" requiredMessage="Price is required."
+                              minValue="0" decimalPlaces="2"/>
+
+               <p:outputPanel rendered="#{medicationAdminBean.is_New}">
+                  <p:outputLabel for="medStock" value="Initial Stock:"/>
+               </p:outputPanel>
+               <p:outputPanel rendered="#{!medicationAdminBean.is_New}">
+                  <p:outputLabel for="medStock" value="Current Stock:"/>
+               </p:outputPanel>
+               <p:inputNumber id="medStock" value="#{medicationAdminBean.selectedMedication.stockLevel}"
+                              required="true" requiredMessage="Stock is required."
+                              decimalPlaces="0" minValue="0"/>
+
+               <p:outputLabel for="medActive" value="Is Active:"/>
+               <p:selectBooleanCheckbox id="medActive" value="#{medicationAdminBean.selectedMedication.active}"/>
+
+            </p:panelGrid>
+
+            <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix" style="padding-top:15px;">
+               <p:commandButton value="Save" icon="pi pi-save"
+                                action="#{medicationAdminBean.saveMedication}"
+                                process="medicationDialogForm"
+                                update=":pageContentForm:medicationCatalogForm:medicationTable :pageContentForm:medicationCatalogForm:medicationMessages"
+                                oncomplete="if (!args.validationFailed) PF('medicationDialogWidget').hide();"/>
+               <p:commandButton value="Cancel" type="button" icon="pi pi-times"
+                                styleClass="ui-button-secondary"
+                                onclick="PF('medicationDialogWidget').hide()"/>
+            </div>
+         </p:outputPanel>
+      </h:form>
+   </p:dialog>
+</ui:composition>

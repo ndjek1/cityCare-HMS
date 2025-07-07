@@ -7,7 +7,7 @@
     <p:card header="Register New Staff Member" styleClass="shadow-1" style="padding:1rem;">
         <h:form id="staffRegForm" styleClass="p-fluid">
 
-            <p:messages id="regMessages" showDetail="true" closable="true" autoUpdate="true" />
+            <p:growl id="successMessage" showDetail="true" closable="true" />
 
             <!-- Account Credentials -->
             <p:fieldset legend="Account" toggleable="false" styleClass="mb-3">
@@ -16,6 +16,7 @@
                         <p:outputLabel for="username" value="Username" />
                         <p:inputText id="username" value="#{staffBean.username}" required="true"
                                      requiredMessage="Username is required." />
+                        <p:message for="username"/>
                     </div>
                     <div class="field col-12 md:col-6">
                         <p:outputLabel for="password" value="Password" />
@@ -24,6 +25,7 @@
                                     toggleMask="true"
                                     redisplay="true"
                                     requiredMessage="Password is required." feedback="true" />
+                        <p:message for="password"/>
                     </div>
                 </div>
             </p:fieldset>
@@ -35,6 +37,7 @@
                         <p:outputLabel for="fullName" value="Full Name" />
                         <p:inputText id="fullName" value="#{staffBean.fullName}" required="true"
                                      requiredMessage="Full name is required." />
+                        <p:message for="fullName"/>
                     </div>
                     <div class="field col-12 md:col-6">
                         <p:outputLabel for="email" value="Email" />
@@ -42,20 +45,24 @@
                                      requiredMessage="Email is required.">
                             <f:validateBean />
                         </p:inputText>
+                        <p:message for="email"/>
                     </div>
                     <div class="field col-12 md:col-6">
                         <p:outputLabel for="phone" value="Phone" />
                         <p:inputMask id="phone" value="#{staffBean.phone}" mask="999 999 9999">
                             <f:validator validatorId="custom.ugandanPhoneValidator" />
                         </p:inputMask>
+                        <p:message for="phone"/>
                     </div>
                     <div class="field col-12 md:col-6">
                         <p:outputLabel for="dob" value="Date of Birth" />
                         <p:datePicker id="dob" value="#{staffBean.birthday}" monthNavigator="true" yearNavigator="true" showWeek="true" pattern="MM/dd/yyyy" yearRange="c-100:c"/>
+                        <p:message for="dob"/>
                     </div>
                     <div class="field col-12">
                         <p:outputLabel for="address" value="Address" />
                         <p:inputTextarea id="address" value="#{staffBean.address}" rows="2" autoResize="true" />
+                        <p:message for="address"/>
                     </div>
                     <div class="field col-12">
                         <p:outputLabel for="gender" value="Gender" />
@@ -64,6 +71,7 @@
                             <f:selectItem itemLabel="Female" itemValue="Female" />
 
                         </p:selectOneRadio>
+                        <p:message for="gender"/>
                     </div>
                 </div>
             </p:fieldset>
@@ -79,6 +87,7 @@
                             <f:selectItems value="#{staffBean.availableRoles}" var="role"
                                            itemLabel="#{role}" itemValue="#{role}" />
                         </p:selectOneMenu>
+                        <p:message for="role"/>
                     </div>
                     <div class="field col-12 md:col-6">
                         <p:outputLabel for="department" value="Department" />
@@ -88,14 +97,15 @@
                             <f:selectItems value="#{staffBean.availableDepartments}" var="dept"
                                            itemLabel="#{dept.displayName}" itemValue="#{dept}" />
                         </p:selectOneMenu>
+                        <p:message for="department"/>
                     </div>
                 </div>
             </p:fieldset>
 
             <!-- Buttons -->
             <div class="flex gap-2 justify-content-end mt-2">
-                <p:commandButton value="Register" icon="pi pi-check" styleClass="ui-button-success"
-                                 action="#{staffBean.register}" update="@form regMessages" />
+                <p:commandButton value="Register" icon="pi pi-check" styleClass="ui-button-success" process="@form"
+                                 action="#{staffBean.register()}" update="@form successMessage" />
                 <p:commandButton type="reset" value="Clear" icon="pi pi-times" styleClass="ui-button-secondary" />
             </div>
 

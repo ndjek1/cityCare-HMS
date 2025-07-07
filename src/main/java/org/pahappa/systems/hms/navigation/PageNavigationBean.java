@@ -16,72 +16,90 @@ public class PageNavigationBean implements Serializable {
     private UserAccountBean userAccountBean;
 
     private String currentPage;
-
+    private String selectedMenu;
     @PostConstruct
     public void init() {
-        if (userAccountBean.isPatient()) {
-            currentPage = "/WEB-INF/includes/patient/patient_appointment_list.xhtml";
-        } else if (userAccountBean.isDoctor()) {
-            currentPage = "/WEB-INF/includes/doctor/manage_schedule.xhtml";
-        } else if (userAccountBean.isAdministrator()) {
-            currentPage = "/WEB-INF/includes/admin/dashboard_content.xhtml";
-        } else if (userAccountBean.isReceptionist()) {
-            currentPage = "/WEB-INF/includes/receptionist/patient_registration.xhtml";
+        // Your existing init logic to set a default page and menu
+        if (userAccountBean.isLoggedIn()) {
+            if (userAccountBean.isAdministrator()) {
+                navigateToDashboard();
+            } else if (userAccountBean.isDoctor()) {
+                navigateToManageDoctorSchedule();
+            } else if (userAccountBean.isPatient()) {
+                navigateToPatientAppointments();
+            } else if (userAccountBean.isReceptionist()) {
+                navigateAddNewPatient();
+            } else {
+                // A sensible default if no specific role matches
+                navigateToDashboard();
+            }
         }
+        // If not logged in, it will be handled by your checkLogin listener
     }
 
     // --- Navigation Methods ---
     public String navigateToDashboard() {
+        this.selectedMenu = "dashboard";
         this.currentPage = "/WEB-INF/includes/admin/dashboard_content.xhtml";
         return null;
     }
 
     public String navigateAddNewStaff() {
+        this.selectedMenu =  "staffRegistration";
         this.currentPage = "/WEB-INF/includes/admin/staff_registration.xhtml";
         return null;
     }
 
     public String navigateAddNewPatient() {
+        this.selectedMenu = "patientRegistration";
         this.currentPage = "/WEB-INF/includes/receptionist/patient_registration.xhtml";
         return null;
     }
 
     public String navigateToViewStaff() {
+        this.selectedMenu = "staff_list";
         this.currentPage = "/WEB-INF/includes/admin/staff_list.xhtml";
         return null;
     }
 
     public String navigateToViewPatients() {
+        this.selectedMenu = "patient_list";
         this.currentPage = "/WEB-INF/includes/admin/patient_list.xhtml";
         return null;
     }
 
     public String navigateToBookAppointment() {
+        this.selectedMenu = "book_appointment";
         this.currentPage = "/WEB-INF/includes/patient/book_appointment.xhtml";
         return null;
     }
 
     public String navigateToManageDoctorSchedule() {
+        this.selectedMenu = "manage_schedule";
         this.currentPage = "/WEB-INF/includes/doctor/manage_schedule.xhtml";
         return null;
     }
 
     public String navigateToPatientAppointments() {
+        this.selectedMenu = "patient_appointments";
         this.currentPage = "/WEB-INF/includes/patient/patient_appointment_list.xhtml";
         return null;
     }
 
     public String navigateToDoctorAppointments() {
+        this.selectedMenu = "doctor_appointment_list";
         this.currentPage = "/WEB-INF/includes/doctor/doctor_appointment_list.xhtml";
         return null;
     }
 
     public String navigateToUnpaidBills() {
+        this.selectedMenu = "unpaid_bills";
         this.currentPage = "/WEB-INF/includes/receptionist/unpaid_bills.xhtml";
         return null;
     }
 
     public String navigateToCompletedAppointments() {
+        this.selectedMenu ="completed_appointments";
         this.currentPage = "/WEB-INF/includes/receptionist/completed_appointment_list.xhtml";
         return null;
     }
@@ -91,6 +109,7 @@ public class PageNavigationBean implements Serializable {
         return null;
     }
     public String navigateToMyPrescriptions() {
+        this.selectedMenu = "my_prescriptions";
         this.currentPage = "/WEB-INF/includes/patient/my_prescriptions.xhtml";
         return null;
     }
@@ -114,6 +133,7 @@ public class PageNavigationBean implements Serializable {
     }
 
     public String navigateToManageServiceCatalog() {
+        this.selectedMenu = "service_catalog";
         this.currentPage = "/WEB-INF/includes/admin/manage_service_catalog.xhtml";
         return null;
     }
@@ -125,5 +145,12 @@ public class PageNavigationBean implements Serializable {
 
     public void setCurrentPage(String currentPage) {
         this.currentPage = currentPage;
+    }
+    public String getSelectedMenu() {
+        return selectedMenu;
+    }
+
+    public void setSelectedMenu(String selectedMenu) {
+        this.selectedMenu = selectedMenu;
     }
 }

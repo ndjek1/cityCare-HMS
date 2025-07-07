@@ -295,11 +295,11 @@ public class AppointmentServiceImpl {
     }
 
 
-    public List<Appointment> findCompletedAppointments() {
+    public List<Appointment> findAllAppointments() {
 
         try {
             System.err.println("Fetching completed appointments.");
-            return appointmentDao.findByStatus(AppointmentStatus.COMPLETED);
+            return appointmentDao.findAll();
         } catch (Exception e) {
 
             e.printStackTrace(); // Log error

@@ -74,6 +74,23 @@ public class AppointmentDaoImpl extends AbstractDao<Appointment, Long> implement
     }
 
     @Override
+    public List<Appointment> findAll() {
+        return execute(session -> {
+            Query<Appointment> query = session.createQuery(
+                    "FROM Appointment a ", Appointment.class);
+            List<Appointment> result =  query.getResultList();
+            if (!result.isEmpty()){
+                for(Appointment appointment : result){
+                    Hibernate.initialize(appointment.getPatient());
+                    Hibernate.initialize(appointment.getDoctor());
+                    Hibernate.initialize(appointment.getBill());
+                }
+            }
+            return result;
+        });
+    }
+
+    @Override
     public List<Appointment> findByStatus( AppointmentStatus status) {
         return execute(session -> {
             Query<Appointment> query = session.createQuery(

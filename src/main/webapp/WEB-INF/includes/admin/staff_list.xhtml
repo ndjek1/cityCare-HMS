@@ -14,6 +14,7 @@
                 <p:toolbarGroup>
                     <p:commandButton value="Add New Staff" icon="pi pi-plus" styleClass="ui-button-success"
                                      action="#{pageNavigationBean.navigateAddNewStaff}"
+                                     update=":pageContentForm:mainContentPanel"
                                     process="@this"
                     />
                 </p:toolbarGroup>

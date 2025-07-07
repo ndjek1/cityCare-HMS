@@ -14,13 +14,13 @@ import java.util.List;
 
 @Named
 @ViewScoped
-public class CompletedAppointmentListBean implements Serializable {
+public class AppointmentsListBean implements Serializable {
 
     private final AppointmentServiceImpl appointmentService;
 
     private List<Appointment> appointmentList;
 
-    public CompletedAppointmentListBean() {
+    public AppointmentsListBean() {
         this.appointmentService = new  AppointmentServiceImpl();
     }
 
@@ -30,7 +30,7 @@ public class CompletedAppointmentListBean implements Serializable {
     }
 
     private void loadAppointments() {
-        appointmentList = appointmentService.findCompletedAppointments();
+        appointmentList = appointmentService.findAllAppointments();
         if (appointmentList == null) {
             appointmentList = new ArrayList<>(); // Avoid NullPointerException in DataTable
             System.err.println("AppointmentListBean: hospitalService.getAllStaffs() returned null.");

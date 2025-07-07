@@ -96,6 +96,10 @@ public class UserAccountBean implements Serializable {
         return currentUser != null && currentUser.getRole() == UserRole.ADMINISTRATOR;
     }
 
+    public boolean isAccountant() {
+        return currentUser != null && currentUser.getRole() == UserRole.FINANCE;
+    }
+
     public boolean isStaff() {
         return currentUser != null && currentUser.getRole() != UserRole.PATIENT;
     }

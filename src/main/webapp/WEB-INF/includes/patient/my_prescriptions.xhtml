@@ -4,76 +4,133 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:ui="jakarta.faces.facelets">
 
-    <!-- Main Card -->
-    <p:card header="Prescriptions" styleClass="shadow-2 p-3">
+    <h:form id="prescriptionListForm">
+        <p:growl id="pageGrowl" showDetail="true" life="5000" />
 
-        <h:form id="prescriptionListForm">
+        <p:tabView>
+            <!-- === Tab 1: Prescription History === -->
+            <p:tab title="Prescription History">
+                <p:card>
+                    <p:dataTable id="prescriptionsTable"
+                                 var="pres"
+                                 value="#{patientPrescriptionsList.patientPrescriptions}"
+                                 emptyMessage="You have no prescriptions on record."
+                                 rows="10" paginator="true" paginatorPosition="bottom"
+                                 rowsPerPageTemplate="5,10,20"
+                                 reflow="true">
 
-            <!-- Messages -->
-            <p:messages id="prescriptionMessages" showDetail="true" closable="true" />
+                        <f:facet name="header">
+                            <div class="flex justify-content-between align-items-center">
+                                <span class="text-xl font-bold">My Prescription History</span>
+                                <p:commandButton icon="pi pi-refresh" title="Refresh"
+                                                 action="#{patientPrescriptionsList.loadPrescriptions}"
+                                                 update="prescriptionsTable"
+                                                 process="@this"
+                                                 styleClass="ui-button-flat ui-button-secondary rounded-button"/>
+                            </div>
+                        </f:facet>
 
-            <!-- Toolbar -->
-            <p:toolbar styleClass="mb-3">
-                <p:toolbarGroup>
-                    <p:commandButton value="Refresh List" icon="pi pi-refresh"
-                                     styleClass="ui-button-secondary ml-2"
-                                     update="prescriptionsTable" />
-                </p:toolbarGroup>
-            </p:toolbar>
+                        <p:column headerText="Prescription Date" sortBy="#{pres.prescriptionDate}" style="width: 12rem;">
+                            <h:outputText value="#{pres.prescriptionDate}">
+                                <f:convertDateTime type="localDate" dateStyle="long"/>
+                            </h:outputText>
+                        </p:column>
 
-            <!-- Table -->
-            <p:dataTable id="prescriptionsTable"
-                         var="pres"
-                         value="#{patientPrescriptionsList.patientPrescriptions}"
-                         emptyMessage="You have no prescriptions on record."
-                         rows="10"
-                         paginator="true"
-                         rowsPerPageTemplate="5,10,20"
-                         paginatorPosition="bottom">
+                        <p:column headerText="Medications">
+                            <h:outputText value="#{pres.prescribedMedications[0].medicationName}"
+                                          rendered="#{not empty pres.prescribedMedications}"/>
+                            <h:outputText value="..." rendered="#{pres.prescribedMedications.size() > 1}"/>
+                        </p:column>
 
-                <f:facet name="header">
-                    Prescription History
-                </f:facet>
+                        <p:column headerText="Prescribed By" sortBy="#{pres.doctor.name}">
+                            <h:outputText value="Dr. #{pres.doctor.name}" />
+                        </p:column>
 
-                <p:column headerText="Start Date" sortBy="#{pres.startDate}" style="width: 120px;">
-                    <h:outputText value="#{pres.startDate}">
-                        <f:convertDateTime type="localDate" pattern="yyyy-MM-dd" />
+
+                        <p:column style="text-align: center; width: 6rem;">
+                            <p:commandButton icon="pi pi-search" title="Details"
+                                             actionListener="#{patientPrescriptionsList.setSelectedPrescription(pres)}"
+                                             oncomplete="PF('prescriptionDetailDialogWidget').show()"
+                                             update="@widgetVar(prescriptionDetailDialogWidget)"
+                                             process="@this"
+                                             styleClass="rounded-button ui-button-info ui-button-flat"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:card>
+            </p:tab>
+        </p:tabView>
+    </h:form>
+
+    <!-- === Dialog: Prescription Details === -->
+    <p:dialog header="Prescription Details"
+              widgetVar="prescriptionDetailDialogWidget"
+              id="prescriptionDetailDialog"
+              modal="true" closable="true"
+              resizable="false" width="700"
+              appendTo="@(body)" showEffect="fade" hideEffect="fade">
+
+        <p:outputPanel id="prescriptionDetailPanel" style="line-height: 1.6;">
+            <p:outputPanel rendered="#{patientPrescriptionsList.selectedPrescription != null}">
+                <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+                    <h:outputText value="Prescription Date:" style="font-weight:bold;" />
+                    <h:outputText value="#{patientPrescriptionsList.selectedPrescription.prescriptionDate}">
+                        <f:convertDateTime type="localDate" dateStyle="full" />
                     </h:outputText>
-                </p:column>
 
-                <p:column headerText="Medication" sortBy="#{pres.medicationName}">
-                    <h:outputText value="#{pres.medicationName}" />
-                </p:column>
+                    <h:outputText value="Prescribed By:" style="font-weight:bold;" />
+                    <h:outputText value="Dr. #{patientPrescriptionsList.selectedPrescription.doctor.name}" />
+                </p:panelGrid>
 
-                <p:column headerText="Dosage" style="width: 120px;">
-                    <h:outputText value="#{pres.dosage}" />
-                </p:column>
+                <p:fieldset legend="Medications" styleClass="mt-3">
+                    <p:dataTable var="med"
+                                 value="#{patientPrescriptionsList.selectedPrescription.prescribedMedications}"
+                                 emptyMessage="No medications listed.">
+                        <p:column headerText="Medication">
+                            <h:outputText value="#{med.medicationName}" />
+                        </p:column>
+                        <p:column headerText="Dosage">
+                            <h:outputText value="#{med.dosage}" />
+                        </p:column>
+                        <p:column headerText="Frequency">
+                            <h:outputText value="#{med.frequency}" />
+                        </p:column>
+                        <p:column headerText="Duration">
+                            <h:outputText value="#{med.duration}" />
+                        </p:column>
+                        <p:column headerText="Unit Cost" style="text-align:right;">
+                            <h:outputText value="#{med.costAtTimeOfPrescription}">
+                                <f:convertNumber type="currency" currencySymbol="UGX "/>
+                            </h:outputText>
+                        </p:column>
+                    </p:dataTable>
+                    <!-- NEW FOOTER TO DISPLAY TOTAL COST -->
+                    <p:panelGrid columns="2" styleClass="ui-noborder ui-panelgrid-blank" style="width:100%; margin-top:10px;">
+                        <h:outputText value="" /> <!-- Empty column for alignment -->
+                        <h:outputText value="Total Prescription Cost: #{patientPrescriptionsList.selectedPrescription.totalCost}"
+                                      style="font-weight:bold; font-size:1.2em; text-align:right;">
+                            <f:convertNumber type="currency" currencySymbol="UGX "/>
+                        </h:outputText>
+                    </p:panelGrid>
 
-                <p:column headerText="Frequency">
-                    <h:outputText value="#{pres.frequency}" />
-                </p:column>
+                </p:fieldset>
+            </p:outputPanel>
 
-                <p:column headerText="Prescribed by" sortBy="#{pres.doctor.name}">
-                    <h:outputText value="Dr. #{pres.doctor.name}" />
-                </p:column>
+            <p:outputPanel rendered="#{patientPrescriptionsList.selectedPrescription == null}" style="padding: 2rem;">
+                <p:staticMessage severity="warn" summary="No Prescription Loaded" detail="Please close this dialog and try again."/>
+            </p:outputPanel>
 
-                <p:column headerText="Status" sortBy="#{pres.status}" style="width: 100px;">
-                    <p:badge value="#{pres.status}"
-                             styleClass="#{pres.status == 'ACTIVE' ? 'bg-green-500' : (pres.status == 'COMPLETED' ? 'bg-gray-500' : 'bg-orange-500')}" />
-                </p:column>
+            <div class="ui-dialog-buttonpane ui-helper-clearfix" style="padding-top:1.5rem;">
+                <p:commandButton value="Print" icon="pi pi-print"
+                                 type="button"
+                                 onclick="alert('Print not implemented yet')"
+                                 styleClass="ui-button-help"/>
 
-                <p:column headerText="Details" style="width: 80px; text-align: center;">
-                    <p:commandButton icon="pi pi-search"
-                                     action="#{patientPrescriptionsList.setSelectedPrescription(pres)}"
-                                     update=":prescriptionDetailDialog"
-                                     oncomplete="PF('prescriptionDetailDialog').show()"
-                                     process="@this" />
-
-                </p:column>
-
-            </p:dataTable>
-        </h:form>
-    </p:card>
-
-
+                <p:commandButton value="Close"
+                                 type="button"
+                                 icon="pi pi-times"
+                                 onclick="PF('prescriptionDetailDialogWidget').hide()"
+                                 styleClass="ui-button-secondary"/>
+            </div>
+        </p:outputPanel>
+    </p:dialog>
 </ui:composition>

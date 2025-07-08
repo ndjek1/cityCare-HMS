@@ -57,9 +57,7 @@ public class HibernateUtil {
 
     public static SessionFactory getSessionFactory() {
         if (sessionFactory == null) {
-            // This should not happen if static block executed correctly
-            // but as a fallback, you could try re-initializing or throw a specific error.
-            // For simplicity, we assume static block handles initialization.
+
             System.err.println("SessionFactory is null. Re-check initialization.");
             // Optionally, re-trigger static block or handle this scenario.
             // For now, let's rely on the static block. If it fails, the ExceptionInInitializerError will be thrown.

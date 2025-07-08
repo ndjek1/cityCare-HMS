@@ -63,7 +63,7 @@ public class PrescriptionBean implements Serializable {
         if (selectedMed == null) { /* add error message */ return; }
 
         // Add to the list
-        itemsToAdd.add(new PrescribedMedication(selectedMed.getMedicationId(), selectedMed.getName(), dosage, frequency, duration, quantity));
+        itemsToAdd.add(new PrescribedMedication(selectedMed.getMedicationId(), selectedMed.getName(), dosage, frequency, duration, quantity,selectedMed.getUnitPrice()));
         clearMedicationForm();
     }
 

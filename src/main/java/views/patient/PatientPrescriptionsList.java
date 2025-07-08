@@ -27,27 +27,31 @@ public class PatientPrescriptionsList implements Serializable {
     private List<Prescription> patientPrescriptions =  new ArrayList<>();
     private Prescription selectedPrescription;
 
+
     public PatientPrescriptionsList() {
         this.prescriptionService = new PrescriptionServiceImpl();
     }
 
+
     @PostConstruct
     public void init() {
-        // Initialize lists to avoid NullPointerException in the view
-        if (userAccountBean != null && userAccountBean.isPatient()) {
+        loadPrescriptions();
+    }
+
+    public void loadPrescriptions() {
+        if (userAccountBean.isLoggedIn() && userAccountBean.isPatient()) {
             Patient currentPatient = (Patient) userAccountBean.getCurrentUserDetails();
-            if (currentPatient != null) {
-                // Load data for the logged-in patient
+            if (currentPatient != null && currentPatient.getPatientId() != null) {
+                // You will need a method in your service layer like this:
                 this.patientPrescriptions = prescriptionService.findByPatientId(currentPatient.getPatientId());
-                System.err.println("Found prescriptions for patient " + currentPatient.getPatientId());
-            } else {
-                System.err.println("PatientHistoryBean: Logged in user is a patient, but detailed object is null.");
             }
+        }
+        if (this.patientPrescriptions == null) {
+            this.patientPrescriptions = new ArrayList<>();
         }
     }
 
-
-    // Getters for the view to access the data
+    // Getters and Setters
     public List<Prescription> getPatientPrescriptions() {
         return patientPrescriptions;
     }
@@ -57,7 +61,7 @@ public class PatientPrescriptionsList implements Serializable {
     }
 
     public void setSelectedPrescription(Prescription selectedPrescription) {
-        System.err.println("Selected prescription: " + selectedPrescription.getPatient().getName());
+        // This is called by the actionListener on the "View Details" button
         this.selectedPrescription = selectedPrescription;
     }
 }

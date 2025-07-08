@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import org.pahappa.systems.hms.constants.PrescriptionStatus;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 @Embeddable
 public class PrescribedMedication implements Serializable {
@@ -25,17 +26,30 @@ public class PrescribedMedication implements Serializable {
 
     @Enumerated(EnumType.STRING)
     private PrescriptionStatus status = PrescriptionStatus.PENDING; // PENDING, DISPENSED, CANCELLED
+    @Column(precision = 19, scale = 2)
+    private BigDecimal costAtTimeOfPrescription; // Price when prescribed
+    @Transient
+    public BigDecimal getLineItemTotal() {
+        if (this.costAtTimeOfPrescription == null) {
+            return BigDecimal.ZERO;
+        }
+        return this.costAtTimeOfPrescription.multiply(new BigDecimal(this.quantity));
+    }
 
     // Constructors, getters, setters...
     public PrescribedMedication() {}
-    public PrescribedMedication(Long medicationId, String medicationName, String dosage, String frequency, String duration, int quantity) {
+    public PrescribedMedication(Long medicationId, String medicationName,
+                                String dosage, String frequency, String duration, int quantity, BigDecimal costAtTimeOfPrescription) {
         this.medicationId = medicationId;
         this.medicationName = medicationName;
         this.dosage = dosage;
         this.frequency = frequency;
         this.duration = duration;
         this.quantity = quantity;
+        this.costAtTimeOfPrescription = costAtTimeOfPrescription;
+
     }
+
     // ... all getters and setters ...
     public Long getMedicationId() { return medicationId; }
     public void setMedicationId(Long medicationId) { this.medicationId = medicationId; }
@@ -51,4 +65,12 @@ public class PrescribedMedication implements Serializable {
     public void setQuantity(int quantity) { this.quantity = quantity; }
     public PrescriptionStatus getStatus() { return status; }
     public void setStatus(PrescriptionStatus status) { this.status = status; }
+
+    public BigDecimal getCostAtTimeOfPrescription() {
+        return costAtTimeOfPrescription;
+    }
+
+    public void setCostAtTimeOfPrescription(BigDecimal costAtTimeOfPrescription) {
+        this.costAtTimeOfPrescription = costAtTimeOfPrescription;
+    }
 }

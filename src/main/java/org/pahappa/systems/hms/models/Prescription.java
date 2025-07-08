@@ -3,12 +3,14 @@ package org.pahappa.systems.hms.models;
 import jakarta.persistence.*;
 import org.pahappa.systems.hms.constants.PrescriptionStatus;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "prescriptions")
@@ -39,6 +41,16 @@ public class Prescription implements Serializable {
     // Constructors, getters, setters
     public Prescription() {
         this.prescriptionDate = LocalDate.now();
+    }
+    @Transient // This annotation tells Hibernate not to map this field to a DB column
+    public BigDecimal getTotalCost() {
+        if (prescribedMedications == null || prescribedMedications.isEmpty()) {
+            return BigDecimal.ZERO;
+        }
+        return prescribedMedications.stream()
+                .map(PrescribedMedication::getLineItemTotal) // Get the BigDecimal cost of each medication
+                .filter(Objects::nonNull) // Ensure we don't try to add a null value
+                .reduce(BigDecimal.ZERO, BigDecimal::add); // Sum them up
     }
     // ... other getters and setters ...
     public Long getPrescriptionId() { return prescriptionId; }

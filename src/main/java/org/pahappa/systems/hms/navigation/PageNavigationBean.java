@@ -30,7 +30,7 @@ public class PageNavigationBean implements Serializable {
             } else if (userAccountBean.isReceptionist()) {
                 navigateAddNewPatient();
             } else if (userAccountBean.isAccountant()) {
-                navigateToUnpaidBills();
+                navigateToDashboard();
             } else {
                 // A sensible default if no specific role matches
                 navigateToDashboard();

@@ -86,7 +86,7 @@
                     <p:commandLink value="Dashboard"
                                    icon="pi pi-home"
                                    action="#{pageNavigationBean.navigateToDashboard}"
-                                   rendered="#{userAccountBean.isAdministrator()}"
+                                   rendered="#{userAccountBean.isAdministrator() or userAccountBean.isAccountant()}"
                                    update=":pageContentForm:mainContentPanel :menuForm"
                                    styleClass="menu-link #{pageNavigationBean.selectedMenu == 'dashboard' ? 'menu-link-active' : ''}" />
 

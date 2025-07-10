@@ -4,56 +4,54 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:ui="jakarta.faces.facelets">
 
-    <p:card header="Unpaid / Partially Paid Bills" styleClass="shadow-2 p-3">
+    <p:card header="💰 Unpaid / Partially Paid Bills" styleClass="shadow-3 p-4 surface-card border-round">
         <h:form id="unpaidBillsForm" styleClass="p-fluid">
+
+            <h:inputHidden value="#{billBean.dialogReady}" />
 
             <!-- Global Messages -->
             <p:messages id="adminBillMessages" showDetail="true" closable="true" autoUpdate="true" />
 
             <!-- Toolbar -->
-            <div class="flex justify-content-end mb-2">
-                <p:commandButton value="Refresh" icon="pi pi-refresh"
+            <div class="flex justify-content-end mb-3">
+                <p:commandButton value="Refresh"
+                                 icon="pi pi-refresh"
                                  action="#{billBean.loadAllUnpaidBills}"
                                  update="unpaidBillsTable"
-                                 styleClass="ui-button-secondary"
-                />
+                                 styleClass="ui-button-secondary" />
             </div>
 
             <!-- DataTable -->
             <p:dataTable id="unpaidBillsTable" widgetVar="unpaidBillsTableWidget"
                          value="#{billBean.allUnpaidBills}" var="bill"
-                         paginator="true" rows="15"
+                         paginator="true" rows="10"
                          reflow="true"
-                         style="width: 100%;"
-                         styleClass="p-datatable-sm p-datatable-striped"
+                         styleClass="p-datatable-sm p-datatable-striped p-datatable-gridlines"
+                         style="width:100%; table-layout:auto;"
                          emptyMessage="No unpaid bills found.">
 
-                <p:column headerText="Bill ID" style="width: 8rem;">
-                    <h:outputText value="#{bill.billId}" />
+                <p:column headerText="Bill ID">
+                    <h:outputText value="#{bill.billId}" style="white-space: nowrap;" />
                 </p:column>
 
-                <p:column headerText="Patient" sortBy="#{bill.patient.name}"
+                <p:column headerText="Patient Name" sortBy="#{bill.patient.name}"
                           filterBy="#{bill.patient.name}" filterMatchMode="contains">
                     <h:outputText value="#{bill.patient.name}" />
                 </p:column>
 
-                <p:column headerText="Appointment ID" style="width: 10rem;">
-                    <h:outputText value="#{bill.appointment.appointmentId}" />
-                </p:column>
-
-                <p:column headerText="Bill Date" style="width: 14rem;">
+                <p:column headerText="Bill Date">
                     <h:outputText value="#{bill.billDate}">
                         <f:convertDateTime type="localDateTime" pattern="MMM dd, yyyy hh:mm a" />
                     </h:outputText>
                 </p:column>
 
-                <p:column headerText="Amount" style="width: 11rem; text-align: right;">
+                <p:column headerText="Amount (UGX)" style="text-align: right;">
                     <h:outputText value="#{bill.totalAmount}">
                         <f:convertNumber type="currency" currencySymbol="UGX " />
                     </h:outputText>
                 </p:column>
 
-                <p:column headerText="Status" style="width: 10rem; text-align: center;"
+                <p:column headerText="Status" style="text-align: center;"
                           filterBy="#{bill.paymentStatus}" filterMatchMode="equals">
                     <f:facet name="filter">
                         <p:selectOneMenu onchange="PF('unpaidBillsTableWidget').filter()" styleClass="w-full">
@@ -62,16 +60,17 @@
                             <f:selectItem itemLabel="Partially Paid" itemValue="PARTIALLY_PAID" />
                         </p:selectOneMenu>
                     </f:facet>
-                    <h:outputText value="#{bill.paymentStatus}" styleClass="font-bold" />
+                    <p:badge value="#{bill.paymentStatus}"
+                             severity="#{bill.paymentStatus eq 'UNPAID' ? 'danger' : 'warning'}" />
                 </p:column>
 
-                <p:column headerText="Actions" style="width: 6rem; text-align: center;">
+                <p:column headerText="Actions" style="text-align: center;">
                     <p:commandButton icon="pi pi-credit-card"
                                      tooltip="Process Payment"
                                      process="@this"
-                                     action="#{paymentBean.preparePaymentForBill(bill.billId)}"
-                                     update="@widgetVar(paymentDialogWidget)"
-                                     oncomplete="PF('paymentDialogWidget').show()"
+                                     actionListener="#{billBean.preparePaymentDialog(bill)}"
+                                     update="paymentDialogForm:paymentDialogContentPanel paymentDialogForm:paymentDialogMessages"
+                                     oncomplete="PF('paymentDialogWidget').show();"
                                      styleClass="rounded-button ui-button-info" />
                 </p:column>
 

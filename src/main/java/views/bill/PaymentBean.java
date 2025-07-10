@@ -46,8 +46,8 @@ public class PaymentBean implements Serializable {
 
     @PostConstruct
     public void init() {
+        this.dialogReady  = false;
         System.out.println("PaymentBean @PostConstruct - HashCode: " + System.identityHashCode(this));
-        resetPaymentForm();
     }
 
     public void resetPaymentForm() {
@@ -69,30 +69,24 @@ public class PaymentBean implements Serializable {
         this.patient = patient;
     }
 
-    // Called by a button (e.g., from BillingBean or an unpaid bills list)
-    public void preparePaymentForBill(Long billId) {
-        resetPaymentForm(); // Start fresh
-        this.billIdToPay = billId;
-        if (this.billIdToPay != null && billingService != null) {
-            Optional<Bill> billOpt = billingService.findBillById(this.billIdToPay); // Ensure this method exists and initializes items
-            if (billOpt.isPresent()) {
-                this.billDetails = billOpt.get();
-                this.patient = billOpt.get().getPatient();
-                // Pre-fill amountToPay with remaining balance if possible
-                // This requires knowing amount already paid. For simplicity, pre-fill with total.
-                this.amountToPay = this.billDetails.getTotalAmount(); // Assumes Bill.getTotalAmount() is BigDecimal
-                this.dialogReady = true;
-                System.out.println("PaymentBean: Prepared payment for Bill ID: " + this.billIdToPay +
-                        ", Amount Due: " + this.amountToPay);
-            } else {
-                FacesContext.getCurrentInstance().addMessage(null,
-                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Bill (ID: " + billId + ") not found."));
-                this.dialogReady = false;
-            }
+    // Called by the "Process Payment" button in the dataTable
+    public void preparePaymentForBill(Bill billToPay) {
+        // This method now receives the whole Bill object, which is cleaner.
+        // Ensure the Bill object from the dataTable has its lazy associations initialized if needed.
+        if (billToPay != null) {
+            this.billDetails = billToPay;
+
+            // Pre-fill amountToPay with remaining balance
+            this.amountToPay = billToPay.getTotalAmount(); // Assuming Bill has an getAmountDue() method
+            this.selectedPaymentMethod = null;
+            this.paymentReference = null;
+            this.paymentNotes = null;
+            this.dialogReady = true; // Mark dialog as ready to be displayed
+            System.out.println("PaymentBean: Prepared payment for Bill ID: " + billToPay.getBillId() + ", Amount Due: " + this.amountToPay);
         } else {
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Cannot prepare payment. Bill ID or service missing."));
             this.dialogReady = false;
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Selected bill is invalid."));
         }
     }
 
@@ -145,6 +139,11 @@ public class PaymentBean implements Serializable {
     // Getters and Setters
     public Long getBillIdToPay() { return billIdToPay; }
     public Bill getBillDetails() { return billDetails; }
+
+    public void setBillDetails(Bill billDetails) {
+        this.billDetails = billDetails;
+    }
+
     public double getAmountToPay() { return amountToPay; }
     public void setAmountToPay(double amountToPay) { this.amountToPay = amountToPay; }
     public PaymentMethod getSelectedPaymentMethod() { return selectedPaymentMethod; }
@@ -154,6 +153,26 @@ public class PaymentBean implements Serializable {
     public String getPaymentNotes() { return paymentNotes; }
     public void setPaymentNotes(String paymentNotes) { this.paymentNotes = paymentNotes; }
     public boolean isDialogReady() { return dialogReady; }
+
+    public BillingServiceImpl getBillingService() {
+        return billingService;
+    }
+
+    public BillBean getBillingBean() {
+        return billingBean;
+    }
+
+    public void setBillingBean(BillBean billingBean) {
+        this.billingBean = billingBean;
+    }
+
+    public void setBillIdToPay(Long billIdToPay) {
+        this.billIdToPay = billIdToPay;
+    }
+
+    public void setDialogReady(boolean dialogReady) {
+        this.dialogReady = dialogReady;
+    }
 
     // For payment method dropdown
     public List<PaymentMethod> getAvailablePaymentMethods() {

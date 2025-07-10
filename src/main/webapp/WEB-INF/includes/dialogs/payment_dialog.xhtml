@@ -24,32 +24,32 @@
          <p:outputPanel id="paymentDialogContentPanel">
 
             <!-- Show warning if data is not ready -->
-            <p:outputPanel rendered="#{!paymentBean.dialogReady or paymentBean.billDetails == null}">
+            <p:outputPanel rendered="#{billBean.billToPay == null}">
                <p:staticMessage severity="warn" summary="Information"
                                 detail="Bill details not loaded. Please select a bill to pay."/>
             </p:outputPanel>
 
             <!-- Show form if data is ready -->
-            <p:outputPanel rendered="#{paymentBean.dialogReady and paymentBean.billDetails != null}">
+            <p:outputPanel rendered="#{billBean.dialogReady != false}">
 
-               <p:fieldset legend="Bill Details (ID: #{paymentBean.billDetails.billId})">
+               <p:fieldset legend="Bill Details (ID: #{billBean.billToPay.billId})">
                   <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank" style="font-size:0.95em;">
                      <h:outputText value="Patient:" style="font-weight:bold;"/>
-                     <h:outputText value="#{paymentBean.patient.name}"/>
+                     <h:outputText value="#{billBean.billToPay.patient.name}"/>
 
                      <h:outputText value="Bill Date:" style="font-weight:bold;"/>
-                     <h:outputText value="#{paymentBean.billDetails.billDate}">
+                     <h:outputText value="#{billBean.billToPay.billDate}">
                         <f:convertDateTime pattern="MMM dd, yyyy hh:mm a" type="localDateTime"/>
                      </h:outputText>
 
                      <h:outputText value="Total Amount:" style="font-weight:bold;"/>
-                     <h:outputText value="#{paymentBean.billDetails.totalAmount}">
+                     <h:outputText value="#{billBean.billToPay.totalAmount}">
                         <f:convertNumber type="currency" currencySymbol="UGX "/>
                      </h:outputText>
 
                      <h:outputText value="Current Status:" style="font-weight:bold;"/>
-                     <h:outputText value="#{paymentBean.billDetails.paymentStatus}"
-                                   style="font-weight:bold; color:#{paymentBean.billDetails.paymentStatus == 'PAID' ? 'green' : 'orange'};" />
+                     <h:outputText value="#{billBean.billToPay.paymentStatus}"
+                                   style="font-weight:bold; color:#{billBean.billToPay.paymentStatus == 'PAID' ? 'green' : 'orange'};" />
                   </p:panelGrid>
                </p:fieldset>
 
@@ -58,23 +58,23 @@
                                columnClasses="ui-g-12 ui-md-4, ui-g-12 ui-md-8">
 
                      <p:outputLabel for="amountToPay" value="Amount to Pay (UGX):"/>
-                     <p:inputNumber id="amountToPay" value="#{paymentBean.amountToPay}"
+                     <p:inputNumber id="amountToPay" value="#{billBean.amountToPay}"
                                     required="true" requiredMessage="Payment amount is required."
                                     minValue="0.01" decimalPlaces="2" symbol=" UGX" symbolPosition="s"/>
 
                      <p:outputLabel for="paymentMethod" value="Payment Method:"/>
-                     <p:selectOneMenu id="paymentMethod" value="#{paymentBean.selectedPaymentMethod}"
+                     <p:selectOneMenu id="paymentMethod" value="#{billBean.selectedPaymentMethod}"
                                       required="true" requiredMessage="Payment method is required.">
                         <f:selectItem itemLabel="--- Select Method ---" itemValue="#{null}" noSelectionOption="true"/>
-                        <f:selectItems value="#{paymentBean.availablePaymentMethods}" var="pm"
+                        <f:selectItems value="#{billBean.availablePaymentMethods}" var="pm"
                                        itemLabel="#{pm.toString()}" itemValue="#{pm}"/>
                      </p:selectOneMenu>
 
                      <p:outputLabel for="paymentRef" value="Transaction Ref (Optional):"/>
-                     <p:inputText id="paymentRef" value="#{paymentBean.paymentReference}"/>
+                     <p:inputText id="paymentRef" value="#{billBean.paymentReference}"/>
 
                      <p:outputLabel for="paymentNotes" value="Notes (Optional):"/>
-                     <p:inputTextarea id="paymentNotes" value="#{paymentBean.paymentNotes}" rows="2"
+                     <p:inputTextarea id="paymentNotes" value="#{billBean.paymentNotes}" rows="2"
                                       autoResize="false"/>
                   </p:panelGrid>
                </p:fieldset>
@@ -86,13 +86,13 @@
               style="padding-top:15px; margin-top:10px; border-top:1px solid #ddd;">
 
             <p:commandButton value="Submit Payment"
-                             action="#{paymentBean.submitPayment}"
+                             action="#{billBean.submitPayment}"
                              icon="pi pi-check-circle"
                              styleClass="ui-button-success"
                              process="paymentDialogForm"
                              update="paymentDialogContentPanel paymentDialogMessages @form :unpaidBillsForm:unpaidBillsTable :unpaidBillsForm:adminBillMessages"
                              oncomplete="if (args &amp;&amp; !args.validationFailed &amp;&amp; (facesContext.messageList == null || facesContext.messageList.isEmpty())) { PF('paymentDialogWidget').hide(); }"
-                             disabled="#{!paymentBean.dialogReady or paymentBean.billDetails == null or paymentBean.billDetails.paymentStatus == 'PAID'}"/>
+                             disabled="#{!billBean.dialogReady or billBean.billToPay == null or billBean.billToPay.paymentStatus == 'PAID'}"/>
 
             <p:commandButton value="Cancel"
                              type="button"

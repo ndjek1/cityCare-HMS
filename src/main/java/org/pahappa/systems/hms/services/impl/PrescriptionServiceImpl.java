@@ -2,13 +2,14 @@ package org.pahappa.systems.hms.services.impl;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Named;
+import org.pahappa.systems.hms.constants.PaymentMethod;
+import org.pahappa.systems.hms.constants.PaymentStatus;
 import org.pahappa.systems.hms.dao.AppointmentDao;
 import org.pahappa.systems.hms.dao.PrescriptionDao;
 import org.pahappa.systems.hms.dao.impl.AppointmentDaoImpl;
+import org.pahappa.systems.hms.dao.impl.PaymentDaoImpl;
 import org.pahappa.systems.hms.dao.impl.PrescriptionDaoImpl;
-import org.pahappa.systems.hms.models.Appointment;
-import org.pahappa.systems.hms.models.PrescribedMedication;
-import org.pahappa.systems.hms.models.Prescription;
+import org.pahappa.systems.hms.models.*;
 import org.pahappa.systems.hms.services.PrescriptionService;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -28,7 +29,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 
 
     private final PrescriptionDao prescriptionDao; // Inject the DAO interface
-
+    private final PaymentDaoImpl paymentDao;
 
     private final  AppointmentDao appointmentDao; // Inject other DAOs as needed
 
@@ -36,6 +37,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     public PrescriptionServiceImpl() {
         this.appointmentDao = new AppointmentDaoImpl();
         this.prescriptionDao = new PrescriptionDaoImpl();
+        this.paymentDao = new PaymentDaoImpl();
         this.factory = HibernateUtil.getSessionFactory();
         System.out.println("PrescriptionServiceImpl CDI bean CREATED.");
     }
@@ -135,6 +137,57 @@ public class PrescriptionServiceImpl implements PrescriptionService {
             return Collections.emptyList();
         }
     }
+
+    @Override
+    public List<Prescription> findAllUnpaid() {
+
+        List<Prescription> allUnpaidPrescriptions;
+
+        System.out.println("SERVICE: Fetching all unpaid or partially paid bills.");
+        allUnpaidPrescriptions = prescriptionDao.findAllUnpaid();
+
+        return allUnpaidPrescriptions;
+    }
+
+    public Optional<Payment> processPaymentForPrescription(Long prescriptionId, double amountPaid, PaymentMethod method) {
+        if (prescriptionId == null || amountPaid <= 0) {
+            System.err.println("Invalid prescriptionId or amountPaid. prescriptionId=" + prescriptionId + ", amountPaid=" + amountPaid);
+            return Optional.empty();
+        }
+
+        try {
+            Optional<Prescription> prescriptionOpt = prescriptionDao.findById(prescriptionId);
+
+            if (prescriptionOpt.isPresent()) {
+                Prescription prescription = prescriptionOpt.get();
+
+                if (prescription.getPaymentStatus() == PaymentStatus.PAID) {
+                    System.out.println("Bill " + prescriptionId + " is already fully paid.");
+                    return Optional.empty();
+                }
+
+                Payment payment = new Payment(prescription, amountPaid, method);
+
+                paymentDao.save(payment);
+
+                if (amountPaid >= prescription.getTotalCost()) {
+                    prescription.setPaymentStatus(PaymentStatus.PAID);
+                } else {
+                    prescription.setPaymentStatus(PaymentStatus.PARTIALLY_PAID);
+                }
+
+                prescriptionDao.update(prescription);
+                return Optional.of(payment);
+            } else {
+                System.err.println("No Prescription found for ID: " + prescriptionId);
+            }
+        } catch (Exception e) {
+            e.printStackTrace(); // You can log this more cleanly in real apps
+        }
+
+        return Optional.empty();
+    }
+
 
     // You'll need to add an implementation for `getPrescriptionsForPatient` to your PrescriptionDao interface and implementation.
 }

@@ -3,7 +3,9 @@ package org.pahappa.systems.hms.dao.impl;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.hibernate.Hibernate;
 import org.hibernate.query.Query;
+import org.pahappa.systems.hms.constants.PaymentStatus;
 import org.pahappa.systems.hms.dao.PrescriptionDao;
+import org.pahappa.systems.hms.models.Bill;
 import org.pahappa.systems.hms.models.Prescription;
 
 import java.util.Collections;
@@ -41,6 +43,22 @@ public class PrescriptionDaoImpl extends AbstractDao<Prescription, Long> impleme
             query.setParameter("appointmentId", appointmentId);
             List<Prescription> prescriptions = query.getResultList();
             prescriptions.forEach(pr -> Hibernate.initialize(pr.getPrescribedMedications()));
+            return prescriptions;
+        });
+    }
+
+    @Override
+    public List<Prescription> findAllUnpaid(){
+        return execute(session -> {
+            Query<Prescription> query = session.createQuery(
+                    "SELECT b FROM Prescription b LEFT JOIN FETCH b.patient WHERE b.paymentStatus != :paidStatus ORDER BY b.prescriptionDate DESC", Prescription.class);
+            query.setParameter("paidStatus", PaymentStatus.PAID);
+            List<Prescription> prescriptions = query.getResultList();
+            for (Prescription prescription : prescriptions) {
+                Hibernate.initialize(prescription.getPrescribedMedications());
+                Hibernate.initialize(prescription.getAppointment());
+                Hibernate.initialize(prescription.getPatient());
+            }
             return prescriptions;
         });
     }

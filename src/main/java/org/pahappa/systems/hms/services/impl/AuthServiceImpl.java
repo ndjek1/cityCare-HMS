@@ -42,7 +42,7 @@ public class AuthServiceImpl implements AuthService {
         if (userAccount == null || userAccount.getEntityId() == null) return null;
         return switch (userAccount.getRole()) {
             case PATIENT -> patientDao.findById(userAccount.getEntityId()).orElse(null);
-            case DOCTOR, RECEPTIONIST, ADMINISTRATOR -> staffDao.findById(userAccount.getEntityId()).orElse(null);
+            case DOCTOR, RECEPTIONIST, ADMINISTRATOR,FINANCE -> staffDao.findById(userAccount.getEntityId()).orElse(null);
             default -> null;
         };
     }

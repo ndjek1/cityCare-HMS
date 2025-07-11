@@ -30,7 +30,7 @@ public class PageNavigationBean implements Serializable {
             } else if (userAccountBean.isReceptionist()) {
                 navigateAddNewPatient();
             } else if (userAccountBean.isAccountant()) {
-                navigateToUnpaidBills();
+                navigateToDashboard();
             } else {
                 // A sensible default if no specific role matches
                 navigateToDashboard();
@@ -49,6 +49,12 @@ public class PageNavigationBean implements Serializable {
     public String navigateAddNewStaff() {
         this.selectedMenu =  "staffRegistration";
         this.currentPage = "/WEB-INF/includes/admin/staff_registration.xhtml";
+        return null;
+    }
+
+    public String navigateToUnpaidPrescriptions() {
+        this.selectedMenu =  "unpaidPrescriptions";
+        this.currentPage = "/WEB-INF/includes/unpaid_prescriptions.xhtml";
         return null;
     }
 

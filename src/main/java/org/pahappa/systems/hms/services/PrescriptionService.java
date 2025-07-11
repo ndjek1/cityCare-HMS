@@ -11,4 +11,5 @@ public interface PrescriptionService {
     boolean createPrescription(Long appointmentId, List<PrescribedMedication> items);
     List<Prescription> findByPatientId(Long id);
     List<Prescription> findByAppointmentId(Long id);
+    List<Prescription> findAllUnpaid();
 }

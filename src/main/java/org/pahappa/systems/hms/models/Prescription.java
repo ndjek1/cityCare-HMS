@@ -1,6 +1,7 @@
 package org.pahappa.systems.hms.models;
 
 import jakarta.persistence.*;
+import org.pahappa.systems.hms.constants.PaymentStatus;
 import org.pahappa.systems.hms.constants.PrescriptionStatus;
 
 import java.math.BigDecimal;
@@ -38,20 +39,27 @@ public class Prescription implements Serializable {
     @OrderBy("medicationName ASC")
     private List<PrescribedMedication> prescribedMedications = new ArrayList<>();
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private PaymentStatus paymentStatus = PaymentStatus.UNPAID;
+
     // Constructors, getters, setters
     public Prescription() {
         this.prescriptionDate = LocalDate.now();
     }
     @Transient // This annotation tells Hibernate not to map this field to a DB column
-    public BigDecimal getTotalCost() {
+    public double getTotalCost() {
         if (prescribedMedications == null || prescribedMedications.isEmpty()) {
-            return BigDecimal.ZERO;
+            return 0.0;
         }
+
         return prescribedMedications.stream()
-                .map(PrescribedMedication::getLineItemTotal) // Get the BigDecimal cost of each medication
-                .filter(Objects::nonNull) // Ensure we don't try to add a null value
-                .reduce(BigDecimal.ZERO, BigDecimal::add); // Sum them up
+                .map(PrescribedMedication::getLineItemTotal)
+                .filter(Objects::nonNull)
+                .mapToDouble(BigDecimal::doubleValue)
+                .sum();
     }
+
     // ... other getters and setters ...
     public Long getPrescriptionId() { return prescriptionId; }
     public void setPrescriptionId(Long prescriptionId) { this.prescriptionId = prescriptionId; }
@@ -65,4 +73,12 @@ public class Prescription implements Serializable {
     public void setPrescriptionDate(LocalDate prescriptionDate) { this.prescriptionDate = prescriptionDate; }
     public List<PrescribedMedication> getPrescribedMedications() { return prescribedMedications; }
     public void setPrescribedMedications(List<PrescribedMedication> prescribedMedications) { this.prescribedMedications = prescribedMedications; }
+
+    public PaymentStatus getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(PaymentStatus paymentStatus) {
+        this.paymentStatus = paymentStatus;
+    }
 }

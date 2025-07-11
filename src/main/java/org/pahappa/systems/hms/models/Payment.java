@@ -13,8 +13,12 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long paymentId;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "bill_id_fk", nullable = false)
+    @JoinColumn(name = "bill_id_fk")
     private Bill billId; // FK
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "prescription_id_fk")
+    private Prescription prescription;
     private double amountPaid;
     private PaymentMethod method;
     private LocalDateTime paymentDate;
@@ -24,6 +28,11 @@ public class Payment {
         this.amountPaid = amountPaid;
         this.method = method;
         this.paymentDate = LocalDateTime.now();
+    }
+    public  Payment(Prescription prescription, double amountPaid, PaymentMethod method) {
+        this.prescription = prescription;
+        this.amountPaid = amountPaid;
+        this.method = method;
     }
 
     public Payment() {
@@ -37,6 +46,13 @@ public class Payment {
     public PaymentMethod getMethod() { return method; }
     public LocalDateTime getPaymentDate() { return paymentDate; }
 
+    public Prescription getPrescription() {
+        return prescription;
+    }
+
+    public void setPrescription(Prescription prescription) {
+        this.prescription = prescription;
+    }
 
     @Override
     public String toString() {

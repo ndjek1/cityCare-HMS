@@ -12,37 +12,79 @@
              width="500">
 
       <h:form id="prescriptionDetailForm">
-         <p:outputPanel id="prescriptionDetailPanel"
-                        rendered="#{patientPrescriptionsList.selectedPrescription != null}">
-            <h:panelGrid columns="2" cellpadding="7">
-               <h:outputText value="Medication:" styleClass="font-bold"/>
-               <h:outputText value="#{patientPrescriptionsList.selectedPrescription.medicationName}" />
+         <p:dialog header="Prescription Details"
+                   widgetVar="prescriptionDetailDialogWidget"
+                   id="prescriptionDetailDialog"
+                   modal="true" closable="true"
+                   resizable="false" width="700"
+                   appendTo="@(body)" showEffect="fade" hideEffect="fade">
 
-               <h:outputText value="Dosage:" styleClass="font-bold"/>
-               <h:outputText value="#{patientPrescriptionsList.selectedPrescription.dosage}" />
+            <p:outputPanel id="prescriptionDetailPanel" style="line-height: 1.6;">
+               <p:outputPanel id="prescriptionDetails" rendered="#{patientPrescriptionsList.selectedPrescription != null}">
+                  <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+                     <h:outputText value="Prescription Date:" style="font-weight:bold;" />
+                     <h:outputText value="#{patientPrescriptionsList.selectedPrescription.prescriptionDate}">
+                        <f:convertDateTime type="localDate" dateStyle="full" />
+                     </h:outputText>
 
-               <h:outputText value="Frequency:" styleClass="font-bold"/>
-               <h:outputText value="#{patientPrescriptionsList.selectedPrescription.frequency}" />
+                     <h:outputText value="Prescribed By:" style="font-weight:bold;" />
+                     <h:outputText value="Dr. #{patientPrescriptionsList.selectedPrescription.doctor.name}" />
+                  </p:panelGrid>
 
-               <h:outputText value="Instructions:" styleClass="font-bold"/>
-               <h:outputText value="#{patientPrescriptionsList.selectedPrescription.instructions}" style="white-space: pre-wrap;" />
+                  <p:fieldset legend="Medications" styleClass="mt-3">
+                     <p:dataTable var="med"
+                                  value="#{patientPrescriptionsList.selectedPrescription.prescribedMedications}"
+                                  emptyMessage="No medications listed.">
+                        <p:column headerText="Medication">
+                           <h:outputText value="#{med.medicationName}" />
+                        </p:column>
+                        <p:column headerText="Dosage">
+                           <h:outputText value="#{med.dosage}" />
+                        </p:column>
+                        <p:column headerText="Frequency">
+                           <h:outputText value="#{med.frequency}" />
+                        </p:column>
+                        <p:column headerText="Duration">
+                           <h:outputText value="#{med.duration}" />
+                        </p:column>
+                        <p:column headerText="Unit Cost" style="text-align:right;">
+                           <h:outputText value="#{med.costAtTimeOfPrescription}">
+                              <f:convertNumber type="currency" currencySymbol="UGX "/>
+                           </h:outputText>
+                        </p:column>
+                     </p:dataTable>
+                     <!-- NEW FOOTER TO DISPLAY TOTAL COST -->
+                     <p:panelGrid columns="2" styleClass="ui-noborder ui-panelgrid-blank" style="width:100%; margin-top:10px;">
+                        <h:outputText value="" /> <!-- Empty column for alignment -->
+                        <h:outputText value="Total Prescription Cost: #{patientPrescriptionsList.selectedPrescription.totalCost}"
+                                      style="font-weight:bold; font-size:1.2em; text-align:right;">
+                           <f:convertNumber type="currency" currencySymbol="UGX "/>
+                        </h:outputText>
+                     </p:panelGrid>
 
-               <h:outputText value="Start Date:" styleClass="font-bold"/>
-               <h:outputText value="#{patientPrescriptionsList.selectedPrescription.startDate}" />
+                  </p:fieldset>
+               </p:outputPanel>
 
-               <h:outputText value="End Date:" styleClass="font-bold"/>
-               <h:outputText value="#{patientPrescriptionsList.selectedPrescription.endDate != null ? patientPrescriptionsList.selectedPrescription.endDate : 'N/A'}" />
+               <p:outputPanel rendered="#{patientPrescriptionsList.selectedPrescription == null}" style="padding: 2rem;">
+                  <p:staticMessage severity="warn" summary="No Prescription Loaded" detail="Please close this dialog and try again."/>
+               </p:outputPanel>
 
-               <h:outputText value="Status:" styleClass="font-bold"/>
-               <p:badge value="#{patientPrescriptionsList.selectedPrescription.status}" styleClass="bg-green-500" />
+               <div class="ui-dialog-buttonpane ui-helper-clearfix" style="padding-top:1.5rem;">
+                  <p:commandButton value="Print" icon="pi pi-print"
+                                   type="button"
 
-               <h:outputText value="Prescribed by:" styleClass="font-bold"/>
-               <h:outputText value="Dr. #{patientPrescriptionsList.selectedPrescription.doctor.name}" />
+                                   styleClass="ui-button-help">
+                     <p:printer target="prescriptionDetails" configuration="globalStyles: true, title: 'Prescription details'"/>
+                  </p:commandButton>
 
-               <h:outputText value="Related Appointment:" styleClass="font-bold"/>
-               <h:outputText value="#{patientPrescriptionsList.selectedPrescription.appointment.dateTime}" />
-            </h:panelGrid>
-         </p:outputPanel>
+                  <p:commandButton value="Close"
+                                   type="button"
+                                   icon="pi pi-times"
+                                   onclick="PF('prescriptionDetailDialogWidget').hide()"
+                                   styleClass="ui-button-secondary"/>
+               </div>
+            </p:outputPanel>
+         </p:dialog>
       </h:form>
    </p:dialog>
 

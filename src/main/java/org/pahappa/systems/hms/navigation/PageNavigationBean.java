@@ -52,6 +52,12 @@ public class PageNavigationBean implements Serializable {
         return null;
     }
 
+    public String navigateToUnpaidPrescriptions() {
+        this.selectedMenu =  "unpaidPrescriptions";
+        this.currentPage = "/WEB-INF/includes/unpaid_prescriptions.xhtml";
+        return null;
+    }
+
     public String navigateAddNewPatient() {
         this.selectedMenu = "patientRegistration";
         this.currentPage = "/WEB-INF/includes/receptionist/patient_registration.xhtml";

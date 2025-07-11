@@ -142,12 +142,18 @@
                                    update=":pageContentForm:mainContentPanel :menuForm"
                                    styleClass="menu-link #{pageNavigationBean.selectedMenu == 'completed_appointments' ? 'menu-link-active' : ''}" />
                     <!--ACCOUNTANT-->
-                    <p:commandLink value="Patient Bills"
+                    <p:commandLink value="Bills"
                                    icon="pi pi-wallet"
                                    action="#{pageNavigationBean.navigateToUnpaidBills}"
                                    rendered="#{userAccountBean.isAccountant()}"
                                    update=":pageContentForm:mainContentPanel :menuForm"
                                    styleClass="menu-link #{pageNavigationBean.selectedMenu == 'unpaid_bills' ? 'menu-link-active' : ''}" />
+                    <p:commandLink value="Prescriptions"
+                                   icon="pi pi-wallet"
+                                   action="#{pageNavigationBean.navigateToUnpaidPrescriptions()}"
+                                   rendered="#{userAccountBean.isAccountant()}"
+                                   update=":pageContentForm:mainContentPanel :menuForm"
+                                   styleClass="menu-link #{pageNavigationBean.selectedMenu == 'unpaidPrescriptions' ? 'menu-link-active' : ''}" />
                     <!-- Admin Only -->
                     <p:commandLink value="Add Staff"
                                    icon="pi pi-user-plus"
@@ -261,6 +267,7 @@
     <ui:include src="/WEB-INF/includes/dialogs/manage_prescription.xhtml"/>
     <ui:include src="/WEB-INF/includes/dialogs/prescription_detail.xhtml"/>
     <ui:include src="/WEB-INF/includes/dialogs/medication_dialog.xhtml"/>
+    <ui:include src="/WEB-INF/includes/dialogs/prescription_payment.xhtml"/>
 
 
 </h:body>

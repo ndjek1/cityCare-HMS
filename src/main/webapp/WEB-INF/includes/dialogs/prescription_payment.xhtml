@@ -1,0 +1,105 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:c="jakarta.tags.core">
+
+   <p:dialog header="Process Payment"
+             widgetVar="prescriptionPaymentDialogWidget"
+             id="prescriptionPaymentDialog"
+             modal="true"
+             closable="true"
+             resizable="false"
+             draggable="true"
+             appendTo="@(body)"
+             showEffect="fade"
+             hideEffect="fade"
+             style="min-width: 400px; max-width: 600px; overflow: auto;">
+
+      <h:form id="prescriptionPaymentDialogForm">
+
+         <p:messages id="prescriptionPaymentDialogMessages" showDetail="true" closable="true" style="margin-bottom:10px;" />
+
+         <p:outputPanel id="prescriptionPaymentDialogContentPanel">
+
+            <!-- Show warning if data is not ready -->
+            <p:outputPanel rendered="#{financeBean.prescriptionToPay == null or !financeBean.dialogReady}">
+               <p:staticMessage severity="warn" summary="Information"
+                                detail="Bill details not loaded. Please select a bill to pay."/>
+            </p:outputPanel>
+
+            <!-- Show form if data is ready -->
+            <p:outputPanel rendered="#{financeBean.dialogReady}">
+
+               <p:fieldset legend="Bill Details (ID: #{financeBean.prescriptionToPay.prescriptionId})">
+                  <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank" style="font-size:0.95em;">
+                     <h:outputText value="Patient:" style="font-weight:bold;"/>
+                     <h:outputText value="#{financeBean.prescriptionToPay.patient.name}"/>
+
+                     <h:outputText value="Bill Date:" style="font-weight:bold;"/>
+                     <h:outputText value="#{financeBean.prescriptionToPay.prescriptionDate}">
+                     </h:outputText>
+
+                     <h:outputText value="Total Amount:" style="font-weight:bold;"/>
+                     <h:outputText value="#{financeBean.prescriptionToPay.totalCost}">
+                        <f:convertNumber type="currency" currencySymbol="UGX "/>
+                     </h:outputText>
+
+                     <h:outputText value="Current Status:" style="font-weight:bold;"/>
+                     <h:outputText value="#{financeBean.prescriptionToPay.paymentStatus}"
+                                   style="font-weight:bold; color:#{financeBean.prescriptionToPay.paymentStatus == 'PAID' ? 'green' : 'orange'};" />
+                  </p:panelGrid>
+               </p:fieldset>
+
+               <p:fieldset legend="Payment Information" style="margin-top:15px;">
+                  <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+                               columnClasses="ui-g-12 ui-md-4, ui-g-12 ui-md-8">
+
+                     <p:outputLabel for="amountToPay" value="Amount to Pay (UGX):"/>
+                     <p:inputNumber id="amountToPay" value="#{financeBean.amountToPay}"
+                                    required="true" requiredMessage="Payment amount is required."
+                                    minValue="0.01" decimalPlaces="2" symbol=" UGX" symbolPosition="s"/>
+
+                     <p:outputLabel for="paymentMethod" value="Payment Method:"/>
+                     <p:selectOneMenu id="paymentMethod" value="#{financeBean.selectedPaymentMethod}"
+                                      required="true" requiredMessage="Payment method is required.">
+                        <f:selectItem itemLabel="--- Select Method ---" itemValue="#{null}" noSelectionOption="true"/>
+                        <f:selectItems value="#{financeBean.availablePaymentMethods}" var="pm"
+                                       itemLabel="#{pm.toString()}" itemValue="#{pm}"/>
+                     </p:selectOneMenu>
+
+                     <p:outputLabel for="paymentRef" value="Transaction Ref (Optional):"/>
+                     <p:inputText id="paymentRef" value="#{financeBean.paymentReference}"/>
+
+                     <p:outputLabel for="paymentNotes" value="Notes (Optional):"/>
+                     <p:inputTextarea id="paymentNotes" value="#{financeBean.paymentNotes}" rows="2"
+                                      autoResize="false"/>
+                  </p:panelGrid>
+               </p:fieldset>
+            </p:outputPanel>
+         </p:outputPanel>
+
+         <!-- Footer buttons -->
+         <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix"
+              style="padding-top:15px; margin-top:10px; border-top:1px solid #ddd;">
+
+            <p:commandButton value="Submit Payment"
+                             action="#{financeBean.submitPayment}"
+                             icon="pi pi-check-circle"
+                             styleClass="ui-button-success"
+                             process="prescriptionPaymentDialogForm"
+                             update="prescriptionPaymentDialogContentPanel prescriptionPaymentDialogMessages @form :unpaidBillsForm:unpaidBillsTable :unpaidBillsForm:adminBillMessages"
+                             oncomplete="if (args &amp;&amp; !args.validationFailed &amp;&amp; (facesContext.messageList == null || facesContext.messageList.isEmpty())) { PF('prescriptionPaymentDialogWidget').hide(); }"
+                             disabled="#{financeBean.prescriptionToPay.paymentStatus.toString() == 'PAID'}"/>
+
+            <p:commandButton value="Cancel"
+                             type="button"
+                             onclick="PF('prescriptionPaymentDialogWidget').hide();"
+                             icon="pi pi-times"
+                             styleClass="ui-button-secondary"
+                             style="margin-left: .5em;"/>
+         </div>
+      </h:form>
+   </p:dialog>
+</ui:composition>

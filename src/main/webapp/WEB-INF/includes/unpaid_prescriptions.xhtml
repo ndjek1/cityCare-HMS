@@ -1,0 +1,77 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="jakarta.faces.facelets">
+
+    <p:card header="💰 Unpaid / Partially Paid Prescriptions" styleClass="shadow-3 p-4 surface-card border-round">
+        <h:form id="unpaidPrescriptionForm" styleClass="p-fluid">
+
+            <!-- Global Messages -->
+            <p:messages id="adminPrescriptionMessages" showDetail="true" closable="true" autoUpdate="true" />
+
+            <!-- Toolbar -->
+            <div class="flex justify-content-end mb-3">
+                <p:commandButton value="Refresh"
+                                 icon="pi pi-refresh"
+                                 action="#{financeBean.loadAllUnpaidPrescriptions()}"
+                                 update="unpaidPrescriptionTable"
+                                 styleClass="ui-button-secondary" />
+            </div>
+
+            <!-- DataTable -->
+            <p:dataTable id="unpaidPrescriptionTable" widgetVar="unpaidPrescriptionTableWidget"
+                         value="#{financeBean.allUnpaidPrescriptions}" var="prescription"
+                         paginator="true" rows="10"
+                         reflow="true"
+                         styleClass="p-datatable-sm p-datatable-striped p-datatable-gridlines"
+                         style="width:100%; table-layout:auto;"
+                         emptyMessage="No unpaid bills found.">
+
+                <p:column headerText="ID">
+                    <h:outputText value="#{prescription.prescriptionId}" style="white-space: nowrap;" />
+                </p:column>
+
+                <p:column headerText="Patient Name" sortBy="#{prescription.patient.name}"
+                          filterBy="#{prescription.patient.name}" filterMatchMode="contains">
+                    <h:outputText value="#{prescription.patient.name}" />
+                </p:column>
+
+                <p:column headerText="Prescription Date">
+                    <h:outputText value="#{prescription.prescriptionDate}">
+                    </h:outputText>
+                </p:column>
+
+                <p:column headerText="Amount (UGX)" style="text-align: right;">
+                    <h:outputText value="#{prescription.totalCost}">
+                        <f:convertNumber type="currency" currencySymbol="UGX " />
+                    </h:outputText>
+                </p:column>
+
+                <p:column headerText="Status" style="text-align: center;"
+                          filterBy="#{prescription.paymentStatus}" filterMatchMode="equals">
+                    <f:facet name="filter">
+                        <p:selectOneMenu onchange="PF('unpaidBillsTableWidget').filter()" styleClass="w-full">
+                            <f:selectItem itemLabel="All" itemValue="#{null}" noSelectionOption="true" />
+                            <f:selectItem itemLabel="Unpaid" itemValue="UNPAID" />
+                            <f:selectItem itemLabel="Partially Paid" itemValue="PARTIALLY_PAID" />
+                        </p:selectOneMenu>
+                    </f:facet>
+                    <p:badge value="#{prescription.paymentStatus}"
+                             severity="#{prescription.paymentStatus eq 'UNPAID' ? 'danger' : 'warning'}" />
+                </p:column>
+
+                <p:column headerText="Actions" style="text-align: center;">
+                    <p:commandButton icon="pi pi-credit-card"
+                                     tooltip="Process Payment"
+                                     process="@this"
+                                     actionListener="#{financeBean.preparePaymentDialog(prescription)}"
+                                     update="prescriptionPaymentDialogForm:prescriptionPaymentDialogContentPanel prescriptionPaymentDialogForm:prescriptionPaymentDialogMessages"
+                                     oncomplete="PF('prescriptionPaymentDialogWidget').show();"
+                                     styleClass="rounded-button ui-button-info" />
+                </p:column>
+
+            </p:dataTable>
+        </h:form>
+    </p:card>
+</ui:composition>

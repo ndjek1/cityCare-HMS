@@ -100,6 +100,12 @@ public class PageNavigationBean implements Serializable {
         return null;
     }
 
+    public String navigateToMyPaymentHistory() {
+        this.selectedMenu = "payment_history"; // For active menu highlighting
+        this.currentPage = "/WEB-INF/includes/patient/my_payment_history_content.xhtml";
+        return null;
+    }
+
     public String navigateToDoctorAppointments() {
         this.selectedMenu = "doctor_appointment_list";
         this.currentPage = "/WEB-INF/includes/doctor/doctor_appointment_list.xhtml";

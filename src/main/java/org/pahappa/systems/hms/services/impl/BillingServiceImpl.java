@@ -5,10 +5,8 @@ import org.pahappa.systems.hms.constants.PaymentStatus;
 import org.pahappa.systems.hms.dao.impl.BillDaoImpl;
 import org.pahappa.systems.hms.dao.impl.PaymentDaoImpl;
 import jakarta.inject.Inject;
-import org.pahappa.systems.hms.models.Appointment;
-import org.pahappa.systems.hms.models.Bill;
-import org.pahappa.systems.hms.models.BillItem;
-import org.pahappa.systems.hms.models.Payment;
+import org.pahappa.systems.hms.dao.impl.PrescriptionDaoImpl;
+import org.pahappa.systems.hms.models.*;
 import org.pahappa.systems.hms.services.BillingService;
 
 import java.util.List;
@@ -19,12 +17,14 @@ public class BillingServiceImpl implements BillingService {
     private  final BillDaoImpl billDao;
 
     private final PaymentDaoImpl paymentDao;
+    private final PrescriptionDaoImpl prescriptionDao;
     @Inject
     private ServiceCatalogServiceImpl serviceCatalogServiceImpl; // Example of service injecting service
 
     public BillingServiceImpl() {
         this.billDao = new BillDaoImpl();
         this.paymentDao = new PaymentDaoImpl();
+        this.prescriptionDao = new PrescriptionDaoImpl();
     }
 
 

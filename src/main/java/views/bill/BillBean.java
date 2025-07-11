@@ -9,8 +9,10 @@ import jakarta.inject.Named;
 import org.pahappa.systems.hms.models.Bill;
 import org.pahappa.systems.hms.models.Payment;
 import org.pahappa.systems.hms.constants.PaymentMethod;
+import org.pahappa.systems.hms.models.Prescription;
 import org.pahappa.systems.hms.services.BillingService; // Use the interface
 import org.pahappa.systems.hms.services.impl.BillingServiceImpl;
+import org.pahappa.systems.hms.services.impl.PrescriptionServiceImpl;
 
 import java.io.Serializable;
 import java.math.BigDecimal; // Use BigDecimal for currency
@@ -24,9 +26,10 @@ import java.util.Optional;
 public class BillBean implements Serializable {
 
     private final BillingServiceImpl billingService; // CORRECT: Use DI for the service
-
+    private final PrescriptionServiceImpl prescriptionService;
     // === Properties for displaying the list of bills ===
     private List<Bill> allUnpaidBills;
+    private List<Prescription> allUnpaidPrescriptions;
 
     // === Properties for the payment dialog ===
     private Bill billToPay; // The bill currently loaded in the dialog
@@ -39,6 +42,7 @@ public class BillBean implements Serializable {
     public BillBean() {
         // Constructor should be empty. DI happens after.
         this.billingService = new BillingServiceImpl();
+        this.prescriptionService = new PrescriptionServiceImpl();
         System.out.println("BillBean CONSTRUCTOR called.");
     }
 
@@ -60,6 +64,19 @@ public class BillBean implements Serializable {
         }
         this.dialogReady = true;
         System.out.println("Loaded " + this.allUnpaidBills.size() + " unpaid bills.");
+    }
+
+    // --- List Loading Logic ---
+    public void loadAllUnpaidPrescriptions() {
+        System.out.println("Loading all unpaid bills...");
+        if (prescriptionService != null) {
+            this.allUnpaidPrescriptions = prescriptionService.findAllUnpaid();
+        }
+        if (this.allUnpaidPrescriptions == null) { // Defensive null check
+            this.allUnpaidPrescriptions = new ArrayList<>();
+        }
+        this.dialogReady = true;
+        System.out.println("Loaded " + this.allUnpaidPrescriptions.size() + " unpaid bills.");
     }
 
     // --- Dialog Management Logic ---

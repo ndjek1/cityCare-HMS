@@ -1,0 +1,89 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="jakarta.faces.facelets">
+
+   <p:card header="My Payment History" styleClass="shadow-2 p-3">
+      <h:form id="paymentHistoryForm">
+
+         <!-- Toolbar -->
+         <p:toolbar style="margin-bottom: 1rem;">
+            <p:toolbarGroup>
+               <p:commandButton value="Refresh" icon="pi pi-refresh"
+                                action="#{patientFinancialsBean.loadPaymentHistory}"
+                                update="paymentHistoryTable"
+                                process="@this"
+                                styleClass="ui-button-secondary"/>
+            </p:toolbarGroup>
+         </p:toolbar>
+
+         <!-- Data Table -->
+         <div style="overflow-x: auto;">
+            <p:dataTable id="paymentHistoryTable"
+                         var="payment"
+                         value="#{patientFinancialsBean.paymentHistory}"
+                         emptyMessage="You have no payment records."
+                         styleClass="p-datatable-sm p-datatable-striped"
+                         autoLayout="true"
+                         reflow="true">
+
+               <!-- Header Title -->
+               <f:facet name="header">
+                  <h:outputText value="All Payments Made by #{patientFinancialsBean.currentPatient.name}"/>
+               </f:facet>
+
+               <!-- Payment ID -->
+               <p:column headerText="Payment ID" sortBy="#{payment.paymentId}">
+                  <h:outputText value="#{payment.paymentId}"/>
+               </p:column>
+
+               <!-- Payment Date (with date-only filter) -->
+               <p:column headerText="Payment Date"
+                         filterBy="#{payment.paymentDate}"
+                         filterFunction="#{patientFinancialsBean.filterByDate}"
+                         sortBy="#{payment.paymentDate}">
+                  <f:facet name="filter">
+                     <p:datePicker value="#{patientFinancialsBean.paymentDateFilter}"
+                                   placeholder="Filter by Date"
+                                   pattern="yyyy-MM-dd"
+                                   styleClass="w-full"/>
+                  </f:facet>
+                  <h:outputText value="#{payment.paymentDate}">
+                     <f:convertDateTime type="localDateTime" pattern="MMM dd, yyyy, hh:mm a"/>
+                  </h:outputText>
+               </p:column>
+
+               <!-- Amount Paid -->
+               <p:column headerText="Amount Paid" sortBy="#{payment.amountPaid}" style="text-align: right;">
+                  <h:outputText value="#{payment.amountPaid}">
+                     <f:convertNumber type="currency" currencySymbol="UGX "/>
+                  </h:outputText>
+               </p:column>
+
+               <!-- Payment For -->
+               <p:column headerText="Payment For">
+                  <h:outputText value="Bill ##{payment.billId.billId}" rendered="#{payment.billId != null}"/>
+                  <h:outputText value="Prescription ##{payment.prescription.prescriptionId}" rendered="#{payment.prescription != null}"/>
+               </p:column>
+
+               <!-- Payment Method -->
+               <p:column headerText="Method">
+                  <h:outputText value="#{payment.method}"/>
+               </p:column>
+               <p:column headerText="Receipt" style="text-align: center; width: 5rem;">
+                  <p:commandButton icon="pi pi-print"
+                                   title="Print Receipt"
+                                   actionListener="#{patientFinancialsBean.prepareReceipt(payment)}"
+                                   update=":receiptDialogForm:receiptPanel"
+                                   oncomplete="PF('receiptDialogWidget').show();"
+                                   process="@this"
+                                   styleClass="rounded-button ui-button-help"/>
+               </p:column>
+
+
+            </p:dataTable>
+         </div>
+      </h:form>
+   </p:card>
+</ui:composition>

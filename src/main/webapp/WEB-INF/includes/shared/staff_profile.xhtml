@@ -53,8 +53,9 @@
 
                   <p:outputLabel for="editEmail" value="Email:"/>
                   <p:inputText id="editEmail" value="#{staffProfileBean.currentStaff.email}" required="true" type="email">
-                     <f:validateRegex pattern="^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"/>
+                     <f:validateRegex pattern="^[\w.\-]+@[\w.\-]+\.[a-zA-Z]{2,}$" />
                   </p:inputText>
+
 
                   <p:outputLabel for="editPhone" value="Phone:"/>
                   <p:inputMask id="editPhone" value="#{staffProfileBean.currentStaff.phone}" mask="999 999 9999">

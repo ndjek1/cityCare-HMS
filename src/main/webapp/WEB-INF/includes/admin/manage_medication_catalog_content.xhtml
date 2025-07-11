@@ -1,0 +1,59 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="jakarta.faces.facelets">
+
+   <p:panel header="Manage Medication Catalog">
+      <h:form id="medicationCatalogForm">
+         <p:messages id="medicationMessages" showDetail="true" closable="true" autoUpdate="true"/>
+
+         <p:toolbar>
+            <p:toolbarGroup>
+               <p:commandButton value="New Medication" icon="pi pi-plus"
+                                action="#{medicationAdminBean.openNew()}"
+                                oncomplete="PF('medicationDialogWidget').show()"
+                                process="@this"
+                                update="@widgetVar(medicationDialogWidget)"
+               styleClass="ui-button-success"/>
+            </p:toolbarGroup>
+         </p:toolbar>
+
+         <p:dataTable id="medicationTable" var="med" value="#{medicationAdminBean.allMedications}"
+                      paginator="true" rows="10" emptyMessage="No medications found in catalog."
+                      reflow="true" style="margin-top:10px;">
+
+            <p:column headerText="ID" sortBy="#{med.medicationId}" style="width:5%;">
+               <h:outputText value="#{med.medicationId}"/>
+            </p:column>
+            <p:column headerText="Name" sortBy="#{med.name}" filterBy="#{med.name}" filterMatchMode="contains">
+               <h:outputText value="#{med.name}"/>
+            </p:column>
+            <p:column headerText="Description" filterBy="#{med.description}" filterMatchMode="contains">
+               <h:outputText value="#{med.description}" title="#{med.description}"/>
+            </p:column>
+            <p:column headerText="Unit Price" sortBy="#{med.unitPrice}" style="text-align:right;">
+               <h:outputText value="#{med.unitPrice}">
+                  <f:convertNumber type="currency" currencySymbol="UGX "/>
+               </h:outputText>
+            </p:column>
+            <p:column headerText="Stock Level" sortBy="#{med.stockLevel}" style="text-align:center;">
+               <h:outputText value="#{med.stockLevel}"/>
+            </p:column>
+            <p:column headerText="Active" sortBy="#{med.active}" style="text-align:center; width:80px;">
+               <p:selectBooleanCheckbox value="#{med.active}" disabled="true"/>
+            </p:column>
+            <p:column headerText="Actions" style="width:100px;text-align:center;">
+               <p:commandButton icon="pi pi-pencil" title="Edit Medication"
+                                action="#{medicationAdminBean.openForEdit(med)}"
+                                update=":medicationDialogForm"
+                                oncomplete="PF('medicationDialogWidget').show()"
+                                process="@this"
+                                styleClass="rounded-button ui-button-info"/>
+            </p:column>
+         </p:dataTable>
+      </h:form>
+   </p:panel>
+
+
+</ui:composition>

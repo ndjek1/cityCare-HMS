@@ -56,5 +56,4 @@ public class StaffDaoImpl extends AbstractDao<Staff, Long> implements StaffDao {
         });
     }
 
-
 }

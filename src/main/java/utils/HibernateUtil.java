@@ -33,6 +33,7 @@ public class HibernateUtil {
             configuration.addAnnotatedClass(Appointment.class);
             configuration.addAnnotatedClass(ServiceCatalogItem.class);
             configuration.addAnnotatedClass(Prescription.class);
+            configuration.addAnnotatedClass(Medication.class);
             // Hibernate 5+ uses ServiceRegistry
             // If you are using Hibernate 4, the way to build SessionFactory is slightly different:
             // sessionFactory = configuration.buildSessionFactory(new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build());
@@ -56,9 +57,7 @@ public class HibernateUtil {
 
     public static SessionFactory getSessionFactory() {
         if (sessionFactory == null) {
-            // This should not happen if static block executed correctly
-            // but as a fallback, you could try re-initializing or throw a specific error.
-            // For simplicity, we assume static block handles initialization.
+
             System.err.println("SessionFactory is null. Re-check initialization.");
             // Optionally, re-trigger static block or handle this scenario.
             // For now, let's rely on the static block. If it fails, the ExceptionInInitializerError will be thrown.

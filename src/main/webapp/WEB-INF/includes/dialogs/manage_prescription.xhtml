@@ -4,96 +4,123 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:ui="jakarta.faces.facelets">
 
-   <!-- ────────────── MANAGE PRESCRIPTIONS DIALOG ────────────── -->
-   <p:dialog  header="Manage Prescriptions – Appointment ##{prescriptionBean.selectedAppointment.appointmentId}"
-              widgetVar="prescriptionDialogWidget" modal="true"
-              width="700" closable="true" resizable="false" closeOnEscape="true">
+   <!-- ========== MANAGE PRESCRIPTION DIALOG ========== -->
+   <p:dialog header="Manage Prescription for Appointment ##{prescriptionBean.appointmentDetails.appointmentId}"
+             widgetVar="managePrescriptionDialogWidget"
+             id="managePrescriptionDialog"
+             modal="true"
+             width="850"
+             closable="true" resizable="false" closeOnEscape="true"
+             appendTo="@(body)">
 
-      <h:form id="prescriptionDialogForm" styleClass="p-fluid">
+      <h:form id="prescriptionForm">
+         <p:messages id="prescriptionMessages" showDetail="true" closable="true" style="margin-bottom:10px;" />
 
-         <!-- Toast‑style messages -->
-         <p:messages id="prescriptionMessages" showDetail="true" closable="true" />
+         <p:outputPanel id="prescriptionDialogContent" rendered="#{prescriptionBean.appointmentDetails != null}">
 
-         <!-- ░░░░░ Add New Prescription ░░░░░ -->
-         <p:card header="Add New Prescription" styleClass="mb-3">
-            <div class="formgrid grid">
+            <!-- Display Patient/Doctor Info -->
+            <p:fieldset legend="Details" toggleable="true" collapsed="true">
+               <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank">
+                  <h:outputText value="Patient:" styleClass="font-bold"/>
+                  <h:outputText value="#{prescriptionBean.appointmentDetails.patient.name}"/>
+                  <h:outputText value="Doctor:" styleClass="font-bold"/>
+                  <h:outputText value="#{prescriptionBean.appointmentDetails.doctor.name}"/>
+                  <h:outputText value="Appointment Date:" styleClass="font-bold"/>
+                  <h:outputText value="#{prescriptionBean.appointmentDetails.dateTime}">
+                     <f:convertDateTime pattern="MMM dd, yyyy hh:mm a" type="localDateTime"/>
+                  </h:outputText>
+               </p:panelGrid>
+            </p:fieldset>
 
-               <div class="field col-12 md:col-6">
-                  <p:outputLabel for="medName" value="Medication *" />
-                  <p:inputText id="medName" value="#{prescriptionBean.newPrescription.medicationName}"
-                               required="true" placeholder="e.g. Amoxicillin" />
-               </div>
-
-               <div class="field col-12 md:col-6">
-                  <p:outputLabel for="dosage" value="Dosage" />
-                  <p:inputText id="dosage" value="#{prescriptionBean.newPrescription.dosage}"
-                               placeholder="e.g. 500 mg" />
-               </div>
-
-               <div class="field col-12 md:col-6">
-                  <p:outputLabel for="frequency" value="Frequency" />
-                  <p:inputText id="frequency" value="#{prescriptionBean.newPrescription.frequency}"
-                               placeholder="e.g. 3× daily" />
-               </div>
-
-               <div class="field col-12">
-                  <p:outputLabel for="instructions" value="Special Instructions" />
-                  <p:inputTextarea id="instructions"
-                                   value="#{prescriptionBean.newPrescription.instructions}"
-                                   rows="3" autoResize="true"
-                                   placeholder="Take after meals …" />
-               </div>
-
-            </div>
-
-            <p:commandButton value="Add Prescription"
-                             icon="pi pi-plus"
-                             actionListener="#{prescriptionBean.saveNewPrescription}"
-                             update="existingPrescriptionsTable prescriptionMessages @form"
-                             process="@form"
-                             styleClass="ui-button-success w-auto mt-2" />
-         </p:card>
-
-         <!-- ░░░░░ Existing Prescriptions ░░░░░ -->
-         <p:card header="Existing Prescriptions">
-            <p:dataTable id="existingPrescriptionsTable"
-                         var="pres"
-                         lazy="false"
-                         value="#{prescriptionBean.existingPrescriptions}"
-                         emptyMessage="No prescriptions on record for this appointment."
-                         styleClass="p-datatable-striped p-datatable-sm"
-                         scrollable="true" scrollHeight="220">
-
-               <p:column headerText="Medication">
-                  <h:outputText value="#{pres.medicationName}" />
+            <!-- Table of currently added medications for this prescription -->
+            <p:dataTable id="medicationItemsTable" var="item" value="#{prescriptionBean.itemsToAdd}"
+                         emptyMessage="No medications have been added to this prescription yet."
+                         style="margin-top:15px;"
+                         styleClass="p-datatable-striped p-datatable-sm">
+               <f:facet name="header">
+                  Prescribed Medications
+               </f:facet>
+               <p:column headerText="Medication Name">
+                  <h:outputText value="#{item.medicationName}"/>
                </p:column>
-
-               <p:column headerText="Dosage" style="width:25%;">
-                  <h:outputText value="#{pres.dosage}" />
+               <p:column headerText="Dosage">
+                  <h:outputText value="#{item.dosage}"/>
                </p:column>
-
-               <p:column headerText="Actions" style="width:90px;text-align:center;">
-                  <p:commandButton icon="pi pi-trash"
-                                   styleClass="rounded-button ui-button-danger"
-                                   update="existingPrescriptionsTable prescriptionMessages"
-                                   process="@this">
-                     <p:confirm header="Delete Prescription"
-                                message="Are you sure you want to delete “#{pres.medicationName}”?"
-                                icon="pi pi-exclamation-triangle" />
-                  </p:commandButton>
+               <p:column headerText="Frequency">
+                  <h:outputText value="#{item.frequency}"/>
+               </p:column>
+               <p:column headerText="Duration">
+                  <h:outputText value="#{item.duration}"/>
+               </p:column>
+               <p:column headerText="Qty" style="width: 70px; text-align: center;">
+                  <h:outputText value="#{item.quantity}"/>
+               </p:column>
+               <p:column style="width:50px; text-align:center;">
+                  <p:commandButton icon="pi pi-times"
+                                   title="Remove medication from this prescription"
+                                   action="#{prescriptionBean.removeMedicationItem(item)}"
+                                   update="medicationItemsTable"
+                                   process="@this"
+                                   styleClass="ui-button-danger rounded-button ui-button-icon-only"/>
                </p:column>
             </p:dataTable>
-         </p:card>
 
-         <!-- Global confirm dialog (re‑used by p:confirm) -->
-         <p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
-                          responsive="true" width="350">
-            <p:commandButton value="Yes" type="button"
-                             styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
-            <p:commandButton value="No"  type="button"
-                             styleClass="ui-confirmdialog-no ui-button-secondary" icon="pi pi-times" />
-         </p:confirmDialog>
+            <!-- Form to add a NEW medication to the list -->
+            <p:fieldset legend="Add New Medication Item" style="margin-top:15px;">
+               <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+                            columnClasses="ui-g-12 md:col-3, ui-g-12 md:col-9">
 
+                  <p:outputLabel for="medicationSelect" value="Medication:"/>
+                  <p:selectOneMenu id="medicationSelect" value="#{prescriptionBean.selectedMedicationId}"
+                                   required="true" requiredMessage="Medication must be selected."
+                                   filter="true" filterMatchMode="contains"
+                                   panelStyle="width:300px">
+                     <f:selectItem itemLabel="Select from Pharmacy Catalog..." itemValue="#{null}" noSelectionOption="true"/>
+                     <f:selectItems value="#{prescriptionBean.availableMedications}" var="med"
+                                    itemLabel="#{med.name}" itemValue="#{med.medicationId}"/>
+                  </p:selectOneMenu>
+
+                  <p:outputLabel for="dosage" value="Dosage:"/>
+                  <p:inputText id="dosage" value="#{prescriptionBean.dosage}" required="true" requiredMessage="Dosage is required."
+                               placeholder="e.g., 500mg, 1 tablet"/>
+
+                  <p:outputLabel for="frequency" value="Frequency:"/>
+                  <p:inputText id="frequency" value="#{prescriptionBean.frequency}" required="true" requiredMessage="Frequency is required."
+                               placeholder="e.g., Twice a day, Every 8 hours"/>
+
+                  <p:outputLabel for="duration" value="Duration:"/>
+                  <p:inputText id="duration" value="#{prescriptionBean.duration}"
+                               placeholder="e.g., For 7 days, Until finished"/>
+
+                  <p:outputLabel for="quantity" value="Quantity to Dispense:"/>
+                  <p:inputNumber id="quantity" value="#{prescriptionBean.quantity}" required="true" requiredMessage="Quantity is required."
+                                 minValue="1" decimalPlaces="0"/>
+               </p:panelGrid>
+               <p:commandButton value="Add to Prescription" icon="pi pi-plus"
+                                action="#{prescriptionBean.addMedicationItem}"
+                                update="medicationItemsTable prescriptionMessages @form"
+                                process="@this medicationSelect dosage frequency duration quantity"
+                                style="margin-top:10px;"/>
+            </p:fieldset>
+
+            <!-- Dialog Action Buttons -->
+            <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix" style="padding-top:15px; text-align:right;">
+               <p:commandButton value="Save Final Prescription"
+                                action="#{prescriptionBean.savePrescription}"
+                                icon="pi pi-save" styleClass="ui-button-success"
+                                update=":pageContentForm:doctorAppointmentsPageForm:appointmentsTable :pageContentForm:doctorAppointmentsPageForm:pageMessages"
+                                process="@this"
+                                oncomplete="if (!args.validationFailed) PF('managePrescriptionDialogWidget').hide();"/>
+               <p:commandButton value="Cancel" type="button" icon="pi pi-times"
+                                styleClass="ui-button-secondary"
+                                onclick="PF('managePrescriptionDialogWidget').hide()"/>
+            </div>
+         </p:outputPanel>
+
+         <p:outputPanel rendered="#{prescriptionBean.appointmentDetails == null}">
+            <p:staticMessage severity="warn" summary="No Appointment Loaded"
+                             detail="Please close this dialog and select an appointment."/>
+         </p:outputPanel>
       </h:form>
    </p:dialog>
 

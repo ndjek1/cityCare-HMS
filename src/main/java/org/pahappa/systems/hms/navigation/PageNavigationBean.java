@@ -64,6 +64,12 @@ public class PageNavigationBean implements Serializable {
         return null;
     }
 
+    public String navigateToManageMedicationCatalog() {
+        this.selectedMenu = "medication_catalog";
+        this.currentPage = "/WEB-INF/includes/admin/manage_medication_catalog_content.xhtml";
+        return null;
+    }
+
     public String navigateToViewPatients() {
         this.selectedMenu = "patient_list";
         this.currentPage = "/WEB-INF/includes/admin/patient_list.xhtml";
@@ -107,6 +113,7 @@ public class PageNavigationBean implements Serializable {
     }
 
     public String navigateToRescheduleAppointment() {
+        this.selectedMenu = "reschedule_appointment";
         this.currentPage = "/WEB-INF/includes/shared/reschedule_appointment.xhtml";
         return null;
     }
@@ -125,11 +132,13 @@ public class PageNavigationBean implements Serializable {
     }
 
     public String navigateToMyProfile() {
+        this.selectedMenu = "profile";
         this.currentPage = "/WEB-INF/includes/patient/patient_profile.xhtml";
         return null;
     }
 
     public String navigateToStaffProfile() {
+        this.selectedMenu = "profile";
         this.currentPage = "/WEB-INF/includes/shared/staff_profile.xhtml";
         return null;
     }

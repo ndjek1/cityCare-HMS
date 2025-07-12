@@ -18,6 +18,7 @@ import java.util.Objects;
 public class Prescription implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "prescription_id")
     private Long prescriptionId;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -32,6 +33,7 @@ public class Prescription implements Serializable {
     @JoinColumn(name = "appointment_id", nullable = false)
     private Appointment appointment;
 
+    @Column(name = "prescription_date")
     private LocalDate prescriptionDate;
 
     @ElementCollection(fetch = FetchType.EAGER) // Eager fetch items with the prescription
@@ -40,7 +42,7 @@ public class Prescription implements Serializable {
     private List<PrescribedMedication> prescribedMedications = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, name = "payment_status")
     private PaymentStatus paymentStatus = PaymentStatus.UNPAID;
 
     // Constructors, getters, setters

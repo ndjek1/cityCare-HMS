@@ -33,6 +33,7 @@ public class Payment {
         this.prescription = prescription;
         this.amountPaid = amountPaid;
         this.method = method;
+        this.paymentDate = LocalDateTime.now();
     }
 
     public Payment() {

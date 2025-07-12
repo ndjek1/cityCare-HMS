@@ -58,9 +58,14 @@
                   <p:inputText id="editName" value="#{patientProfileBean.currentPatient.name}" required="true"/>
 
                   <p:outputLabel for="editEmail" value="Email:"/>
-                  <p:inputText id="editEmail" value="#{patientProfileBean.currentPatient.email}" required="true" type="email">
-                     <f:validateRegex pattern="^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"/>
+                  <p:inputText id="editEmail"
+                               value="#{patientProfileBean.currentPatient.email}"
+                               required="true"
+                               type="email">
+                     <f:validateRegex pattern="^[\w.\-]+@[\w.\-]+\.[a-zA-Z]{2,}$" />
                   </p:inputText>
+
+
 
                   <p:outputLabel for="editPhone" value="Phone:"/>
                   <p:inputMask id="editPhone" value="#{patientProfileBean.currentPatient.phoneNumber}" mask="999 999 9999">

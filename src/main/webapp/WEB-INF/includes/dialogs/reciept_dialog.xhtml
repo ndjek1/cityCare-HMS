@@ -1,0 +1,63 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:c="jakarta.tags.core">
+<p:dialog id="receiptDialog"
+          widgetVar="receiptDialogWidget"
+          header="Payment Receipt"
+          modal="true"
+          resizable="false"
+          draggable="false"
+          closable="true"
+          appendTo="@(body)"
+          width="400"
+          showEffect="fade"
+          hideEffect="fade">
+
+   <h:form id="receiptDialogForm">
+      <p:outputPanel id="receiptPanel">
+         <h:panelGrid columns="1" cellpadding="4" style="width: 100%; font-size: 0.95em;" styleClass="p-3">
+            <h:outputText value="City Care General Hospital " style="font-weight: bold; font-size: 1.2em;" />
+            <h:outputText value="-----------------------------------"/>
+            <h:outputText value="Receipt #: #{patientFinancialsBean.selectedPayment.paymentId}" />
+            <h:outputText value="Date: #{patientFinancialsBean.selectedPayment.paymentDate}">
+               <f:convertDateTime type="localDateTime" pattern="MMM dd, yyyy hh:mm a"/>
+            </h:outputText>
+            <h:outputText value="Patient: #{patientFinancialsBean.currentPatient.name}" />
+            <h:outputText value="Amount Paid: #{patientFinancialsBean.selectedPayment.amountPaid}">
+               <f:convertNumber type="currency" currencySymbol="UGX " />
+            </h:outputText>
+            <h:outputText value="Method: #{patientFinancialsBean.selectedPayment.method}" />
+            <h:outputText value="Purpose:" style="font-weight: bold;" />
+
+            <c:choose>
+               <c:when test="#{patientFinancialsBean.selectedPayment.prescription != null}">
+                  <h:outputText value="Prescription # #{patientFinancialsBean.selectedPayment.prescription.prescriptionId}" />
+               </c:when>
+               <c:when test="#{patientFinancialsBean.selectedPayment.billId != null}">
+                  <h:outputText value="Bill # #{patientFinancialsBean.selectedPayment.billId.billId}" />
+               </c:when>
+               <c:otherwise>
+                  <h:outputText value="Unknown" />
+               </c:otherwise>
+            </c:choose>
+
+         </h:panelGrid>
+      </p:outputPanel>
+
+      <div class="ui-dialog-buttonpane ui-helper-clearfix" style="margin-top: 1rem;">
+         <p:commandButton value="Print" icon="pi pi-print"
+                          type="button"
+                          styleClass="ui-button-success">
+            <p:printer target="receiptPanel" configuration="globalStyles: true, title: 'Receipt payment'"/>
+         </p:commandButton>
+         <p:commandButton value="Close" type="button"
+                          onclick="PF('receiptDialogWidget').hide()"
+                          styleClass="ui-button-secondary"
+                          style="margin-left: .5em"/>
+      </div>
+   </h:form>
+</p:dialog>
+</ui:composition>

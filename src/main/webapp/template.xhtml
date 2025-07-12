@@ -111,6 +111,13 @@
                                    rendered="#{userAccountBean.isPatient()}"
                                    update=":pageContentForm:mainContentPanel :menuForm"
                                    styleClass="menu-link #{pageNavigationBean.selectedMenu == 'my_prescriptions' ? 'menu-link-active' : ''}" />
+                    <!-- Inside the Patient menu -->
+                    <p:commandLink value="My Payment History"
+                                   icon="pi pi-history"
+                                   action="#{pageNavigationBean.navigateToMyPaymentHistory}"
+                                   rendered="#{userAccountBean.isPatient()}"
+                                   update=":pageContentForm:mainContentPanel :menuForm"
+                                   styleClass="menu-link #{pageNavigationBean.selectedMenu == 'payment_history' ? 'menu-link-active' : ''}" />
 
                     <!-- Doctor Links -->
                     <p:commandLink value="My Schedule"
@@ -268,6 +275,7 @@
     <ui:include src="/WEB-INF/includes/dialogs/prescription_detail.xhtml"/>
     <ui:include src="/WEB-INF/includes/dialogs/medication_dialog.xhtml"/>
     <ui:include src="/WEB-INF/includes/dialogs/prescription_payment.xhtml"/>
+    <ui:include src="/WEB-INF/includes/dialogs/reciept_dialog.xhtml"/>
 
 
 </h:body>

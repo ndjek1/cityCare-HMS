@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Entity
+@Table(name = "appointments")
 public class Appointment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,6 +26,7 @@ public class Appointment {
     // referencing Doctor's PK.
     // nullable = false means an appointment MUST have a doctor.
     private Staff doctor;   // Reference to the Doctor entity
+    @Column(name = "date_time")
     private LocalDateTime dateTime;
     private String reason;
     private AppointmentStatus status;

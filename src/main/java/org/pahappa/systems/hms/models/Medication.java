@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 public class Medication implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "medication_id")
     private Long medicationId;
 
     @Column(nullable = false, unique = true)
@@ -16,10 +17,11 @@ public class Medication implements Serializable {
 
     private String description;
 
-    @Column(precision = 19, scale = 2)
+    @Column(precision = 19, scale = 2,name = "unit_price")
     private BigDecimal unitPrice;
     private boolean active = true;
 
+    @Column(name = "stock_level")
     private int stockLevel;
 
     public boolean isActive() {

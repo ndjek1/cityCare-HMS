@@ -3,6 +3,7 @@ package views.admin;
 
 import annotations.MaxAge;
 import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Inject;
 import org.pahappa.systems.hms.constants.HospitalDepartment;
 import org.pahappa.systems.hms.constants.UserRole;
 import jakarta.annotation.PostConstruct;
@@ -14,6 +15,7 @@ import jakarta.inject.Named;
 import jakarta.validation.constraints.*;
         import org.pahappa.systems.hms.models.Staff;
 
+import org.pahappa.systems.hms.navigation.PageNavigationBean;
 import org.pahappa.systems.hms.services.impl.StaffServiceImpl;
 
 import java.io.Serializable;
@@ -66,6 +68,10 @@ public class StaffBean implements Serializable {
     private HospitalDepartment department;
 
     private StaffServiceImpl staffService;
+    @Inject
+    StaffListBean staffListBean;
+    @Inject
+    PageNavigationBean pageNavigationBean;
 
     @PostConstruct
     public void init() {
@@ -104,6 +110,8 @@ public class StaffBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Staff member " + registeredStaffOpt.get().getName() + " registered successfully."));
             init(); // Reset the form fields for the next entry
+            staffListBean.refreshList();
+            pageNavigationBean.navigateToViewStaff();
         } else {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Registration Failed", "Could not register staff. The username or email might already be in use."));

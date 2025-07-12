@@ -13,10 +13,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Table(name = "staffs")
 public class Staff {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "staff_id")
     private Long staffId;
 
     @Enumerated(EnumType.STRING) // Good practice for enums
@@ -30,10 +32,10 @@ public class Staff {
     @NotEmpty(message = "Email is required.") // Also ensures the field is not empty
     @Email(message = "Invalid email format. Please provide a valid address.")
     private String email;
+    @Column(name = "phone_number")
     private String phone; // Consider renaming to phoneNumber for clarity
     @Column(name = "is_deleted")
     private boolean deleted =  false;
-
     public boolean isDeleted() {
         return deleted;
     }
@@ -43,6 +45,7 @@ public class Staff {
     }
 
     @Temporal(TemporalType.DATE) // Maps to SQL DATE
+    @Column(name = "date_of_birth")
     private Date dateOfBirth;     // Changed from String dob
 
     private String gender;

@@ -12,6 +12,7 @@ public class Bill {
     // ... (billId, patient, appointmentId, billDate, paymentStatus as before) ...
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "bill_id")
     private Long billId;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -21,15 +22,18 @@ public class Bill {
     @JoinColumn(name = "appointment_id", referencedColumnName = "appointmentId", unique = true, nullable = false)
     private Appointment appointment;
 
+    @Column(name = "bill_date")
     private LocalDateTime billDate;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "payment_status")
     private PaymentStatus paymentStatus = PaymentStatus.UNPAID;
 
     @ElementCollection(fetch = FetchType.EAGER) // Eager fetch items with the bill
     @CollectionTable(name = "bill_items", joinColumns = @JoinColumn(name = "bill_id"))
     private List<BillItem> items = new ArrayList<>(); // Renamed from 'org.pahappa.systems.hms.navigation.services'
 
+    @Column(name = "total_amount")
     private double totalAmount; // Denormalized for easy access, calculated on generation
 
     public Bill() {

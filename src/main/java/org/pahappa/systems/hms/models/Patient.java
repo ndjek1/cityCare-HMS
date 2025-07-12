@@ -10,27 +10,33 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
+@Table(name = "patients")
 public class Patient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "patient_id")
     private Long patientId; // Primary Key for Patients table
     private String name;
     private final UserRole role = UserRole.PATIENT; // Fixed role
 
+    @Column(name = "date_of_birth")
     private Date dateOfBirth;
     private String address;
+    @Column(name = "phone_number")
     private String phoneNumber;
     private String email;
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(
             name = "patient_medical_record", // More descriptive table name
-            joinColumns = @JoinColumn(name = "patien_id") // FK in 'doctor_available_slots' referencing Doctor's PK
+            joinColumns = @JoinColumn(name = "patient_id") // FK in 'doctor_available_slots' referencing Doctor's PK
     )
     @Column(name = "notes") // Name for the column storing the LocalDateTime itself
     private List<String> medicalHistory;
     @Column(name = "is_deleted")
     private boolean deleted =  false;
+    @Column(name = "insurance_details")
     private String insuranceDetails;
+    @Column(name = "registration_date")
     private LocalDateTime registrationDate;
 
     public Patient(String name, Date dateOfBirth, String address, String phoneNumber, String email) {

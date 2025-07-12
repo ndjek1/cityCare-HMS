@@ -21,8 +21,6 @@ import java.util.Optional;
 @ViewScoped // Good for admin forms
 public class ServiceCatalogAdminBean implements Serializable {
 
-//    @Inject
-//    private HospitalService hospitalService;
     private final ServiceCatalogServiceImpl  serviceCatalogService;
 
     private List<ServiceCatalogItem> catalogItems; // To display existing items
@@ -31,7 +29,7 @@ public class ServiceCatalogAdminBean implements Serializable {
     private String newServiceCode;
     private String newServiceName;
     @Min(value = 0,message = "Cost cannot be less than 0")
-    private Double newServiceDefaultCost;
+    private double newServiceDefaultCost;
     private String newServiceDescription;
     private ServiceCategory newServiceCategory;
     private boolean newServiceActive = true; // Default to active
@@ -59,7 +57,7 @@ public class ServiceCatalogAdminBean implements Serializable {
     private void resetNewServiceForm() {
         newServiceCode = null;
         newServiceName = null;
-        newServiceDefaultCost = null;
+        newServiceDefaultCost = 0;
         newServiceDescription = null;
         newServiceCategory = null; // Or a default category
         newServiceActive = true;
@@ -69,7 +67,7 @@ public class ServiceCatalogAdminBean implements Serializable {
         FacesContext context = FacesContext.getCurrentInstance();
         // Basic Validation
         if (newServiceName == null || newServiceName.trim().isEmpty() ||
-                newServiceDefaultCost == null || newServiceDefaultCost <= 0 ||
+                newServiceDefaultCost == 0 || newServiceDefaultCost <= 0 ||
                 newServiceCategory == null) {
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Validation Error",
                     "Service Name, Default Cost, and Category are required. Cost must be positive."));

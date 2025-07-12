@@ -7,10 +7,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Entity
+@Table(name = "payments")
 public class Payment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "payment_id")
     private Long paymentId;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bill_id_fk")
@@ -19,8 +21,10 @@ public class Payment {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "prescription_id_fk")
     private Prescription prescription;
+    @Column(name = "amount_paid")
     private double amountPaid;
     private PaymentMethod method;
+    @Column(name = "payment_date")
     private LocalDateTime paymentDate;
 
     public Payment(Bill billId, double amountPaid, PaymentMethod method) {

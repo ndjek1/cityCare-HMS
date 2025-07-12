@@ -6,20 +6,21 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-@Table(name = "service_catalog") // Name of the database table
+@Table(name = "services") // Name of the database table
 public class ServiceCatalogItem implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "service_id")
     private Long serviceId;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, name = "service_code")
     private String serviceCode; // Optional: A unique code for the service (e.g., "CONSULT01", "XRAYCHEST")
 
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false,name = "default_cost")
     private double defaultCost;
 
     private String description; // Optional description

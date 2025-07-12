@@ -9,10 +9,10 @@ import java.math.BigDecimal;
 @Embeddable
 public class PrescribedMedication implements Serializable {
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "medication_id")
     private Long medicationId; // Reference to the Medication entity
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "medication_name")
     private String medicationName; // Denormalized for easy display
 
     @Column(nullable = false)
@@ -26,7 +26,7 @@ public class PrescribedMedication implements Serializable {
 
     @Enumerated(EnumType.STRING)
     private PrescriptionStatus status = PrescriptionStatus.PENDING; // PENDING, DISPENSED, CANCELLED
-    @Column(precision = 19, scale = 2)
+    @Column(precision = 19, scale = 2, name = "cost_at_the_time_of_prescription")
     private BigDecimal costAtTimeOfPrescription; // Price when prescribed
     @Transient
     public BigDecimal getLineItemTotal() {

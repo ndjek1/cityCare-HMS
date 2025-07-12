@@ -32,7 +32,7 @@ public class Medication implements Serializable {
 
     // Getters and setters...
     public Long getMedicationId() { return medicationId; }
-    public void setMedicationId(Long medicationId) { this.medicationId = medicationId; }
+    public void setMedicationId(long medicationId) { this.medicationId = medicationId; }
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
     public String getDescription() { return description; }

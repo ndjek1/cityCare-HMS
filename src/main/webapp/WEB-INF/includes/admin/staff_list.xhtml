@@ -4,92 +4,88 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:ui="jakarta.faces.facelets">
 
-    <p:card header="Manage Staff Members" styleClass="shadow-2" style="padding:1rem;">
-        <h:form id="staffListForm" styleClass="p-fluid">
+    <p:card header="Manage Staff Members" styleClass="shadow-2 p-3">
+        <h:form id="staffListForm">
+            <p:growl id="growl" showDetail="true" autoUpdate="true"/>
 
-            <p:growl id="growl" showDetail="true" life="4000"/>
-
-            <!-- Toolbar -->
-            <p:toolbar styleClass="mb-3">
-                <p:toolbarGroup>
-                    <p:commandButton value="Add New Staff" icon="pi pi-plus" styleClass="ui-button-success"
-                                     action="#{pageNavigationBean.navigateAddNewStaff}"
-                                     update=":pageContentForm:mainContentPanel"
-                                    process="@this"
-                    />
-                </p:toolbarGroup>
-                <p:toolbarGroup align="right">
-                    <p:inputText id="globalFilter" placeholder="Search all fields..." onkeyup="PF('staffTableWidget').filter()"
-                                 styleClass="w-full md:w-20rem" />
-                </p:toolbarGroup>
-            </p:toolbar>
-
-            <!-- Scrollable DataTable -->
+            <!-- The DataTable component is the main focus -->
             <p:dataTable id="staffTable"
                          var="staff"
                          value="#{staffListBean.staffList}"
                          widgetVar="staffTableWidget"
-                         scrollable="true"
-                         scrollHeight="400"
-                         emptyMessage="No staff members found."
-                         styleClass="p-datatable-striped p-datatable-sm">
+                         globalFilterFunction="#{staffListBean.globalFilterFunction}"
+                         filteredValue="#{staffListBean.filteredStaffList}"
+            rows="10"
+            paginator="true"
+            paginatorPosition="bottom"
+            emptyMessage="No staff members found matching your search."
+            reflow="true"
+            styleClass="p-datatable-striped p-datatable-sm">
 
-                <!-- Staff Name Filter -->
-                <p:column headerText="Patient Name"
-                          filterBy="#{staff.name}"
-                          filterMatchMode="contains"
-                          style="min-width: 250px;">
-                    <h:outputText value="#{staff.name}" />
-                </p:column>
+            <!-- The header now contains the global filter input box -->
+            <f:facet name="header">
+                <div class="flex justify-content-between align-items-center">
+                    <p:commandButton value="Add New Staff" icon="pi pi-plus"
+                                     action="#{pageNavigationBean.navigateAddNewStaff}"
+                                     update=":pageContentForm:mainContentPanel" process="@this"/>
 
-                <!-- Email (not filterable for now) -->
-                <p:column headerText="Email">
-                    <h:outputText value="#{staff.email}" />
-                </p:column>
+                    <!-- This is the global filter input -->
+                    <span class="p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                           <p:inputText id="globalFilter"
+                                        placeholder="Search all fields..."
+                                        onkeyup="PrimeFaces.debounce(() => PF('staffTableWidget').filter(), 300)"
+                                        style="width: 20rem;" />
 
-                <!-- Role -->
-                <p:column headerText="Role" style="width: 140px;">
-                    <p:tag value="#{staff.role}" styleClass="#{staffListBean.getRoleStyleClass(staff.role)}" />
-                </p:column>
+                        </span>
+                </div>
+            </f:facet>
 
-                <!-- Department -->
-                <p:column headerText="Department" style="width: 150px;">
-                    <h:outputText value="#{staff.department}" />
-                </p:column>
+            <!-- For each column you want to be part of the search, add globalFilter="true" -->
+            <!-- The filterBy attribute on the column is for individual column filtering, not global -->
 
-                <!-- Phone -->
-                <p:column headerText="Phone">
-                    <h:outputText value="#{staff.phone}" />
-                </p:column>
+            <p:column headerText="Full Name" sortBy="#{staff.name}" globalFilter="true">
+                <h:outputText value="#{staff.name}" />
+            </p:column>
 
-                <!-- Actions -->
-                <p:column headerText="Actions" style="width: 60px;">
-                    <p:menuButton icon="pi pi-ellipsis-v" buttonStyleClass="rounded-button ui-button-flat">
-                        <p:menuitem value="View Details" icon="pi pi-eye"
-                                    action="#{userDetailBean.loadStaff(staff.staffId)}"
-                                    process="@this"
-                                    update=":userDetailDialogForm:userDetailContentPanel"
-                                    oncomplete="PF('userDetailDialogWidget').show()" />
-                        <p:separator/>
-                        <p:menuitem value="#{staff.deleted ? 'Re-activate' : 'Deactivate'}"
-                                    icon="#{staff.deleted ? 'pi pi-undo' : 'pi pi-trash'}"
-                                    styleClass="#{staff.deleted ? '' : 'ui-menuitem-danger'}"
-                                    actionListener="#{staffListBean.deleteStaff(staff)}"
-                                    process="@this" update="staffTable growl">
-                            <p:confirm header="Confirm Action"
-                                       message="Are you sure you want to #{staff.deleted ? 're-activate' : 'deactivate'} #{staff.name}?" />
-                        </p:menuitem>
-                    </p:menuButton>
-                </p:column>
+            <p:column headerText="Email" sortBy="#{staff.email}" globalFilter="true">
+                <h:outputText value="#{staff.email}" />
+            </p:column>
 
-            </p:dataTable>
+            <p:column headerText="Role" sortBy="#{staff.role}" globalFilter="true">
+                <h:outputText value="#{staff.role.toString()}" />
+            </p:column>
 
-            <!-- Confirm Dialog (Global) -->
-            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="400">
-                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
-                <p:commandButton value="Cancel" type="button" styleClass="ui-confirmdialog-no ui-button-secondary" icon="pi pi-times" />
-            </p:confirmDialog>
+            <p:column headerText="Department" sortBy="#{staff.department}" globalFilter="true">
+                <h:outputText value="#{staff.department.toString()}" />
+            </p:column>
 
-        </h:form>
-    </p:card>
-</ui:composition>
+            <p:column headerText="Phone" sortBy="#{staff.phone}" globalFilter="true">
+                <h:outputText value="#{staff.phone}" />
+            </p:column>
+
+            <!-- The Actions column should NOT be included in the filter -->
+            <p:column headerText="Actions" style="width: 6rem; text-align:center;" exportable="false">
+                <p:menuButton icon="pi pi-ellipsis-v" buttonStyleClass="rounded-button ui-button-flat">
+                    <p:menuitem value="View Details" icon="pi pi-eye"
+                                action="#{userDetailBean.loadStaff(staff.staffId)}"
+                                process="@this"
+                                update=":userDetailDialogForm:userDetailContentPanel"
+                                oncomplete="PF('userDetailDialogWidget').show()" />
+                    <p:divider/>
+                    <p:menuitem value="#{staff.deleted ? 'Re-activate' : 'Deactivate'}"
+                                icon="#{staff.deleted ? 'pi pi-undo' : 'pi pi-trash'}"
+                                styleClass="#{staff.deleted ? '' : 'ui-menuitem-danger'}"
+                                actionListener="#{staffListBean.deleteStaff(staff)}"
+                                process="@this" update="staffTable growl">
+                        <p:confirm header="Confirm Action"
+                                   message="Are you sure you want to #{staff.deleted ? 're-activate' : 'deactivate'} #{staff.name}?" />
+                    </p:menuitem>
+                </p:menuButton>
+            </p:column>
+        </p:dataTable>
+
+        <p:confirmDialog global="true" />
+    </h:form>
+</p:card>
+        </ui:composition>

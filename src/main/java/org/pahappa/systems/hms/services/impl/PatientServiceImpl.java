@@ -146,4 +146,8 @@ public class PatientServiceImpl implements PatientService {
 
         return allPayments;
     }
+    @Override
+    public long getPatientCount() {
+        return patientDao.getPatientCount();
+    }
 }

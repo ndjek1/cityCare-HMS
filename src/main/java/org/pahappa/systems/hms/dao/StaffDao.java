@@ -6,4 +6,5 @@ import java.util.Optional;
 
 public interface StaffDao extends GenericDao<Staff, Long> {
     public Optional<Staff> findByIdWithSlots(Long id);
+    long getStaffCount();
 }

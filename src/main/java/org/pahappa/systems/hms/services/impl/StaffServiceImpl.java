@@ -1,5 +1,6 @@
 package org.pahappa.systems.hms.services.impl;
 
+import org.hibernate.query.Query;
 import org.pahappa.systems.hms.constants.HospitalDepartment;
 import org.pahappa.systems.hms.constants.UserRole;
 import org.pahappa.systems.hms.dao.impl.StaffDaoImpl;
@@ -66,6 +67,10 @@ public class StaffServiceImpl implements StaffService {
         try (Session session = factory.openSession()) {
             return Optional.ofNullable(session.get(Staff.class, staffId));
         }
+    }
+    @Override
+    public long getStaffCount() {
+       return staffDao.getStaffCount();
     }
 
     @Override

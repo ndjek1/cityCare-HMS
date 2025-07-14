@@ -1,5 +1,6 @@
 package org.pahappa.systems.hms.dao.impl;
 
+import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.pahappa.systems.hms.dao.StaffDao;
 import org.pahappa.systems.hms.models.Staff;
@@ -54,6 +55,16 @@ public class StaffDaoImpl extends AbstractDao<Staff, Long> implements StaffDao {
                     "FROM Staff s WHERE s.deleted = false ", Staff.class);
             return query.getResultList();
         });
+    }
+    @Override
+    public long getStaffCount() {
+        return execute(
+                session -> {
+                    Query<Long> query = session.createQuery("SELECT count(s.staffId) FROM Staff s", Long.class);
+                    return query.uniqueResultOptional().orElse(0L);
+                }
+        );
+
     }
 
 }

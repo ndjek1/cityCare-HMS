@@ -14,4 +14,5 @@ public interface AppointmentService {
     List<Appointment> getAppointmentsForPatient(Long patientId);
     Optional<Appointment> findAppointmentById(Long appointmentId);
     List<Appointment> findCompletedAppointments();
+    long getTodaysScheduledAppointmentCount();
 }

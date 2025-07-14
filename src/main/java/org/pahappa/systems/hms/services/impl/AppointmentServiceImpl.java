@@ -12,6 +12,7 @@ import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import utils.HibernateUtil;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -373,5 +374,10 @@ public class AppointmentServiceImpl {
             }
         }
         return null;
+    }
+
+    public long getTodaysScheduledAppointmentCount() {
+        // Here we can use the specific DAO method
+        return appointmentDao.findByDateAndStatus(LocalDate.now(), AppointmentStatus.SCHEDULED).size();
     }
 }

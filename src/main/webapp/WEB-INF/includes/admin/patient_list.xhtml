@@ -29,14 +29,14 @@
                 <f:facet name="header">
                     <div class="flex justify-content-between align-items-center">
                         <p:commandButton value="Add New Patient" icon="pi pi-plus"
-                                         action="#{pageNavigationBean.navigateAddNewPatient()}"
-                                         update=":pageContentForm:mainContentPanel" process="@this"/>
+                                         oncomplete="PF('patientRegisterDialog').show()"
+                                          process="@this"/>
 
                         <!-- This is the global filter input -->
                         <span class="p-input-icon-left">
                            <p:inputText id="globalFilter"
                                         placeholder="Search all fields..."
-                                        onkeyup="PrimeFaces.debounce(() => PF('staffTableWidget').filter(), 300)"
+                                        onkeyup="PrimeFaces.debounce(() => PF('patientTableWidget').filter(), 300)"
                                         style="width: 20rem;" />
 
                         </span>
@@ -78,6 +78,7 @@
                                     oncomplete="PF('userDetailDialogWidget').show()" />
 
                         <p:menuitem value="#{patient.deleted ? 'Re-activate' : 'Deactivate'}"
+                                    rendered="#{userAccountBean.isAdministrator()}"
                                     icon="#{patient.deleted ? 'pi pi-undo' : 'pi pi-trash'}"
                                     styleClass="#{patient.deleted ? '' : 'ui-menuitem-danger'}"
                                     actionListener="#{patientListBean.deletePatient(patient)}"

@@ -15,26 +15,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Named("staffListBean")
-@ViewScoped // ViewScoped is good for pages that display data; data is fetched once per view.
+@ViewScoped
 public class StaffListBean implements Serializable {
 
-
     private List<Staff> staffList;
-    private List<HospitalDepartment>  availableDepartments;
-    private List<UserRole>  availableRoles;
+    private List<Staff> filteredStaffList;
+    private List<HospitalDepartment> availableDepartments;
+    private List<UserRole> availableRoles;
     private final StaffServiceImpl staffService;
-
-    public List<UserRole> getAvailableRoles() {
-        return availableRoles;
-    }
-
-    public void setAvailableRoles(List<UserRole> availableRoles) {
-        this.availableRoles = availableRoles;
-    }
 
     public StaffListBean() {
         this.staffService = new StaffServiceImpl();
     }
+
     @PostConstruct
     public void init() {
         loadStaff();
@@ -45,31 +38,24 @@ public class StaffListBean implements Serializable {
     private void loadStaff() {
         staffList = staffService.getAllStaffs();
         if (staffList == null) {
-            staffList = new ArrayList<>(); // Avoid NullPointerException in DataTable
+            staffList = new ArrayList<>();
             System.err.println("StaffListBean: hospitalService.getAllStaffs() returned null.");
         } else {
             System.out.println("StaffListBean: Loaded " + staffList.size() + " staff members.");
         }
+        this.filteredStaffList = new ArrayList<>(this.staffList);
     }
 
-    // Getter for the JSF page
     public List<Staff> getStaffList() {
         return staffList;
     }
 
-    // Optional: Action method to refresh the list
-    public void refreshList() {
-        loadStaff();
+    public List<Staff> getFilteredStaffList() {
+        return filteredStaffList;
     }
 
-    // Optional: Action method for deleting a staff member (example)
-    public void deleteStaff(Staff staffToDelete) {
-        if (staffService != null && staffToDelete != null) {
-            System.out.println("Attempting to delete staff: " + staffToDelete.getName());
-           staffService.deleteStaff(staffToDelete); // Assuming deleteStaff takes ID or object
-            loadStaff(); // Refresh the list after deletion
-            // Add FacesMessage for success/failure
-        }
+    public void setFilteredStaffList(List<Staff> filteredStaffList) {
+        this.filteredStaffList = filteredStaffList;
     }
 
     public List<HospitalDepartment> getAvailableDepartments() {
@@ -80,20 +66,33 @@ public class StaffListBean implements Serializable {
         this.availableDepartments = availableDepartments;
     }
 
-    public String getRoleStyleClass(String role) {
-        if (role == null) {
-            return "";
+    public List<UserRole> getAvailableRoles() {
+        return availableRoles;
+    }
+
+    public void setAvailableRoles(List<UserRole> availableRoles) {
+        this.availableRoles = availableRoles;
+    }
+
+    public void refreshList() {
+        loadStaff();
+    }
+
+    public void deleteStaff(Staff staffToDelete) {
+        if (staffService != null && staffToDelete != null) {
+            System.out.println("Attempting to delete staff: " + staffToDelete.getName());
+            staffService.deleteStaff(staffToDelete);
+            loadStaff();
         }
-        // Simple way to create a CSS-friendly class name, e.g., "Administrator" -> "role-Administrator"
+    }
+
+    public String getRoleStyleClass(String role) {
+        if (role == null) return "";
         return "role-" + role.replaceAll("\\s+", "");
     }
 
-
     public String generateInitials(String name) {
-        if (name == null || name.trim().isEmpty()) {
-            return "?";
-        }
-        // ... (copy the same logic from Option 1's getInitials() method) ...
+        if (name == null || name.trim().isEmpty()) return "?";
         StringBuilder initials = new StringBuilder();
         String[] parts = name.trim().split("\\s+");
         if (parts.length > 0 && !parts[0].isEmpty()) {
@@ -103,5 +102,19 @@ public class StaffListBean implements Serializable {
             initials.append(parts[parts.length - 1].charAt(0));
         }
         return initials.toString().toUpperCase();
+    }
+
+    // ✅ Global Filter Function
+    public boolean globalFilterFunction(Object value, Object filter, java.util.Locale locale) {
+        String filterText = (filter == null) ? "" : filter.toString().toLowerCase();
+        if (filterText.isBlank()) return true;
+
+        Staff staff = (Staff) value;
+
+        return (staff.getName() != null && staff.getName().toLowerCase().contains(filterText)) ||
+                (staff.getEmail() != null && staff.getEmail().toLowerCase().contains(filterText)) ||
+                (staff.getRole() != null && staff.getRole().toString().toLowerCase().contains(filterText)) ||
+                (staff.getDepartment() != null && staff.getDepartment().toString().toLowerCase().contains(filterText)) ||
+                (staff.getPhone() != null && staff.getPhone().toLowerCase().contains(filterText));
     }
 }

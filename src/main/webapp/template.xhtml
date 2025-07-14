@@ -162,12 +162,6 @@
                                    update=":pageContentForm:mainContentPanel :menuForm"
                                    styleClass="menu-link #{pageNavigationBean.selectedMenu == 'unpaidPrescriptions' ? 'menu-link-active' : ''}" />
                     <!-- Admin Only -->
-                    <p:commandLink value="Add Staff"
-                                   icon="pi pi-user-plus"
-                                   action="#{pageNavigationBean.navigateAddNewStaff}"
-                                   rendered="#{userAccountBean.isAdministrator()}"
-                                   update=":pageContentForm:mainContentPanel :menuForm"
-                                   styleClass="menu-link #{pageNavigationBean.selectedMenu == 'staffRegistration' ? 'menu-link-active' : ''}" />
 
                     <p:commandLink value="Manage Staff"
                                    icon="pi pi-users"
@@ -239,12 +233,11 @@
             <h:form id="pageContentForm">
                 <p:growl id="pageGrowlMessages" showDetail="true" life="6000"/>
                 <p:outputPanel id="mainContentPanel">
-                    <p:card styleClass="content-card">
                         <!-- Optional slot for individual pages -->
                         <ui:insert name="page-content"/>
                         <!-- Actual page include -->
                         <ui:include src="#{pageNavigationBean.currentPage}"/>
-                    </p:card>
+
                 </p:outputPanel>
             </h:form>
         </main>

@@ -1,5 +1,6 @@
 package org.pahappa.systems.hms.dao.impl;
 
+import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.pahappa.systems.hms.dao.PatientDao;
 import org.pahappa.systems.hms.models.Patient;
@@ -40,5 +41,15 @@ public class PatientDaoImpl extends AbstractDao<Patient, Long> implements Patien
                     "FROM Patient s WHERE s.deleted = false ", Patient.class);
             return query.getResultList();
         });
+    }
+    @Override
+    public long getPatientCount() {
+       return execute(
+               session -> {
+                   Query<Long> query = session.createQuery("SELECT count(p.patientId) FROM Patient p", Long.class);
+                   return query.uniqueResultOptional().orElse(0L);
+               }
+       );
+
     }
 }

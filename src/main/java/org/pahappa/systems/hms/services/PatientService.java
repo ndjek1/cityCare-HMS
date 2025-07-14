@@ -12,4 +12,5 @@ public interface PatientService {
     List<Patient> getAllPatients();
     boolean updatePatientRecord(Long patientId, String address, String phone, String email, String insuranceDetails);
     void deletePatient(Patient patient);
+    long getPatientCount();
 }

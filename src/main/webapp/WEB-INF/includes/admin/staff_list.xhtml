@@ -26,8 +26,11 @@
             <f:facet name="header">
                 <div class="flex justify-content-between align-items-center">
                     <p:commandButton value="Add New Staff" icon="pi pi-plus"
-                                     action="#{pageNavigationBean.navigateAddNewStaff}"
-                                     update=":pageContentForm:mainContentPanel" process="@this"/>
+
+                    update="@widgetVar(staffRegDialogWidget)"
+                    oncomplete="PF('staffRegDialogWidget').show()"
+                    process="@this"
+                    styleClass="ui-button-success"/>
 
                     <!-- This is the global filter input -->
                     <span class="p-input-icon-left">
@@ -41,8 +44,7 @@
                 </div>
             </f:facet>
 
-            <!-- For each column you want to be part of the search, add globalFilter="true" -->
-            <!-- The filterBy attribute on the column is for individual column filtering, not global -->
+
 
             <p:column headerText="Full Name" sortBy="#{staff.name}" globalFilter="true">
                 <h:outputText value="#{staff.name}" />

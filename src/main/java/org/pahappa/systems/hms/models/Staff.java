@@ -58,6 +58,8 @@ public class Staff {
     @Column(name = "available_date_time")
     @OrderBy("available_date_time ASC") // Keep them sorted
     private Set<LocalDateTime> availableSlots = new HashSet<>(); // Use Set for uniqueness
+    @Column(name = "registration_date")
+    private LocalDateTime registrationDate;
 
     // Constructors
     public Staff() {
@@ -75,6 +77,7 @@ public class Staff {
         this.dateOfBirth = dateOfBirth; // Changed to Date
         this.gender = gender;
         this.deleted = false;
+        this.registrationDate = LocalDateTime.now();
     }
 
     // Getters and Setters
@@ -112,6 +115,14 @@ public class Staff {
         return availableSlots;
     }
 
+    public LocalDateTime getRegistrationDate() {
+        return registrationDate;
+    }
+
+    public void setRegistrationDate(LocalDateTime registrationDate) {
+        this.registrationDate = registrationDate;
+    }
+
     public void setAvailableSlots(Set<LocalDateTime> availableSlots) {
         this.availableSlots = availableSlots;
     }
@@ -130,19 +141,4 @@ public class Staff {
         return this.availableSlots.remove(slot);
     }
 
-    // toString method (mostly fine, adjust department display if needed)
-    @Override
-    public String toString() {
-        String lineSeparator = System.lineSeparator();
-        int labelWidth = 18;
-        StringBuilder sb = new StringBuilder();
-        sb.append("--------------------------------------").append(lineSeparator);
-        sb.append(String.format("%-" + labelWidth + "s: %s%n", "Staff Member", getName() != null ? getName() : "N/A"));
-        sb.append(String.format("%-" + labelWidth + "s: %s%n", "Staff ID", staffId != null ? staffId : "N/A")); // Consistent label
-        sb.append(String.format("%-" + labelWidth + "s: %s%n", "Role", getRole() != null ? getRole().toString() : "N/A"));
-        sb.append(String.format("%-" + labelWidth + "s: %s%n", "Department",
-                department != null ? (department.getDisplayName() != null ? department.getDisplayName() : department.name()) : "N/A")); // Safer department display
-        sb.append("--------------------------------------").append(lineSeparator);
-        return sb.toString();
-    }
 }

@@ -4,138 +4,150 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:ui="jakarta.faces.facelets">
 
-    <p:card header="Register New Staff Member" styleClass="shadow-2 border-round-lg" style="padding:2rem;">
-        <h:form id="staffRegForm" styleClass="p-fluid floatlabel-demo">
+    <p:dialog header="Register New Staff Member"
+              widgetVar="staffRegDialogWidget"
+              id="staffRegDialog"
+              modal="true"
+              closable="true"
+              resizable="false"
+              draggable="false"
+              appendTo="@(body)"
+              showEffect="fade"
+              hideEffect="fade"
+              styleClass="p-fluid"
+              style="width: 60vw; max-width: 900px;">
 
-            <p:growl id="successMessage" showDetail="true" closable="true" />
+        <h:form id="staffRegForm">
+            <p:messages id="regMessages" showDetail="true" closable="true" />
 
-            <!-- Account Credentials -->
-            <p:fieldset legend="Account" styleClass="mb-4">
-                <div class="formgrid grid">
-                    <div class="field col-12 md:col-6">
-                        <span class="ui-float-label">
-                            <p:inputText id="username" value="#{staffBean.username}" required="true"
-                                         requiredMessage="Username is required." />
-                            <p:outputLabel for="@previous" value="Username" />
-                        </span>
-                        <p:message for="username"/>
-                    </div>
-                    <div class="field col-12 md:col-6">
-                        <span class="ui-float-label">
-                            <p:password id="password" value="#{staffBean.password}" required="true"
-                                        toggleMask="true" redisplay="true" feedback="true"
-                                        requiredMessage="Password is required." />
-                            <p:outputLabel for="@previous" value="Password" />
-                        </span>
-                        <p:message for="password"/>
-                    </div>
-                </div>
-            </p:fieldset>
+            <p:outputPanel id="staffRegDialogContent" styleClass="mt-3">
 
-            <!-- Personal Information -->
-            <p:fieldset legend="Personal Info" styleClass="mb-4">
-                <div class="formgrid grid">
-                    <div class="field col-12 md:col-6">
-                        <span class="ui-float-label">
-                            <p:inputText id="fullName" value="#{staffBean.fullName}" required="true"
-                                         requiredMessage="Full name is required." />
-                            <p:outputLabel for="@previous" value="Full Name" />
-                        </span>
-                        <p:message for="fullName"/>
+                <!-- Account Section -->
+                <p:fieldset legend="Account" toggleable="true" toggleSpeed="150" styleClass="mb-3">
+                    <div class="formgrid grid">
+                        <div class="field col-12 md:col-6">
+                            <span class="ui-float-label">
+                                <p:inputText id="username" value="#{staffBean.username}" required="true"
+                                             requiredMessage="Username is required." />
+                                <p:outputLabel for="@previous" value="Username" />
+                            </span>
+                            <p:message for="username"/>
+                        </div>
+                        <div class="field col-12 md:col-6">
+                            <span class="ui-float-label">
+                                <p:password id="password" value="#{staffBean.password}" required="true"
+                                            toggleMask="true" redisplay="true" feedback="false"
+                                            requiredMessage="Password is required." />
+                                <p:outputLabel for="@previous" value="Password" />
+                            </span>
+                            <p:message for="password"/>
+                        </div>
                     </div>
-                    <div class="field col-12 md:col-6">
-                        <span class="ui-float-label">
-                            <p:inputText id="email" value="#{staffBean.email}" type="email" required="true"
-                                         requiredMessage="Email is required.">
-                                <f:validateBean />
-                            </p:inputText>
-                            <p:outputLabel for="@previous" value="Email" />
-                        </span>
-                        <p:message for="email"/>
-                    </div>
+                </p:fieldset>
 
-                    <div class="field col-12 md:col-6">
-                        <span class="ui-float-label">
-                            <p:inputMask id="phone" value="#{staffBean.phone}" mask="999 999 9999">
-                                <f:validator validatorId="custom.ugandanPhoneValidator" />
-                            </p:inputMask>
-                            <p:outputLabel for="@previous" value="Phone" />
-                        </span>
-                        <p:message for="phone"/>
+                <!-- Personal Info Section -->
+                <p:fieldset legend="Personal Info" toggleable="true" toggleSpeed="150" styleClass="mb-3">
+                    <div class="formgrid grid">
+                        <div class="field col-12 md:col-6">
+                            <span class="ui-float-label">
+                                <p:inputText id="fullName" value="#{staffBean.fullName}" required="true"
+                                             requiredMessage="Full name is required." />
+                                <p:outputLabel for="@previous" value="Full Name" />
+                            </span>
+                            <p:message for="fullName"/>
+                        </div>
+                        <div class="field col-12 md:col-6">
+                            <span class="ui-float-label">
+                                <p:inputText id="email" value="#{staffBean.email}" type="email" required="true"
+                                             requiredMessage="Email is required.">
+                                    <f:validateBean/>
+                                </p:inputText>
+                                <p:outputLabel for="@previous" value="Email" />
+                            </span>
+                            <p:message for="email"/>
+                        </div>
+                        <div class="field col-12 md:col-6">
+                            <span class="ui-float-label">
+                                <p:inputMask id="phone" value="#{staffBean.phone}" mask="999 999 9999">
+                                    <f:validator validatorId="custom.ugandanPhoneValidator" />
+                                </p:inputMask>
+                                <p:outputLabel for="@previous" value="Phone" />
+                            </span>
+                            <p:message for="phone"/>
+                        </div>
+                        <div class="field col-12 md:col-6">
+                            <p:outputLabel for="dob" value="Date of Birth" styleClass="mb-1 block" />
+                            <p:datePicker id="dob"
+                                          value="#{staffBean.birthday}"
+                                          monthNavigator="true"
+                                          yearNavigator="true"
+                                          showIcon="true"
+                                          pattern="MM/dd/yyyy"
+                                          yearRange="c-100:c"
+                                          styleClass="w-full" />
+                            <p:message for="dob"/>
+                        </div>
+                        <div class="field col-12">
+                            <span class="ui-float-label">
+                                <p:inputTextarea id="address" value="#{staffBean.address}" rows="2" autoResize="true" />
+                                <p:outputLabel for="@previous" value="Address" />
+                            </span>
+                            <p:message for="address"/>
+                        </div>
+                        <div class="field col-12">
+                            <p:outputLabel for="gender" value="Gender" />
+                            <p:selectOneRadio id="gender" value="#{staffBean.gender}" layout="lineDirection">
+                                <f:selectItem itemLabel="Male" itemValue="Male" />
+                                <f:selectItem itemLabel="Female" itemValue="Female" />
+                            </p:selectOneRadio>
+                            <p:message for="gender"/>
+                        </div>
                     </div>
+                </p:fieldset>
 
-                    <div class="field col-12 md:col-6">
-                        <p:outputLabel for="dob" value="Date of Birth" styleClass="mb-1 block" />
-                        <p:datePicker id="dob"
-                                      value="#{staffBean.birthday}"
-                                      monthNavigator="true"
-                                      yearNavigator="true"
-                                      showIcon="true"
-                                      pattern="MM/dd/yyyy"
-                                      yearRange="c-100:c"
-                                      styleClass="w-full" />
-                        <p:message for="dob"/>
+                <!-- Professional Info Section -->
+                <p:fieldset legend="Professional Info" toggleable="true" toggleSpeed="150" styleClass="mb-3">
+                    <div class="formgrid grid">
+                        <div class="field col-12 md:col-6">
+                            <span class="ui-float-label">
+                                <p:selectOneMenu id="role" value="#{staffBean.role}" required="true"
+                                                 requiredMessage="Role is required.">
+                                    <f:selectItem itemValue="#{null}" noSelectionOption="true" itemLabel="--- Select Role ---"/>
+                                    <f:selectItems value="#{staffBean.availableRoles}" var="r" itemLabel="#{r}" itemValue="#{r}" />
+                                </p:selectOneMenu>
+                                <p:outputLabel for="@previous" value="Role" />
+                            </span>
+                            <p:message for="role"/>
+                        </div>
+                        <div class="field col-12 md:col-6">
+                            <span class="ui-float-label">
+                                <p:selectOneMenu id="department" value="#{staffBean.department}" required="true"
+                                                 requiredMessage="Department is required.">
+                                    <f:selectItem itemValue="#{null}" noSelectionOption="true" itemLabel="--- Select Department ---"/>
+                                    <f:selectItems value="#{staffBean.availableDepartments}" var="d" itemLabel="#{d.displayName}" itemValue="#{d}" />
+                                </p:selectOneMenu>
+                                <p:outputLabel for="@previous" value="Department" />
+                            </span>
+                            <p:message for="department"/>
+                        </div>
                     </div>
+                </p:fieldset>
 
+            </p:outputPanel>
 
-                    <div class="field col-12">
-                        <span class="ui-float-label">
-                            <p:inputTextarea id="address" value="#{staffBean.address}" rows="2" autoResize="true" />
-                            <p:outputLabel for="@previous" value="Address" />
-                        </span>
-                        <p:message for="address"/>
-                    </div>
-
-                    <div class="field col-12">
-                        <p:outputLabel for="gender" value="Gender" />
-                        <p:selectOneRadio id="gender" value="#{staffBean.gender}" layout="lineDirection">
-                            <f:selectItem itemLabel="Male" itemValue="Male" />
-                            <f:selectItem itemLabel="Female" itemValue="Female" />
-                        </p:selectOneRadio>
-                        <p:message for="gender"/>
-                    </div>
-                </div>
-            </p:fieldset>
-
-            <!-- Professional Info -->
-            <p:fieldset legend="Professional Info" styleClass="mb-4">
-                <div class="formgrid grid">
-                    <div class="field col-12 md:col-6">
-                        <span class="ui-float-label">
-                            <p:selectOneMenu id="role" value="#{staffBean.role}" required="true"
-                                             requiredMessage="Role is required.">
-                                <f:selectItem  itemValue="#{null}" noSelectionOption="true" />
-                                <f:selectItems value="#{staffBean.availableRoles}" var="role"
-                                               itemLabel="#{role}" itemValue="#{role}" />
-                            </p:selectOneMenu>
-                            <p:outputLabel for="@previous" value="Role" />
-                        </span>
-                        <p:message for="role"/>
-                    </div>
-                    <div class="field col-12 md:col-6">
-                        <span class="ui-float-label">
-                            <p:selectOneMenu id="department" value="#{staffBean.department}" required="true"
-                                             requiredMessage="Department is required.">
-                                <f:selectItem itemValue="#{null}" noSelectionOption="true" />
-                                <f:selectItems value="#{staffBean.availableDepartments}" var="dept"
-                                               itemLabel="#{dept.displayName}" itemValue="#{dept}" />
-                            </p:selectOneMenu>
-                            <p:outputLabel for="@previous" value="Department" />
-                        </span>
-                        <p:message for="department"/>
-                    </div>
-                </div>
-            </p:fieldset>
-
-            <!-- Buttons -->
-            <div class="flex gap-2 justify-content-end mt-3">
-                <p:commandButton value="Register" icon="pi pi-check" styleClass="ui-button-success"
-                                 process="@form" action="#{staffBean.register()}"
-                                 update="@form successMessage" />
-                <p:commandButton type="reset" value="Clear" icon="pi pi-times" styleClass="ui-button-secondary" />
+            <!-- Dialog Buttons -->
+            <div class="flex justify-content-end gap-2 mt-3">
+                <p:commandButton value="Cancel" type="button" icon="pi pi-times"
+                                 onclick="PF('staffRegDialogWidget').hide()"
+                                 styleClass="ui-button-secondary" />
+                <p:commandButton value="Register Staff" icon="pi pi-check"
+                                 action="#{staffBean.register}"
+                                 process="@form"
+                                 update="regMessages :staffListForm:staffTable"
+                                 oncomplete="if (args &amp;&amp; !args.validationFailed) PF('staffRegDialogWidget').hide();"
+                                 styleClass="ui-button-success" />
             </div>
 
         </h:form>
-    </p:card>
-
+    </p:dialog>
 </ui:composition>

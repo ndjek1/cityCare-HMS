@@ -12,6 +12,7 @@ import org.pahappa.systems.hms.services.impl.StaffServiceImpl;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Named("staffListBean")
@@ -37,14 +38,19 @@ public class StaffListBean implements Serializable {
 
     private void loadStaff() {
         staffList = staffService.getAllStaffs();
+
         if (staffList == null) {
             staffList = new ArrayList<>();
             System.err.println("StaffListBean: hospitalService.getAllStaffs() returned null.");
         } else {
+            // Sort by registration date descending
+            staffList.sort(Comparator.comparing(Staff::getRegistrationDate).reversed());
             System.out.println("StaffListBean: Loaded " + staffList.size() + " staff members.");
         }
+
         this.filteredStaffList = new ArrayList<>(this.staffList);
     }
+
 
     public List<Staff> getStaffList() {
         return staffList;

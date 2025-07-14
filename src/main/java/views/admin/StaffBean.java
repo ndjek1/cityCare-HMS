@@ -111,7 +111,6 @@ public class StaffBean implements Serializable {
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Staff member " + registeredStaffOpt.get().getName() + " registered successfully."));
             init(); // Reset the form fields for the next entry
             staffListBean.refreshList();
-            pageNavigationBean.navigateToViewStaff();
         } else {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Registration Failed", "Could not register staff. The username or email might already be in use."));

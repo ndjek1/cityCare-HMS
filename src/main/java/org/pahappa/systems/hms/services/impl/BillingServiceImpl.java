@@ -71,7 +71,15 @@ public Optional<Bill> findBillById(Long billId) {
         return Optional.empty();
     }
 }
-
+    @Override
+    public long getOpenBillsCount() {
+        // Use the DAO method
+        return billDao.findAllUnpaid().size();
+    }
+    @Override
+    public List<Bill> getAllBills(){
+        return billDao.findAll();
+    }
 
 
 

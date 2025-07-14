@@ -19,11 +19,6 @@ public interface BillingService {
 
 //    // Payment
     Optional<Payment> processPayment(Long billId, double amountPaid, PaymentMethod method);
-//
-//    // Service Catalog
-//    Optional<ServiceCatalogItem> addServiceToCatalog(String code, String name, double cost, ServiceCategory category, String description);
-//    List<ServiceCatalogItem> getFullServiceCatalog();
-//    List<ServiceCatalogItem> getActiveServiceCatalogItems();
-//
-//    Optional<Payment> processPayment(Long billId, double amountPaid, PaymentMethod method);
+    long getOpenBillsCount();
+    List<Bill> getAllBills();
 }

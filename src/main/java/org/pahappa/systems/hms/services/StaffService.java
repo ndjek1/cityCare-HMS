@@ -16,7 +16,7 @@ public interface StaffService {
     boolean updateStaffRecord(Long staffId, String address, String phone, String email);
 
     void deleteStaff(Staff staff);
-
+    long getStaffCount();
     List<LocalDateTime> getDoctorAvailableSlotsForDate(Long doctorId, LocalDate date);
     boolean addDoctorAvailability(Long doctorId, List<LocalDateTime> newSlots);
     boolean removeDoctorAvailability(Long doctorId, List<LocalDateTime> slotsToRemove);

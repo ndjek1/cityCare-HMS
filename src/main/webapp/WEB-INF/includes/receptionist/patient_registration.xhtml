@@ -96,6 +96,7 @@
                              action="#{patientBean.register}"
                              update="@form message"
                              process="@form"
+                             oncomplete="#{pageNavigationBean.navigateToViewPatients()}"
                              styleClass="ui-button-success" />
 
             <p:commandButton value="Clear" type="reset" icon="pi pi-times" styleClass="ui-button-secondary" />

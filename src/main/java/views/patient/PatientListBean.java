@@ -7,6 +7,7 @@ import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 import org.pahappa.systems.hms.models.Patient;
 
+import org.pahappa.systems.hms.models.Staff;
 import org.pahappa.systems.hms.services.PatientService;
 import org.pahappa.systems.hms.services.impl.PatientServiceImpl;
 
@@ -21,29 +22,14 @@ public class PatientListBean implements Serializable {
 
 
     private List<Patient> patientList;
+    private List<Patient> filteredPatientsList;
 private final PatientService patientService;
 public PatientListBean() {
     this.patientService = new PatientServiceImpl();
 }
-    private List<Patient> filteredPatients;
     private String globalFilterValue;
 
 
-
-    // This is your custom filtering function
-    public boolean filterGlobal(Object value, Object filter, Locale locale) {
-        String filterText = (filter == null) ? null : filter.toString().toLowerCase();
-
-        if (filterText == null || filterText.trim().isEmpty()) {
-            return true;
-        }
-
-        Patient patient = (Patient) value;
-
-        return (patient.getName() != null && patient.getName().toLowerCase().contains(filterText))
-                || (patient.getEmail() != null && patient.getEmail().toLowerCase().contains(filterText))
-                || (patient.getPhoneNumber() != null && patient.getPhoneNumber().toLowerCase().contains(filterText));
-    }
     @PostConstruct
     public void init() {
         loadPatients();
@@ -57,6 +43,7 @@ public PatientListBean() {
         } else {
             System.out.println("StaffListBean: Loaded " + patientList.size() + " staff members.");
         }
+        this.filteredPatientsList = new ArrayList<>(this.patientList);
     }
 
     // Getter for the JSF page
@@ -79,12 +66,24 @@ public PatientListBean() {
         }
     }
 
-    public List<Patient> getFilteredPatients() {
-        return filteredPatients;
+    // ✅ Global Filter Function
+    public boolean globalFilterFunction(Object value, Object filter, java.util.Locale locale) {
+        String filterText = (filter == null) ? "" : filter.toString().toLowerCase();
+        if (filterText.isBlank()) return true;
+
+        Patient patient = (Patient) value;
+
+        return (patient.getName() != null && patient.getName().toLowerCase().contains(filterText)) ||
+                (patient.getEmail() != null && patient.getEmail().toLowerCase().contains(filterText)) ||
+                (patient.getAddress() != null && patient.getAddress().toLowerCase().contains(filterText)) ||
+                (patient.getPhoneNumber() != null && patient.getPhoneNumber().toLowerCase().contains(filterText));
+    }
+    public List<Patient> getFilteredPatientsList() {
+        return filteredPatientsList;
     }
 
-    public void setFilteredPatients(List<Patient> filteredPatients) {
-        this.filteredPatients = filteredPatients;
+    public void setFilteredPatientsList(List<Patient> filteredPatientsList) {
+        this.filteredPatientsList = filteredPatientsList;
     }
 
     public String getGlobalFilterValue() {

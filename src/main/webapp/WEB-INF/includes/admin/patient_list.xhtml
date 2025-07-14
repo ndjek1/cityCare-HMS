@@ -10,43 +10,62 @@
             <!-- Notifications -->
             <p:growl id="growl" showDetail="true" life="4000"/>
 
-            <!-- Toolbar -->
-            <p:toolbar styleClass="mb-3">
-                <p:toolbarGroup>
-                    <p:commandButton value="Register Patient" icon="pi pi-plus" styleClass="ui-button-success"
-                                     action="#{pageNavigationBean.navigateAddNewPatient}"
-                                     update=":pageContentForm:mainContentPanel"
-                                    process="@this"
-                    />
-                </p:toolbarGroup>
-            </p:toolbar>
 
             <!-- Scrollable DataTable -->
             <p:dataTable id="patientTable"
                          var="patient"
                          value="#{patientListBean.patientList}"
                          widgetVar="patientTableWidget"
-                         scrollable="true"
-                         scrollHeight="400"
-                         emptyMessage="No patients found."
+                         globalFilterFunction="#{patientListBean.globalFilterFunction}"
+                         filteredValue="#{patientListBean.filteredPatientsList}"
+                         rows="10"
+                         paginator="true"
+                         paginatorPosition="bottom"
+                         emptyMessage="No Patients found matching your search."
+                         reflow="true"
                          styleClass="p-datatable-striped p-datatable-sm">
+
+                <!-- The header now contains the global filter input box -->
+                <f:facet name="header">
+                    <div class="flex justify-content-between align-items-center">
+                        <p:commandButton value="Add New Patient" icon="pi pi-plus"
+                                         action="#{pageNavigationBean.navigateAddNewPatient()}"
+                                         update=":pageContentForm:mainContentPanel" process="@this"/>
+
+                        <!-- This is the global filter input -->
+                        <span class="p-input-icon-left">
+                           <p:inputText id="globalFilter"
+                                        placeholder="Search all fields..."
+                                        onkeyup="PrimeFaces.debounce(() => PF('staffTableWidget').filter(), 300)"
+                                        style="width: 20rem;" />
+
+                        </span>
+                    </div>
+                </f:facet>
 
                 <!-- Patient Name Filter -->
                 <p:column headerText="Patient Name"
-                          filterBy="#{patient.name}"
-                          filterMatchMode="contains"
+                          sortBy="#{patient.name}"
+                          globalFilter="true"
                           style="min-width: 250px;">
                     <h:outputText value="#{patient.name}" />
                 </p:column>
 
                 <!-- Email (not filterable for now) -->
-                <p:column headerText="Email">
+                <p:column headerText="Email" sortBy="#{patient.email}"
+                          globalFilter="true">
                     <h:outputText value="#{patient.email}" />
                 </p:column>
 
                 <!-- Phone Number -->
-                <p:column headerText="Phone Number">
+                <p:column headerText="Phone Number" sortBy="#{patient.phoneNumber}"
+                          globalFilter="true" >
                     <h:outputText value="#{patient.phoneNumber}" />
+                </p:column>
+                <!-- Phone Number -->
+                <p:column headerText="Address" sortBy="#{patient.address}"
+                          globalFilter="true">
+                    <h:outputText value="#{patient.address}" />
                 </p:column>
 
                 <!-- Actions -->

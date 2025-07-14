@@ -9,78 +9,115 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>CityCare HMS - Welcome</title>
 
-    <!-- Google Fonts for a nicer typeface (optional but recommended) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
-
     <!-- PrimeFlex for layout -->
     <link rel="stylesheet" href="https://unpkg.com/primeflex@latest/primeflex.css"/>
 
-    <!-- Link to our NEW, fancy CSS file -->
-    <h:outputStylesheet library="css" name="login-v2.css"/>
+    <!-- Inline styles -->
+    <style type="text/css">
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        body.login-page-bg {
+            background: url("#{resource['images:hospital.jpeg']}") no-repeat center center fixed;
+            background-size: cover;
+            position: relative;
+        }
+
+        .login-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+
+        .login-container {
+            position: relative;
+            z-index: 2;
+        }
+
+        .field label {
+            font-weight: 500;
+            margin-bottom: 0.3rem;
+            display: block;
+        }
+
+        .field input, .field .ui-password, .field .ui-inputfield {
+            width: 100% !important;
+        }
+    </style>
 </h:head>
 
-<h:body styleClass="login-page-v3">
+<h:body styleClass="login-page-bg">
 
-    <div class="login-panel-v3">
+    <!-- Dark overlay covering full page -->
+    <div class="login-overlay"></div>
 
-        <!-- 1. The Dynamic Image Section with Overlay -->
-        <div class="login-image-section"
-             style="background-image: url('#{resource['images:hospital.jpeg']}')">
-        </div>
+    <!-- Login content container -->
+    <div class="login-container flex align-items-center justify-content-center min-h-screen p-3">
 
-        <!-- 2. The Animated Form Section -->
-        <div class="login-form-section">
-            <h:form id="loginForm">
-                <div class="login-header-v3">
-                    <span class="logo">
-                        <i class="pi pi-heart-fill"></i>
-                    </span>
-                    <h2>Welcome Back</h2>
-                    <p>Sign in to access your dashboard.</p>
+        <p:card styleClass="w-full sm:w-20rem md:w-25rem lg:w-30rem shadow-4"
+                style="background-color: rgba(255,255,255,0.95);">
+
+            <f:facet name="title">
+                <div class="text-center">
+                    <i class="pi pi-heart-fill text-primary text-4xl mb-2"></i>
+                    <div class="text-900 text-3xl font-bold mb-2">Welcome Back</div>
+                    <span class="text-600 font-medium">Sign in to continue</span>
                 </div>
+            </f:facet>
 
-                <p:messages id="loginMessages" showDetail="true" closable="true">
-                    <p:autoUpdate/>
-                </p:messages>
+            <h:form id="loginForm">
+                <p:growl id="loginMessages" showDetail="true" life="6000"/>
 
-                <div class="p-fluid">
-                    <!-- FLOATING LABEL + ICON for Username -->
-                    <span class="ui-float-label">
-        <p:inputText id="username"
-                     value="#{userAccountBean.username}"
-                     required="true"/>
-        <p:outputLabel for="@previous" value="Username"/>
-    </span>
-                    <p:message for="username"/> <!-- Add a message component for validation errors -->
+                <div class="p-fluid w-400">
 
-                    <!-- 2. Password Field with Margin-Top -->
-                    <!-- The "mt-4" class adds a 1.5rem margin above this element, creating space -->
-                    <span class="ui-float-label mt-4">
-        <p:password id="password"
-                    value="#{userAccountBean.password}"
-                    required="true"
-                    toggleMask="true"
-                    redisplay="true"/>
-        <p:outputLabel for="@previous" value="Password"/>
-    </span>
-                    <p:message for="password"/>
-
-                    <div class="flex justify-content-between align-items-center mt-3">
-                        <p:selectBooleanCheckbox id="rememberMe" itemLabel="Remember me"/>
-                        <a href="#">Forgot password?</a>
+                    <!-- Username -->
+                    <div class="field mt-3">
+                        <p:outputLabel for="username" value="Username"/>
+                        <p:inputText id="username"
+                                     value="#{userAccountBean.username}"
+                                     required="true"
+                                     requiredMessage="Username is required."
+                                     placeholder="Enter your username"
+                                     styleClass="w-full"/>
+                        <p:message for="username" display="text"/>
                     </div>
 
-                    <!-- The FANCY main login button -->
+                    <!-- Password -->
+                    <div class="field mt-3">
+                        <p:outputLabel for="password" value="Password"/>
+                        <p:password id="password"
+                                    value="#{userAccountBean.password}"
+                                    required="true"
+                                    requiredMessage="Password is required."
+                                    toggleMask="true"
+                                    redisplay="true"
+                                    placeholder="Enter your password"
+                                    styleClass="w-full"/>
+                        <p:message for="password" display="text"/>
+                    </div>
+
+                    <!-- Options -->
+                    <div class="flex justify-content-between align-items-center mt-3">
+                        <p:selectBooleanCheckbox id="rememberMe" itemLabel="Remember me"/>
+                        <a href="#" class="text-primary text-sm font-medium">Forgot password?</a>
+                    </div>
+
+                    <!-- Login Button -->
                     <p:commandButton value="Sign In"
                                      action="#{userAccountBean.login}"
                                      icon="pi pi-sign-in"
-                                     styleClass="p-button-lg w-full mt-4 login-button"
-                                     ajax="false" />
+                                     styleClass="w-full p-button-lg mt-4"
+                                     ajax="false"/>
                 </div>
             </h:form>
-        </div>
+
+        </p:card>
     </div>
+
 </h:body>
 </html>

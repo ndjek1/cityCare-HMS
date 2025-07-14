@@ -4,8 +4,19 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:ui="jakarta.faces.facelets">
 
-   <p:card header="Register Patient" styleClass="shadow-1" style="padding:1rem;">
-      <h:form id="staffRegForm" styleClass="p-fluid">
+   <!-- Register Patient Dialog -->
+   <p:dialog header="Register Patient"
+             widgetVar="patientRegisterDialog"
+             modal="true"
+             closable="true"
+             draggable="false"
+             resizable="false"
+             showEffect="fade"
+             hideEffect="fade"
+             styleClass="shadow-2"
+             width="50vw">
+
+      <h:form id="patientRegForm" styleClass="p-fluid">
 
          <p:growl id="message" showDetail="true" />
 
@@ -35,7 +46,6 @@
          <!-- Personal Info -->
          <p:fieldset legend="Personal Info" toggleable="false" styleClass="mb-3">
             <div class="formgrid grid">
-
                <div class="field col-12 md:col-6">
                   <p:outputLabel for="fullName" value="Full Name" styleClass="mb-1 block" />
                   <p:inputText id="fullName" value="#{patientBean.fullName}" required="true"
@@ -54,7 +64,7 @@
 
                <div class="field col-12 md:col-6">
                   <p:outputLabel for="phone" value="Phone" styleClass="mb-1 block" />
-                  <p:inputMask id="phone" value="#{staffBean.phone}" mask="999 999 9999">
+                  <p:inputMask id="phone" value="#{patientBean.phone}" mask="999 999 9999">
                      <f:validator validatorId="custom.ugandanPhoneValidator" />
                   </p:inputMask>
                   <p:message for="phone" />
@@ -94,14 +104,15 @@
          <div class="flex gap-2 justify-content-end mt-3">
             <p:commandButton value="Register" icon="pi pi-check"
                              action="#{patientBean.register}"
-                             update="@form message"
                              process="@form"
-                             oncomplete="#{pageNavigationBean.navigateToViewPatients()}"
+                             update=":pageContentForm:patientListForm:patientTable :pageContentForm:patientListForm:growl"
+                             oncomplete="if (!args.validationFailed) PF('patientRegisterDialog').hide();"
                              styleClass="ui-button-success" />
+
 
             <p:commandButton value="Clear" type="reset" icon="pi pi-times" styleClass="ui-button-secondary" />
          </div>
 
       </h:form>
-   </p:card>
+   </p:dialog>
 </ui:composition>

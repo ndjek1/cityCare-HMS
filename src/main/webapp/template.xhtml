@@ -135,12 +135,6 @@
                                    styleClass="menu-link #{pageNavigationBean.selectedMenu == 'doctor_appointment_list' ? 'menu-link-active' : ''}" />
 
                     <!-- Receptionist Links -->
-                    <p:commandLink value="Register Patient"
-                                   icon="pi pi-user-plus"
-                                   action="#{pageNavigationBean.navigateAddNewPatient}"
-                                   rendered="#{userAccountBean.isReceptionist()}"
-                                   update=":pageContentForm:mainContentPanel :menuForm"
-                                   styleClass="menu-link #{pageNavigationBean.selectedMenu == 'patientRegistration' ? 'menu-link-active' : ''}" />
 
                     <p:commandLink value="Appointments"
                                    icon="pi pi-check-square"
@@ -173,7 +167,7 @@
                     <p:commandLink value="Manage Patients"
                                    icon="pi pi-user-edit"
                                    action="#{pageNavigationBean.navigateToViewPatients}"
-                                   rendered="#{userAccountBean.isAdministrator()}"
+                                   rendered="#{userAccountBean.isAdministrator() or userAccountBean.isReceptionist()}"
                                    update=":pageContentForm:mainContentPanel :menuForm"
                                    styleClass="menu-link #{pageNavigationBean.selectedMenu == 'patient_list' ? 'menu-link-active' : ''}" />
 
@@ -269,8 +263,10 @@
     <ui:include src="/WEB-INF/includes/dialogs/medication_dialog.xhtml"/>
     <ui:include src="/WEB-INF/includes/dialogs/prescription_payment.xhtml"/>
     <ui:include src="/WEB-INF/includes/dialogs/reciept_dialog.xhtml"/>
-    <ui:include src="/WEB-INF/includes/admin/staff_registration.xhtml"/>
 
+    <ui:include src="/WEB-INF/includes/receptionist/patient_registration.xhtml"/>
+
+    <ui:include src="/WEB-INF/includes/admin/staff_registration.xhtml"/>
 
 </h:body>
 </html>

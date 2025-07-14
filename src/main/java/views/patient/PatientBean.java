@@ -138,7 +138,7 @@ public class PatientBean implements Serializable {
         System.out.println("Attempting to register staff: " + this.fullName);
         Optional<Patient> registeredPatientOpt = patientService.registerPatient(
                 this.username,
-                this.password, // SEND HASHED PASSWORD TO SERVICE
+                this.password,
                 this.fullName,
                 birthday,
                 this.address,

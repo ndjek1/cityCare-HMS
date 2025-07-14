@@ -5,14 +5,11 @@ import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 import org.pahappa.systems.hms.constants.PaymentStatus;
 import org.pahappa.systems.hms.models.Bill;
-import org.pahappa.systems.hms.services.DashboardService;
-import org.pahappa.systems.hms.services.impl.DashboardServiceImpl;
+import org.pahappa.systems.hms.services.impl.*;
 
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Named("dashboardBean")
 @ViewScoped
@@ -27,7 +24,18 @@ public class DashboardBean implements Serializable {
     private double unpaidAmount;
     private double paidAmount;
 
-    private final DashboardService dashboardService = new DashboardServiceImpl();
+    private static  PatientServiceImpl patientService ;
+    private static  StaffServiceImpl staffService ;
+    private static AppointmentServiceImpl appointmentService ;
+    private static   BillingServiceImpl billService ;
+
+    public DashboardBean() {
+        patientService = new PatientServiceImpl();
+        staffService = new StaffServiceImpl();
+        appointmentService = new AppointmentServiceImpl();
+        billService = new BillingServiceImpl();
+
+    }
 
     @PostConstruct
     public void init() {
@@ -36,11 +44,11 @@ public class DashboardBean implements Serializable {
     }
 
     private void loadDashboardStats() {
-        patientCount            = dashboardService.getPatientCount();
-        staffCount              = dashboardService.getStaffCount();
-        todaysAppointmentCount  = dashboardService.getTodaysScheduledAppointmentCount();
-        openBillsCount          = dashboardService.getOpenBillsCount();
-        List<Bill> allBills = dashboardService.getAllBills();
+        patientCount            = patientService.getPatientCount();
+        staffCount              = staffService.getStaffCount();
+        todaysAppointmentCount  = appointmentService.getTodaysScheduledAppointmentCount();
+        openBillsCount          = billService.getOpenBillsCount();
+        List<Bill> allBills = billService.getAllBills();
         for (Bill bill : allBills) {
             if(bill.getPaymentStatus() == PaymentStatus.PAID){
                 paidAmount +=bill.getTotalAmount();

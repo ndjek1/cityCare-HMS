@@ -6,6 +6,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.validation.constraints.*;
 import org.pahappa.systems.hms.models.Patient;
@@ -20,6 +21,7 @@ import java.util.Optional;
 @ViewScoped
 public class PatientBean implements Serializable {
 
+ @Inject PatientListBean patientListBean;
     @NotEmpty(message = "Username is required.")
     @Size(min = 4, max = 20, message = "Username must be between 4 and 20 characters.")
     private String username;
@@ -150,6 +152,7 @@ public class PatientBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Patient " + registeredPatientOpt.get().getName() + " registered successfully."));
             init(); // Reset the form fields
+            patientListBean.refreshList();
         } else {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Registration Failed", "Could not register staff. Username might be taken or other error. Check logs."));

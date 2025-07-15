@@ -13,6 +13,7 @@ import org.pahappa.systems.hms.services.impl.PatientServiceImpl;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
@@ -42,6 +43,7 @@ public PatientListBean() {
             System.err.println("StaffListBean: hospitalService.getAllStaffs() returned null.");
         } else {
             System.out.println("StaffListBean: Loaded " + patientList.size() + " staff members.");
+            patientList.sort(Comparator.comparing(Patient::getRegistrationDate).reversed());
         }
         this.filteredPatientsList = new ArrayList<>(this.patientList);
     }

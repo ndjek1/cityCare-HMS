@@ -9,6 +9,7 @@ import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import org.pahappa.systems.hms.models.Medication;
+import org.pahappa.systems.hms.models.ServiceCatalogItem;
 import org.pahappa.systems.hms.services.PharmacyService;
 
 
@@ -26,6 +27,7 @@ public class MedicationAdminBean implements Serializable {
     private PharmacyService pharmacyService;
 
     private List<Medication> allMedications;
+    private List<Medication> filteredMedications;
     private Medication selectedMedication; // For editing or adding
     private boolean is_New = true; // To distinguish between add and edit mode in the dialog
 
@@ -38,12 +40,26 @@ public class MedicationAdminBean implements Serializable {
     private void loadAllMedications() {
         if (pharmacyService != null) {
             allMedications = pharmacyService.getFullMedicationCatalog();
+            this.filteredMedications = new ArrayList<>(allMedications);
         } else {
             allMedications = new ArrayList<>();
             System.err.println("MedicationAdminBean: PharmacyService not injected.");
         }
     }
 
+
+    public boolean globalFilterFunction(Object value, Object filter, java.util.Locale locale) {
+        String filterText = (filter == null) ? "" : filter.toString().toLowerCase();
+        if (filterText.isBlank()) return true;
+
+        Medication medication = (Medication) value;
+
+        return (medication.getName() != null && medication.getName().toLowerCase().contains(filterText)) ||
+                (medication.getDescription() != null && medication.getDescription().toLowerCase().contains(filterText)) ||
+                (medication.getMedicationId() <= 0 && medication.getMedicationId() > 0);
+
+
+    }
     // Prepares the dialog for adding a NEW medication
     public void openNew() {
         this.selectedMedication = new Medication(); // Create a new blank instance
@@ -103,6 +119,15 @@ public class MedicationAdminBean implements Serializable {
     }
 
     // Getters and Setters
+
+    public List<Medication> getFilteredMedications() {
+        return filteredMedications;
+    }
+
+    public void setFilteredMedications(List<Medication> filteredMedications) {
+        this.filteredMedications = filteredMedications;
+    }
+
     public List<Medication> getAllMedications() {
         return allMedications;
     }

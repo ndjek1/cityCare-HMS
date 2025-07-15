@@ -6,30 +6,45 @@
 
    <p:panel header="Manage Medication Catalog">
       <h:form id="medicationCatalogForm">
-         <p:messages id="medicationMessages" showDetail="true" closable="true" autoUpdate="true"/>
+         <p:growl id="medicationMessages" showDetail="true" closable="true" life="2000" autoUpdate="true"/>
 
-         <p:toolbar>
-            <p:toolbarGroup>
-               <p:commandButton value="New Medication" icon="pi pi-plus"
-                                action="#{medicationAdminBean.openNew()}"
-                                oncomplete="PF('medicationDialogWidget').show()"
-                                process="@this"
-                                update="@widgetVar(medicationDialogWidget)"
-               styleClass="ui-button-success"/>
-            </p:toolbarGroup>
-         </p:toolbar>
-
-         <p:dataTable id="medicationTable" var="med" value="#{medicationAdminBean.allMedications}"
+         <p:dataTable id="medicationTable"
+                      widgetVar="medicationWidget" var="med" value="#{medicationAdminBean.allMedications}"
+                      globalFilterFunction="#{medicationAdminBean.globalFilterFunction}"
+                      filteredValue="#{medicationAdminBean.filteredMedications}"
+                      paginatorPosition="bottom"
                       paginator="true" rows="10" emptyMessage="No medications found in catalog."
                       reflow="true" style="margin-top:10px;">
 
-            <p:column headerText="ID" sortBy="#{med.medicationId}" style="width:5%;">
+            <!-- The header now contains the global filter input box -->
+            <f:facet name="header">
+               <div class="flex justify-content-between align-items-center">
+                  <p:commandButton value="New Medication" icon="pi pi-plus"
+                                   action="#{medicationAdminBean.openNew()}"
+                                   oncomplete="PF('medicationDialogWidget').show()"
+                                   process="@this"
+                                   update="@widgetVar(medicationDialogWidget)"
+                                   styleClass="ui-button-success"/>
+                  <!-- This is the global filter input -->
+                  <span class="p-input-icon-left">
+                           <p:inputText id="globalFilter"
+                                        placeholder="Search all fields..."
+                                        onkeyup="PrimeFaces.debounce(() => PF('medicationWidget').filter(), 300)"
+                                        style="width: 20rem;" />
+
+                        </span>
+               </div>
+            </f:facet>
+
+            <p:column headerText="ID" sortBy="#{med.medicationId}"
+                      globalFilter="true"
+                      style="width:5%;">
                <h:outputText value="#{med.medicationId}"/>
             </p:column>
-            <p:column headerText="Name" sortBy="#{med.name}" filterBy="#{med.name}" filterMatchMode="contains">
+            <p:column headerText="Name" sortBy="#{med.name}" globalFilter="true">
                <h:outputText value="#{med.name}"/>
             </p:column>
-            <p:column headerText="Description" filterBy="#{med.description}" filterMatchMode="contains">
+            <p:column headerText="Description" globalFilter="true">
                <h:outputText value="#{med.description}" title="#{med.description}"/>
             </p:column>
             <p:column headerText="Unit Price" sortBy="#{med.unitPrice}" style="text-align:right;">

@@ -6,6 +6,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 import jakarta.validation.constraints.Min;
+import org.pahappa.systems.hms.models.Patient;
 import org.pahappa.systems.hms.models.ServiceCatalogItem;
 import org.pahappa.systems.hms.constants.ServiceCategory; // Your enum
 
@@ -24,6 +25,7 @@ public class ServiceCatalogAdminBean implements Serializable {
     private final ServiceCatalogServiceImpl  serviceCatalogService;
 
     private List<ServiceCatalogItem> catalogItems; // To display existing items
+    private List<ServiceCatalogItem> filteredCatalogItems;
 
     // Fields for adding a new service
     private String newServiceCode;
@@ -52,6 +54,7 @@ public class ServiceCatalogAdminBean implements Serializable {
         if (catalogItems == null) {
             catalogItems = new ArrayList<>();
         }
+        this.filteredCatalogItems = new ArrayList<>(catalogItems);
     }
 
     private void resetNewServiceForm() {
@@ -63,6 +66,19 @@ public class ServiceCatalogAdminBean implements Serializable {
         newServiceActive = true;
     }
 
+
+    // ✅ Global Filter Function
+    public boolean globalFilterFunction(Object value, Object filter, java.util.Locale locale) {
+        String filterText = (filter == null) ? "" : filter.toString().toLowerCase();
+        if (filterText.isBlank()) return true;
+
+        ServiceCatalogItem serviceCatalogItem = (ServiceCatalogItem) value;
+
+        return (serviceCatalogItem.getName() != null && serviceCatalogItem.getName().toLowerCase().contains(filterText)) ||
+                (serviceCatalogItem.getServiceCode() != null && serviceCatalogItem.getServiceCode().toLowerCase().contains(filterText)) ||
+                (serviceCatalogItem.getCategory().toString() != null && serviceCatalogItem.getCategory().toString().toLowerCase().contains(filterText)) ||
+                (serviceCatalogItem.getDescription() != null && serviceCatalogItem.getDescription().toLowerCase().contains(filterText));
+    }
     public void addNewServiceCatalogItem() {
         FacesContext context = FacesContext.getCurrentInstance();
         // Basic Validation
@@ -149,6 +165,15 @@ public class ServiceCatalogAdminBean implements Serializable {
 
 
     // Getters and Setters
+
+    public List<ServiceCatalogItem> getFilteredCatalogItems() {
+        return filteredCatalogItems;
+    }
+
+    public void setFilteredCatalogItems(List<ServiceCatalogItem> filteredCatalogItems) {
+        this.filteredCatalogItems = filteredCatalogItems;
+    }
+
     public List<ServiceCatalogItem> getCatalogItems() { return catalogItems; }
     public String getNewServiceCode() { return newServiceCode; }
     public void setNewServiceCode(String newServiceCode) { this.newServiceCode = newServiceCode; }

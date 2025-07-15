@@ -1,5 +1,6 @@
 package views;
 
+import jakarta.servlet.http.HttpSession;
 import org.pahappa.systems.hms.constants.UserRole;
 
 import jakarta.enterprise.context.SessionScoped;
@@ -63,13 +64,16 @@ public class UserAccountBean implements Serializable {
         }
     }
 
-    public void logout() {
-        this.currentUser = null;
-        this.currentUserDetails = null;
-        FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
-        // Redirect to login page after logout
-        // return "/login.xhtml?faces-redirect=true"; // from a method that returns String
+    // LogoutBean.java
+    public String logout() {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        HttpSession session = (HttpSession) facesContext.getExternalContext().getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+        return "login?faces-redirect=true";
     }
+
 
     public boolean isLoggedIn() { return currentUser != null; }
     // ... other helper methods like isStaff(), isPatient(), etc.

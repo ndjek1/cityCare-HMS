@@ -13,6 +13,7 @@
              resizable="false"
              showEffect="fade"
              hideEffect="fade"
+             appendTo="@body"
              styleClass="shadow-2"
              width="50vw">
 
@@ -105,7 +106,7 @@
             <p:commandButton value="Register" icon="pi pi-check"
                              action="#{patientBean.register}"
                              process="@form"
-                             update=":pageContentForm:patientListForm:patientTable :pageContentForm:patientListForm:growl"
+                             update=":patientTable :pageContentForm:pageGrowlMessages"
                              oncomplete="if (!args.validationFailed) PF('patientRegisterDialog').hide();"
                              styleClass="ui-button-success" />
 

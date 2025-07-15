@@ -12,6 +12,7 @@ import org.pahappa.systems.hms.models.Staff; // Assuming your Doctor is a type o
 import org.pahappa.systems.hms.services.impl.AppointmentServiceImpl;
 import org.pahappa.systems.hms.services.impl.PatientServiceImpl;
 import org.pahappa.systems.hms.services.impl.StaffServiceImpl;
+import views.staff.AppointmentsListBean;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -47,6 +48,8 @@ public class AppointmentBean implements Serializable {
     private List<LocalTime> availableTimeSlots; // To populate after selecting a doctor and date
     private static final DateTimeFormatter DISPLAY_TIME_FORMATTER = DateTimeFormatter.ofPattern("hh:mm a"); // e.g., 09:00 AM
     private static final DateTimeFormatter VALUE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm"); // e.g., 09:00 (24-hour)
+    @Inject
+    AppointmentsListBean appointmentsListBean;
 
     public AppointmentBean() {
         this.appointmentService = new AppointmentServiceImpl();
@@ -190,6 +193,7 @@ public class AppointmentBean implements Serializable {
             resetFormFields(); // Clear form for next booking
             // Potentially refresh doctor's available slots if they changed
             onDoctorOrDateChange();
+            appointmentsListBean.refreshList();
         } else {
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Booking Failed",
                     "Could not book appointment. The slot might have just been taken or an error occurred."));

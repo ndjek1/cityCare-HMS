@@ -24,7 +24,7 @@ public class PageNavigationBean implements Serializable {
             if (userAccountBean.isAdministrator()) {
                 navigateToDashboard();
             } else if (userAccountBean.isDoctor()) {
-                navigateToManageDoctorSchedule();
+                navigateToDoctorAppointments();
             } else if (userAccountBean.isPatient()) {
                 navigateToPatientAppointments();
             } else if (userAccountBean.isReceptionist()) {

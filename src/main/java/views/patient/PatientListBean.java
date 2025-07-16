@@ -44,6 +44,9 @@ public PatientListBean() {
         } else {
             System.out.println("StaffListBean: Loaded " + patientList.size() + " staff members.");
             patientList.sort(Comparator.comparing(Patient::getRegistrationDate).reversed());
+            for(Patient patient : patientList) {
+                System.out.println(patient.getRegistrationDate().toString());
+            }
         }
         this.filteredPatientsList = new ArrayList<>(this.patientList);
     }

@@ -7,30 +7,37 @@
    <p:card header="My Payment History" styleClass="shadow-2 p-3">
       <h:form id="paymentHistoryForm">
 
-         <!-- Toolbar -->
-         <p:toolbar style="margin-bottom: 1rem;">
-            <p:toolbarGroup>
-               <p:commandButton value="Refresh" icon="pi pi-refresh"
-                                action="#{patientFinancialsBean.loadPaymentHistory}"
-                                update="paymentHistoryTable"
-                                process="@this"
-                                styleClass="ui-button-secondary"/>
-            </p:toolbarGroup>
-         </p:toolbar>
-
          <!-- Data Table -->
          <div style="overflow-x: auto;">
             <p:dataTable id="paymentHistoryTable"
+                         widgetVar="paymentHistoryTableWidget"
                          var="payment"
                          value="#{patientFinancialsBean.paymentHistory}"
+                         globalFilterFunction="#{patientFinancialsBean.globalFilterFunction}"
+                         filteredValue="#{patientFinancialsBean.filteredPayments}"
                          emptyMessage="You have no payment records."
                          styleClass="p-datatable-sm p-datatable-striped"
                          autoLayout="true"
                          reflow="true">
 
-               <!-- Header Title -->
+               <!-- The header now contains the global filter input box -->
                <f:facet name="header">
-                  <h:outputText value="All Payments Made by #{patientFinancialsBean.currentPatient.name}"/>
+                  <div class="flex justify-content-between align-items-center">
+                     <p:commandButton value="Refresh" icon="pi pi-refresh"
+                                      action="#{patientFinancialsBean.loadPaymentHistory}"
+                                      update="paymentHistoryTable"
+                                      process="@this"
+                                      styleClass="ui-button-secondary"/>
+
+                     <!-- This is the global filter input -->
+                     <span class="p-input-icon-left">
+                           <p:inputText id="globalFilter"
+                                        placeholder="Search all fields..."
+                                        onkeyup="PrimeFaces.debounce(() => PF('paymentHistoryTableWidget').filter(), 300)"
+                                        style="width: 20rem;" />
+
+                        </span>
+                  </div>
                </f:facet>
 
                <!-- Payment ID -->
@@ -40,8 +47,7 @@
 
                <!-- Payment Date (with date-only filter) -->
                <p:column headerText="Payment Date"
-                         filterBy="#{payment.paymentDate}"
-                         filterFunction="#{patientFinancialsBean.filterByDate}"
+                        globalFiter="true"
                          sortBy="#{payment.paymentDate}">
                   <f:facet name="filter">
                      <p:datePicker value="#{patientFinancialsBean.paymentDateFilter}"
@@ -55,20 +61,20 @@
                </p:column>
 
                <!-- Amount Paid -->
-               <p:column headerText="Amount Paid" sortBy="#{payment.amountPaid}" style="text-align: right;">
+               <p:column headerText="Amount Paid" sortBy="#{payment.amountPaid}" globalFiter="true" style="text-align: right;">
                   <h:outputText value="#{payment.amountPaid}">
                      <f:convertNumber type="currency" currencySymbol="UGX "/>
                   </h:outputText>
                </p:column>
 
                <!-- Payment For -->
-               <p:column headerText="Payment For">
+               <p:column headerText="Payment For" sortBy="#{payment.billId.billId} or #{payment.prescription.prescriptionId}">
                   <h:outputText value="Bill ##{payment.billId.billId}" rendered="#{payment.billId != null}"/>
                   <h:outputText value="Prescription ##{payment.prescription.prescriptionId}" rendered="#{payment.prescription != null}"/>
                </p:column>
 
                <!-- Payment Method -->
-               <p:column headerText="Method">
+               <p:column headerText="Method" sortBy="#{payment.method}" globalFiterr="true">
                   <h:outputText value="#{payment.method}"/>
                </p:column>
                <p:column headerText="Receipt" style="text-align: center; width: 5rem;">

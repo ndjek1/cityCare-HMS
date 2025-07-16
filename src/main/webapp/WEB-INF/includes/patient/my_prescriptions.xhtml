@@ -12,37 +12,49 @@
             <p:tab title="Prescription History">
                 <p:card>
                     <p:dataTable id="prescriptionsTable"
+                                 widgetVar="prescriptionsTableWidget"
                                  var="pres"
                                  value="#{patientPrescriptionsList.patientPrescriptions}"
+                                 globalFilterFunction="#{patientPrescriptionsList.globalFilterFunction}"
+                                 filteredValue="#{patientPrescriptionsList.filteredPrescriptions}"
                                  emptyMessage="You have no prescriptions on record."
                                  rows="10" paginator="true" paginatorPosition="bottom"
                                  rowsPerPageTemplate="5,10,20"
                                  reflow="true">
 
+                        <!-- The header now contains the global filter input box -->
                         <f:facet name="header">
                             <div class="flex justify-content-between align-items-center">
-                                <span class="text-xl font-bold">My Prescription History</span>
-                                <p:commandButton icon="pi pi-refresh" title="Refresh"
-                                                 action="#{patientPrescriptionsList.loadPrescriptions}"
+                                <p:commandButton value="Refresh" icon="pi pi-refresh"
+                                                 action="#{patientPrescriptionsList.loadPrescriptions()}"
                                                  update="prescriptionsTable"
                                                  process="@this"
-                                                 styleClass="ui-button-flat ui-button-secondary rounded-button"/>
+                                                 styleClass="ui-button-secondary"/>
+
+                                <!-- This is the global filter input -->
+                                <span class="p-input-icon-left">
+                           <p:inputText id="globalFilter"
+                                        placeholder="Search all fields..."
+                                        onkeyup="PrimeFaces.debounce(() => PF('prescriptionsTableWidget').filter(), 300)"
+                                        style="width: 20rem;" />
+
+                        </span>
                             </div>
                         </f:facet>
 
-                        <p:column headerText="Prescription Date" sortBy="#{pres.prescriptionDate}" style="width: 12rem;">
+                        <p:column headerText="Prescription Date" globalFilter="true" sortBy="#{pres.prescriptionDate}" style="width: 12rem;">
                             <h:outputText value="#{pres.prescriptionDate}">
                                 <f:convertDateTime type="localDate" dateStyle="long"/>
                             </h:outputText>
                         </p:column>
 
-                        <p:column headerText="Medications">
+                        <p:column headerText="Medications" globalFilter="true">
                             <h:outputText value="#{pres.prescribedMedications[0].medicationName}"
                                           rendered="#{not empty pres.prescribedMedications}"/>
                             <h:outputText value="..." rendered="#{pres.prescribedMedications.size() > 1}"/>
                         </p:column>
 
-                        <p:column headerText="Prescribed By" sortBy="#{pres.doctor.name}">
+                        <p:column headerText="Prescribed By" sortBy="#{pres.doctor.name}" globalFilter="true">
                             <h:outputText value="Dr. #{pres.doctor.name}" />
                         </p:column>
 

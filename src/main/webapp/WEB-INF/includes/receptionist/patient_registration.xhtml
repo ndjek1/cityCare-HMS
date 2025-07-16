@@ -106,7 +106,7 @@
             <p:commandButton value="Register" icon="pi pi-check"
                              action="#{patientBean.register}"
                              process="@form"
-                             update=":patientTable :pageContentForm:pageGrowlMessages"
+                             update=":patientListForm:patientTable :pageContentForm:pageGrowlMessages"
                              oncomplete="if (!args.validationFailed) PF('patientRegisterDialog').hide();"
                              styleClass="ui-button-success" />
 

@@ -9,39 +9,51 @@
 
          <p:messages id="appointmentMessages" showDetail="true" closable="true" />
 
-         <!-- Toolbar -->
-         <p:toolbar styleClass="mb-3">
-            <p:toolbarGroup>
-               <p:commandButton value="Refresh List" icon="pi pi-refresh"
-                                action="#{patientListBean.refreshList}" update="appointmentTable"
-                                styleClass="ui-button-secondary ml-2" />
-            </p:toolbarGroup>
-         </p:toolbar>
 
          <!-- Scrollable Data Table -->
          <div style="overflow-x:auto; max-height: 500px;">
             <p:dataTable id="appointmentTable"
+                         widgetVar="appointmentTableWidget"
                          var="aptmnt"
                          value="#{appointmentListBean.appointmentsList}"
+                         globalFilterFunction="#{appointmentListBean.globalFilterFunction}"
+                         filteredValue="#{appointmentListBean.filteredAppointmentsList}"
                          emptyMessage="No appointments found."
                          styleClass="p-datatable-striped p-datatable-sm"
                          reflow="true"
                          scrollable="true"
                          scrollHeight="400">
+               <!-- The header now contains the global filter input box -->
+               <f:facet name="header">
+                  <div class="flex justify-content-between align-items-center">
+                     <p:commandButton value="Refresh" icon="pi pi-refresh"
+                                      action="#{patientListBean.refreshList}" update="appointmentTable"
+                                      styleClass="ui-button-secondary ml-2" />
+
+                     <!-- This is the global filter input -->
+                     <span class="p-input-icon-left">
+                           <p:inputText id="globalFilter"
+                                        placeholder="Search all fields..."
+                                        onkeyup="PrimeFaces.debounce(() => PF('appointmentTableWidget').filter(), 300)"
+                                        style="width: 20rem;" />
+
+                        </span>
+                  </div>
+               </f:facet>
 
                <p:column headerText="ID" style="width:5%;">
                   <h:outputText value="#{aptmnt.appointmentId}" />
                </p:column>
 
-               <p:column headerText="Doctor Name">
+               <p:column headerText="Doctor Name" sortBy="#{aptmnt.doctor.name}" globaFilter="true">
                   <h:outputText value="#{aptmnt.doctor.name}" />
                </p:column>
 
-               <p:column headerText="Date Time">
+               <p:column headerText="Date Time" sortBy="#{aptmnt.dateTime}" globalFilter="true">
                   <h:outputText value="#{aptmnt.dateTime}" />
                </p:column>
 
-               <p:column headerText="Status">
+               <p:column headerText="Status" sortBy="#{aptmnt.status}" globalFilter="true">
                   <h:outputText value="#{aptmnt.status}" />
                </p:column>
 

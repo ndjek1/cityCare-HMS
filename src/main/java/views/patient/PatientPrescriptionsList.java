@@ -5,14 +5,18 @@ import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import org.pahappa.systems.hms.models.Patient;
+import org.pahappa.systems.hms.models.Payment;
 import org.pahappa.systems.hms.models.Prescription;
 import org.pahappa.systems.hms.services.impl.PrescriptionServiceImpl;
 import views.UserAccountBean;
 
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Named
 @ViewScoped
@@ -25,6 +29,7 @@ public class PatientPrescriptionsList implements Serializable {
     private final PrescriptionServiceImpl prescriptionService;
 
     private List<Prescription> patientPrescriptions =  new ArrayList<>();
+    private List<Prescription> filteredPrescriptions = new ArrayList<>();
     private Prescription selectedPrescription;
 
 
@@ -49,9 +54,38 @@ public class PatientPrescriptionsList implements Serializable {
         if (this.patientPrescriptions == null) {
             this.patientPrescriptions = new ArrayList<>();
         }
+        this.filteredPrescriptions = new ArrayList<>(patientPrescriptions);
+    }
+
+    public boolean globalFilterFunction(Object value, Object filter, Locale locale) {
+        if (value == null || filter == null) return true;
+
+        Prescription prescription = (Prescription) value;
+
+        // Case 1: Text filter from search box (String)
+        if (filter instanceof String filterText) {
+            String lowerFilter = filterText.toLowerCase().trim();
+            if (lowerFilter.isBlank()) return true;
+
+            return (prescription.getPaymentStatus() != null && prescription.getPaymentStatus().toString().toLowerCase().contains(lowerFilter)) ||
+                    (prescription.getPrescriptionDate() != null && prescription.getPrescriptionDate().toString().contains(lowerFilter)) ||
+                    (prescription.getTotalCost() > 0 && String.valueOf(prescription.getTotalCost()).toLowerCase().contains(lowerFilter));
+        }
+
+
+        return true; // fallback
     }
 
     // Getters and Setters
+
+    public List<Prescription> getFilteredPrescriptions() {
+        return filteredPrescriptions;
+    }
+
+    public void setFilteredPrescriptions(List<Prescription> filteredPrescriptions) {
+        this.filteredPrescriptions = filteredPrescriptions;
+    }
+
     public List<Prescription> getPatientPrescriptions() {
         return patientPrescriptions;
     }

@@ -27,6 +27,7 @@ public class PatientPaymentBean implements Serializable {
     private UserAccountBean userAccountBean;
 
     private List<Payment> paymentHistory;
+    private List<Payment> filteredPayments;
     private Patient currentPatient;
     private LocalDate paymentDateFilter;
     private Payment selectedPayment;
@@ -56,17 +57,42 @@ public class PatientPaymentBean implements Serializable {
         if (this.paymentHistory == null) { // Defensive check
             this.paymentHistory = new ArrayList<>();
         }
+        this.filteredPayments = new ArrayList<>(paymentHistory);
         System.out.println("PatientFinancialsBean: Loaded " + this.paymentHistory.size() + " payment records.");
     }
 
-    public boolean filterByDate(Object value, Object filter, Locale locale) {
-        if (filter == null || value == null) return true;
-        if (!(value instanceof LocalDateTime) || !(filter instanceof LocalDate)) return true;
+    public boolean globalFilterFunction(Object value, Object filter, Locale locale) {
+        if (value == null || filter == null) return true;
 
-        LocalDateTime paymentDateTime = (LocalDateTime) value;
-        LocalDate filterDate = (LocalDate) filter;
+        Payment payment = (Payment) value;
 
-        return paymentDateTime.toLocalDate().isEqual(filterDate);
+        // Case 1: Text filter from search box (String)
+        if (filter instanceof String filterText) {
+            String lowerFilter = filterText.toLowerCase().trim();
+            if (lowerFilter.isBlank()) return true;
+
+            return (payment.getMethod() != null && payment.getMethod().toString().toLowerCase().contains(lowerFilter)) ||
+                    (payment.getPaymentDate() != null && payment.getPaymentDate().toLocalDate().toString().contains(lowerFilter)) ||
+                    (payment.getAmountPaid() > 0 && String.valueOf(payment.getAmountPaid()).toLowerCase().contains(lowerFilter));
+        }
+
+        // Case 2: Date-based filter (e.g., calendar)
+        if (filter instanceof LocalDate filterDate) {
+            LocalDateTime paymentDate = payment.getPaymentDate();
+            return paymentDate != null && paymentDate.toLocalDate().isEqual(filterDate);
+        }
+
+        return true; // fallback
+    }
+
+
+
+    public List<Payment> getFilteredPayments() {
+        return filteredPayments;
+    }
+
+    public void setFilteredPayments(List<Payment> filteredPayments) {
+        this.filteredPayments = filteredPayments;
     }
 
     public void prepareReceipt(Payment payment) {

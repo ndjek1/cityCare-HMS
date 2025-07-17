@@ -1,5 +1,6 @@
 package views.patient;
 
+import org.pahappa.systems.hms.models.Patient;
 import views.UserAccountBean;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.view.ViewScoped;
@@ -23,6 +24,7 @@ public class AppointmentListBean implements Serializable {
     private UserAccountBean userAccountBean; // To get current doctor's ID
 
     private List<Appointment> appointmentsList;
+    private List<Appointment> filteredAppointmentsList;
 
     public AppointmentListBean() {
         this.appointmentService = new AppointmentServiceImpl();
@@ -41,9 +43,34 @@ public class AppointmentListBean implements Serializable {
         } else {
             System.out.println("StaffListBean: Loaded " + appointmentsList.size() + " staff members.");
         }
+        this.filteredAppointmentsList = new ArrayList<>(appointmentsList);
+    }
+
+    // ✅ Global Filter Function
+    public boolean globalFilterFunction(Object value, Object filter, java.util.Locale locale) {
+        if (value == null || filter == null) return true;
+
+        Appointment appointment = (Appointment) value;
+        if (filter instanceof String filterText) {
+            String lowerFilter = filterText.toLowerCase().trim();
+            if (lowerFilter.isBlank()) return true;
+            return (appointment.getDoctor().getName() != null && appointment.getDoctor().getName().toLowerCase().contains(filterText)) ||
+                    (appointment.getStatus().toString() != null && appointment.getStatus().toString().toLowerCase().contains(filterText)) ||
+                    (appointment.getDateTime() != null && appointment.getDateTime().toLocalDate().toString().contains(lowerFilter));
+        }
+        return  true;
     }
 
     // Getter for the JSF page
+
+    public List<Appointment> getFilteredAppointmentsList() {
+        return filteredAppointmentsList;
+    }
+
+    public void setFilteredAppointmentsList(List<Appointment> filteredAppointmentsList) {
+        this.filteredAppointmentsList = filteredAppointmentsList;
+    }
+
     public List<Appointment> getAppointmentsList() {
         return appointmentsList;
     }

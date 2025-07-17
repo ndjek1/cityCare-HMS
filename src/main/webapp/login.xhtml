@@ -64,11 +64,16 @@
 
             <f:facet name="title">
                 <div class="text-center">
-                    <i class="pi pi-heart-fill text-primary text-4xl mb-2"></i>
-                    <div class="text-900 text-3xl font-bold mb-2">Welcome Back</div>
-                    <span class="text-600 font-medium">Sign in to continue</span>
+
+                    <!-- Use h:graphicImage to display your logo -->
+                    <h:graphicImage library="images" name="CITYCARE.png"
+                                    alt="CityCare HMS Logo"
+                                    styleClass="mb-3"
+                                    style="height: 150px; width: auto;"/> <!-- Adjust height as needed -->
+
                 </div>
             </f:facet>
+
 
             <h:form id="loginForm">
                 <p:growl id="loginMessages" showDetail="true" life="6000"/>

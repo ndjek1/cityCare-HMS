@@ -24,7 +24,7 @@ public class PageNavigationBean implements Serializable {
             if (userAccountBean.isAdministrator()) {
                 navigateToDashboard();
             } else if (userAccountBean.isDoctor()) {
-                navigateToDoctorAppointments();
+                navigateToDoctorDashboard();
             } else if (userAccountBean.isPatient()) {
                 navigateToPatientAppointments();
             } else if (userAccountBean.isReceptionist()) {
@@ -45,12 +45,12 @@ public class PageNavigationBean implements Serializable {
         this.currentPage = "/WEB-INF/includes/admin/dashboard_content.xhtml";
         return null;
     }
-
-    public String navigateAddNewStaff() {
-        this.selectedMenu =  "staffRegistration";
-        this.currentPage = "/WEB-INF/includes/admin/staff_registration.xhtml";
+    public String navigateToDoctorDashboard() {
+        this.selectedMenu = "dashboard";
+        this.currentPage = "/WEB-INF/includes/doctor/dashboard.xhtml";
         return null;
     }
+
 
     public String navigateToUnpaidPrescriptions() {
         this.selectedMenu =  "unpaidPrescriptions";
@@ -58,11 +58,6 @@ public class PageNavigationBean implements Serializable {
         return null;
     }
 
-    public String navigateAddNewPatient() {
-        this.selectedMenu = "patientRegistration";
-        this.currentPage = "/WEB-INF/includes/receptionist/patient_registration.xhtml";
-        return null;
-    }
 
     public String navigateToViewStaff() {
         this.selectedMenu = "staff_list";

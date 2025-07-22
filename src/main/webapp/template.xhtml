@@ -92,6 +92,14 @@
                                    rendered="#{userAccountBean.isAdministrator() or userAccountBean.isAccountant()}"
                                    update=":pageContentForm:mainContentPanel :menuForm"
                                    styleClass="menu-link #{pageNavigationBean.selectedMenu == 'dashboard' ? 'menu-link-active' : ''}" />
+                    <!-- Dashboard (Admin only) -->
+                    <p:commandLink value="Dashboard"
+                                   icon="pi pi-home"
+                                   action="#{pageNavigationBean.navigateToDoctorDashboard()}"
+                                   rendered="#{userAccountBean.isDoctor() }"
+                                   update=":pageContentForm:mainContentPanel :menuForm"
+                                   styleClass="menu-link #{pageNavigationBean.selectedMenu == 'dashboard' ? 'menu-link-active' : ''}" />
+
 
                     <!-- Patient Links -->
                     <p:commandLink value="Book Appointment"

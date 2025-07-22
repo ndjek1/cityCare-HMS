@@ -27,9 +27,27 @@
             </div>
          </p:fieldset>
 
-         <!-- ========== Add New Slots ========== -->
-         <p:outputPanel id="newSlotsPanel" styleClass="mt-4">
-            <p:fieldset legend="Add New Available Time Slots for #{doctorScheduleBean.selectedDateForView}" toggleable="true">
+         <!-- ========== Button to Open Dialog ========== -->
+         <div class="mt-3">
+            <p:commandButton value="Add Time Slots"
+                             icon="pi pi-plus"
+                             onclick="PF('addSlotDialog').show()"
+                             type="button"
+                             styleClass="ui-button-success" />
+         </div>
+
+         <!-- ========== Dialog for Adding New Slots ========== -->
+         <p:dialog header="Add New Available Time Slots for #{doctorScheduleBean.selectedDateForView}"
+                   widgetVar="addSlotDialog"
+                   modal="true"
+                   closable="true"
+                   resizable="false"
+                   draggable="false"
+                   showEffect="fade"
+                   hideEffect="fade"
+                   width="40vw">
+
+            <h:panelGrid columns="1" cellpadding="5" styleClass="p-fluid">
                <p:selectManyCheckbox id="timeSlots"
                                      value="#{doctorScheduleBean.timesToAdd}"
                                      layout="responsive"
@@ -42,12 +60,13 @@
 
                <p:commandButton value="Add Selected Slots"
                                 action="#{doctorScheduleBean.addSelectedSlots()}"
-                                icon="pi pi-plus"
+                                icon="pi pi-check"
                                 process="@form"
                                 update="@form:scheduleMessages existingSlotsPanel"
+                                oncomplete="PF('addSlotDialog').hide()"
                                 styleClass="mt-3" />
-            </p:fieldset>
-         </p:outputPanel>
+            </h:panelGrid>
+         </p:dialog>
 
          <!-- ========== Existing Slots ========== -->
          <p:outputPanel id="existingSlotsPanel" styleClass="mt-4">

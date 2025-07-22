@@ -149,6 +149,17 @@ public class PrescriptionServiceImpl implements PrescriptionService {
         return allUnpaidPrescriptions;
     }
 
+
+    public long findByDoctorId(Long doctorId) {
+
+        List<Prescription> allUnpaidPrescriptions;
+
+        System.out.println("SERVICE: Fetching all unpaid or partially paid bills.");
+        allUnpaidPrescriptions = prescriptionDao.findByDoctorId(doctorId);
+
+        return allUnpaidPrescriptions.size();
+    }
+
     public Optional<Payment> processPaymentForPrescription(Long prescriptionId, double amountPaid, PaymentMethod method) {
         if (prescriptionId == null || amountPaid <= 0) {
             System.err.println("Invalid prescriptionId or amountPaid. prescriptionId=" + prescriptionId + ", amountPaid=" + amountPaid);

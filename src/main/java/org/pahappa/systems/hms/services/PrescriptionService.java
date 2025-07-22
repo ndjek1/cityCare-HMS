@@ -12,4 +12,5 @@ public interface PrescriptionService {
     List<Prescription> findByPatientId(Long id);
     List<Prescription> findByAppointmentId(Long id);
     List<Prescription> findAllUnpaid();
+    public long findByDoctorId(Long doctorId);
 }

@@ -10,46 +10,60 @@
             <!-- Global Messages -->
             <p:messages id="adminPrescriptionMessages" showDetail="true" closable="true" autoUpdate="true" />
 
-            <!-- Toolbar -->
-            <div class="flex justify-content-end mb-3">
-                <p:commandButton value="Refresh"
-                                 icon="pi pi-refresh"
-                                 action="#{financeBean.loadAllUnpaidPrescriptions()}"
-                                 update="unpaidPrescriptionTable"
-                                 styleClass="ui-button-secondary" />
-            </div>
 
             <!-- DataTable -->
             <p:dataTable id="unpaidPrescriptionTable" widgetVar="unpaidPrescriptionTableWidget"
                          value="#{financeBean.allUnpaidPrescriptions}" var="prescription"
+                         globalFilterFunction="#{financeBean.globalFilterFunction}"
+                         filteredValue="#{financeBean.filteredPrescriptions}"
                          paginator="true" rows="10"
+                         paginatorPosition="bottom"
                          reflow="true"
                          styleClass="p-datatable-sm p-datatable-striped p-datatable-gridlines"
                          style="width:100%; table-layout:auto;"
                          emptyMessage="No unpaid bills found.">
+                <!-- The header now contains the global filter input box -->
+                <f:facet name="header">
+                    <div class="flex justify-content-between align-items-center">
+                        <p:commandButton value="Refresh"
+                                         icon="pi pi-refresh"
+                                         action="#{financeBean.loadAllUnpaidPrescriptions()}"
+                                         update="unpaidPrescriptionTable"
+                                         styleClass="ui-button-secondary" />
+
+                        <!-- This is the global filter input -->
+                        <span class="p-input-icon-left">
+                           <p:inputText id="globalFilter"
+                                        placeholder="Search all fields..."
+                                        onkeyup="PrimeFaces.debounce(() => PF('unpaidPrescriptionTableWidget').filter(), 300)"
+                                        style="width: 20rem;" />
+
+                        </span>
+                    </div>
+                </f:facet>
 
                 <p:column headerText="ID">
                     <h:outputText value="#{prescription.prescriptionId}" style="white-space: nowrap;" />
                 </p:column>
 
                 <p:column headerText="Patient Name" sortBy="#{prescription.patient.name}"
-                          filterBy="#{prescription.patient.name}" filterMatchMode="contains">
+                          globalFilter="true">
                     <h:outputText value="#{prescription.patient.name}" />
                 </p:column>
 
-                <p:column headerText="Prescription Date">
+                <p:column headerText="Date" sortBy="#{prescription.prescriptionDate}" globalFilter="true">
                     <h:outputText value="#{prescription.prescriptionDate}">
                     </h:outputText>
                 </p:column>
 
-                <p:column headerText="Amount (UGX)" style="text-align: right;">
+                <p:column headerText="Amount (UGX)" style="text-align: right;" sortBy="#{prescription.totalCost}" globalFilter="true">
                     <h:outputText value="#{prescription.totalCost}">
                         <f:convertNumber type="currency" currencySymbol="UGX " />
                     </h:outputText>
                 </p:column>
 
                 <p:column headerText="Status" style="text-align: center;"
-                          filterBy="#{prescription.paymentStatus}" filterMatchMode="equals">
+                          >
                     <f:facet name="filter">
                         <p:selectOneMenu onchange="PF('unpaidBillsTableWidget').filter()" styleClass="w-full">
                             <f:selectItem itemLabel="All" itemValue="#{null}" noSelectionOption="true" />

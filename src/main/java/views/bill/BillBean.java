@@ -4,18 +4,14 @@ import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
-import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import org.pahappa.systems.hms.models.Bill;
 import org.pahappa.systems.hms.models.Payment;
 import org.pahappa.systems.hms.constants.PaymentMethod;
-import org.pahappa.systems.hms.models.Prescription;
-import org.pahappa.systems.hms.services.BillingService; // Use the interface
 import org.pahappa.systems.hms.services.impl.BillingServiceImpl;
 import org.pahappa.systems.hms.services.impl.PrescriptionServiceImpl;
 
 import java.io.Serializable;
-import java.math.BigDecimal; // Use BigDecimal for currency
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,10 +22,9 @@ import java.util.Optional;
 public class BillBean implements Serializable {
 
     private final BillingServiceImpl billingService; // CORRECT: Use DI for the service
-    private final PrescriptionServiceImpl prescriptionService;
     // === Properties for displaying the list of bills ===
     private List<Bill> allUnpaidBills;
-    private List<Prescription> allUnpaidPrescriptions;
+    private List<Bill> filteredBills;
 
     // === Properties for the payment dialog ===
     private Bill billToPay; // The bill currently loaded in the dialog
@@ -42,7 +37,6 @@ public class BillBean implements Serializable {
     public BillBean() {
         // Constructor should be empty. DI happens after.
         this.billingService = new BillingServiceImpl();
-        this.prescriptionService = new PrescriptionServiceImpl();
         System.out.println("BillBean CONSTRUCTOR called.");
     }
 
@@ -62,22 +56,26 @@ public class BillBean implements Serializable {
         if (this.allUnpaidBills == null) { // Defensive null check
             this.allUnpaidBills = new ArrayList<>();
         }
+        this.filteredBills = this.allUnpaidBills;
         this.dialogReady = true;
         System.out.println("Loaded " + this.allUnpaidBills.size() + " unpaid bills.");
     }
 
-    // --- List Loading Logic ---
-    public void loadAllUnpaidPrescriptions() {
-        System.out.println("Loading all unpaid bills...");
-        if (prescriptionService != null) {
-            this.allUnpaidPrescriptions = prescriptionService.findAllUnpaid();
+    // ✅ Global Filter Function
+    public boolean globalFilterFunction(Object value, Object filter, java.util.Locale locale) {
+
+        Bill bill = (Bill) value;
+        // Case 1: Text filter from search box (String)
+        if (filter instanceof String filterText) {
+            String lowerFilter = filterText.toLowerCase().trim();
+            if (lowerFilter.isBlank()) return true;
+            return (bill.getPatient().getName() != null && bill.getPatient().getName().toLowerCase().contains(filterText)) ||
+                    (bill.getTotalAmount() > 0 && String.valueOf(bill.getTotalAmount()).toLowerCase().contains(filterText)) ||
+                    (bill.getBillDate() != null && bill.getBillDate().toString().contains(lowerFilter));
         }
-        if (this.allUnpaidPrescriptions == null) { // Defensive null check
-            this.allUnpaidPrescriptions = new ArrayList<>();
-        }
-        this.dialogReady = true;
-        System.out.println("Loaded " + this.allUnpaidPrescriptions.size() + " unpaid bills.");
+        return true;
     }
+
 
     // --- Dialog Management Logic ---
     public void preparePaymentDialog(Bill bill) {
@@ -133,6 +131,16 @@ public class BillBean implements Serializable {
     }
 
     // --- Getters and Setters ---
+
+
+    public List<Bill> getFilteredBills() {
+        return filteredBills;
+    }
+
+    public void setFilteredBills(List<Bill> filteredBills) {
+        this.filteredBills = filteredBills;
+    }
+
     public List<Bill> getAllUnpaidBills() {
         return allUnpaidBills;
     }

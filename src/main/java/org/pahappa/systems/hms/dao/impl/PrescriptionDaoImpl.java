@@ -33,6 +33,21 @@ public class PrescriptionDaoImpl extends AbstractDao<Prescription, Long> impleme
             return prescriptions;
         });
     }
+    @Override
+    public List<Prescription> findByDoctorId(Long doctorId) {
+        return execute(session -> {
+            if (doctorId == null) return Collections.emptyList();
+            Query<Prescription> query = session.createQuery(
+                    "SELECT p FROM Prescription p " +
+                            "LEFT JOIN FETCH p.doctor " +
+                            "WHERE p.doctor.id = :doctorId " +
+                            "ORDER BY p.prescriptionDate DESC", Prescription.class);
+            query.setParameter("doctorId", doctorId);
+            List<Prescription> prescriptions = query.getResultList();
+            prescriptions.forEach(pr -> Hibernate.initialize(pr.getPrescribedMedications()));
+            return prescriptions;
+        });
+    }
 
     @Override
     public List<Prescription> findByAppointmentId(Long appointmentId) {

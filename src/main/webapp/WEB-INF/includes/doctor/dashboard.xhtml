@@ -1,0 +1,54 @@
+
+<ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:h="jakarta.faces.html"
+        xmlns:f="jakarta.faces.core"
+        xmlns:ui="jakarta.faces.facelets"
+        xmlns:p="http://primefaces.org/ui">
+
+   <p:card  styleClass="shadow-2 p-3" style="background-color:#f4f9ff;">
+      <h:form id="dashboardForm">
+         <h2 style="color:#2c3e50;">Welcome, Doctor</h2>
+
+         <p:growl id="growl" showDetail="true" life="5000" />
+
+         <div class="p-grid">
+            <!-- Today's Appointments -->
+            <div class="p-col-12 p-md-4">
+               <p:card styleClass="p-shadow-4" style="border-top:4px solid #007ad9;">
+                  <f:facet name="title">
+                     <span style="color:#007ad9; font-weight:bold;">Today's Appointments</span>
+                  </f:facet>
+                  <h:outputText value="#{doctorDashboardBean.todayAppointmentsCount}"
+                                style="font-size: 2em; color:#007ad9; font-weight:bold;" />
+               </p:card>
+            </div>
+
+            <!-- Completed Appointments -->
+            <div class="p-col-12 p-md-4">
+               <p:card styleClass="p-shadow-4" style="border-top:4px solid #28a745;">
+                  <f:facet name="title">
+                     <span style="color:#28a745; font-weight:bold;">Completed Appointments</span>
+                  </f:facet>
+                  <h:outputText value="#{doctorDashboardBean.completedAppointmentsCount}"
+                                style="font-size: 2em; color:#28a745; font-weight:bold;" />
+               </p:card>
+            </div>
+
+            <!-- Prescriptions Issued -->
+            <div class="p-col-12 p-md-4">
+               <p:card styleClass="p-shadow-4" style="border-top:4px solid #17a2b8;">
+                  <f:facet name="title">
+                     <span style="color:#17a2b8; font-weight:bold;">Prescriptions Issued</span>
+                  </f:facet>
+                  <h:outputText value="#{doctorDashboardBean.totalPrescriptionsCount}"
+                                style="font-size: 2em; color:#17a2b8; font-weight:bold;" />
+               </p:card>
+            </div>
+         </div>
+      </h:form>
+   </p:card>
+
+</ui:composition>
+
+

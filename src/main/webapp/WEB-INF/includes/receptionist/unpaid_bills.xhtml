@@ -12,47 +12,64 @@
             <!-- Global Messages -->
             <p:messages id="adminBillMessages" showDetail="true" closable="true" autoUpdate="true" />
 
-            <!-- Toolbar -->
-            <div class="flex justify-content-end mb-3">
-                <p:commandButton value="Refresh"
-                                 icon="pi pi-refresh"
-                                 action="#{billBean.loadAllUnpaidBills}"
-                                 update="unpaidBillsTable"
-                                 styleClass="ui-button-secondary" />
-            </div>
 
             <!-- DataTable -->
             <p:dataTable id="unpaidBillsTable" widgetVar="unpaidBillsTableWidget"
                          value="#{billBean.allUnpaidBills}" var="bill"
+                         globalFilterFunction="#{billBean.globalFilterFunction}"
+                         filteredValue="#{billBean.filteredBills}"
                          paginator="true" rows="10"
+                         paginatorPosition="bottom"
                          reflow="true"
                          styleClass="p-datatable-sm p-datatable-striped p-datatable-gridlines"
                          style="width:100%; table-layout:auto;"
                          emptyMessage="No unpaid bills found.">
+                <!-- The header now contains the global filter input box -->
+                <f:facet name="header">
+                    <div class="flex justify-content-between align-items-center">
+                        <p:commandButton value="Refresh"
+                                         icon="pi pi-refresh"
+                                         action="#{billBean.loadAllUnpaidBills}"
+                                         update="unpaidBillsTable"
+                                         styleClass="ui-button-secondary" />
+
+                        <!-- This is the global filter input -->
+                        <span class="p-input-icon-left">
+                           <p:inputText id="globalFilter"
+                                        placeholder="Search all fields..."
+                                        onkeyup="PrimeFaces.debounce(() => PF('unpaidBillsTableWidget').filter(), 300)"
+                                        style="width: 20rem;" />
+
+                        </span>
+                    </div>
+                </f:facet>
 
                 <p:column headerText="Bill ID">
                     <h:outputText value="#{bill.billId}" style="white-space: nowrap;" />
                 </p:column>
 
                 <p:column headerText="Patient Name" sortBy="#{bill.patient.name}"
-                          filterBy="#{bill.patient.name}" filterMatchMode="contains">
+                          globalFilter="true"
+                         >
                     <h:outputText value="#{bill.patient.name}" />
                 </p:column>
 
-                <p:column headerText="Bill Date">
+                <p:column headerText="Bill Date" sortBy="#{bill.billDate}" globalFilter="true">
                     <h:outputText value="#{bill.billDate}">
                         <f:convertDateTime type="localDateTime" pattern="MMM dd, yyyy hh:mm a" />
                     </h:outputText>
                 </p:column>
 
-                <p:column headerText="Amount (UGX)" style="text-align: right;">
+                <p:column headerText="Amount (UGX)" style="text-align: right;"
+                          sortBy="#{bill.totalAmount}" globalFilter="true"
+                >
                     <h:outputText value="#{bill.totalAmount}">
                         <f:convertNumber type="currency" currencySymbol="UGX " />
                     </h:outputText>
                 </p:column>
 
                 <p:column headerText="Status" style="text-align: center;"
-                          filterBy="#{bill.paymentStatus}" filterMatchMode="equals">
+                         >
                     <f:facet name="filter">
                         <p:selectOneMenu onchange="PF('unpaidBillsTableWidget').filter()" styleClass="w-full">
                             <f:selectItem itemLabel="All" itemValue="#{null}" noSelectionOption="true" />

@@ -25,6 +25,7 @@ public class FinanceBean implements Serializable {
 
     private final PrescriptionServiceImpl prescriptionService;
     private List<Prescription> allUnpaidPrescriptions;
+    private List<Prescription> filteredPrescriptions;
 
     // === Properties for the payment dialog ===
     private Prescription prescriptionToPay; // The bill currently loaded in the dialog
@@ -58,7 +59,24 @@ public class FinanceBean implements Serializable {
             this.allUnpaidPrescriptions = new ArrayList<>();
         }
         this.dialogReady = true;
+        this.filteredPrescriptions = this.allUnpaidPrescriptions;
         System.out.println("Loaded " + this.allUnpaidPrescriptions.size() + " unpaid bills.");
+    }
+
+    // ✅ Global Filter Function
+    public boolean globalFilterFunction(Object value, Object filter, java.util.Locale locale) {
+
+        Prescription prescription = (Prescription) value;
+        // Case 1: Text filter from search box (String)
+        if (filter instanceof String filterText) {
+            String lowerFilter = filterText.toLowerCase().trim();
+            if (lowerFilter.isBlank()) return true;
+
+            return (prescription.getPatient().getName() != null && prescription.getPatient().getName().toLowerCase().contains(filterText)) ||
+                    (prescription.getTotalCost() > 0 && String.valueOf(prescription.getTotalCost()).toLowerCase().contains(filterText)) ||
+                    (prescription.getPrescriptionDate() != null && prescription.getPrescriptionDate().toString().contains(lowerFilter));
+        }
+        return true;
     }
 
     // --- Dialog Management Logic ---
@@ -81,7 +99,7 @@ public class FinanceBean implements Serializable {
     public void submitPayment() {
         FacesContext context = FacesContext.getCurrentInstance();
         if (!dialogReady || prescriptionToPay == null) {
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Payment form not ready or bill details missing."));
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Payment form not ready or prescription details missing."));
             return;
         }
         if ( amountToPay <= 0) {
@@ -114,6 +132,14 @@ public class FinanceBean implements Serializable {
         }
     }
 
+
+    public List<Prescription> getFilteredPrescriptions() {
+        return filteredPrescriptions;
+    }
+
+    public void setFilteredPrescriptions(List<Prescription> filteredPrescriptions) {
+        this.filteredPrescriptions = filteredPrescriptions;
+    }
 
     public double getAmountToPay() {
         return amountToPay;
